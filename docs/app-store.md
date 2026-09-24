@@ -16,7 +16,7 @@
       Paid Apps плюс банковские и налоговые данные.
 
 **Проект (уже сделано в репозитории)**
-- [x] Bundle ID `com.kirillrychkov.SashasPazzle`, автоматическая подпись,
+- [x] Bundle ID `com.kirillrychkov.SashasPuzzle`, автоматическая подпись,
       команда `QU2NF6T447`.
 - [x] Иконка 1024×1024 без альфа-канала в `Assets.xcassets/AppIcon` (даже
       полностью непрозрачный PNG с альфа-каналом App Store Connect отклоняет
@@ -108,7 +108,7 @@ for l in en ru de fr es it pt-BR ja ko zh-Hans; do Scripts/store-screenshots.sh 
 Снимайте после замены картинок, а не до. Скрипт запускает отладочную сборку
 со `--stage`; в этом режиме приложение держит сохранения, фото, статистику и
 настройки в отдельной временной папке (`StageSandbox`), а Mac-сборка ещё и
-идёт под своим bundle ID (`…SashasPazzle.screenshots`), так что ваши игры и
+идёт под своим bundle ID (`…SashasPuzzle.screenshots`), так что ваши игры и
 фото на этом Mac и в симуляторах не трогаются. Окно Mac — 1440 × 900 pt: на
 обычном мониторе это 1440 × 900 px, на Retina — 2880 × 1800, оба размера App
 Store принимает. При первом запуске macOS спросит разрешение «Запись экрана»

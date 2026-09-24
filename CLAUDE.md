@@ -235,7 +235,7 @@ There is no way to read back a live SwiftUI window — `cacheDisplay` and
 - **Store screenshots**: `Scripts/store-screenshots.sh [lang]` walks the stages
   on the iPhone 17 Pro Max and iPad Pro 13" simulators and the Mac app into
   `docs/store/<lang>/`, numbered in upload order. The Mac build uses bundle
-  ID `…SashasPazzle.screenshots` so `--clear-saves` never touches the family's
+  ID `…SashasPuzzle.screenshots` so `--clear-saves` never touches the family's
   real container; `SIMULATORS=` (empty) shoots the Mac only.
 - **Screenshots**: on macOS capture the window only (find its number via
   `CGWindowListCopyWindowInfo`, then `screencapture -o -l <id>`) — a full-screen

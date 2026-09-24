@@ -16,7 +16,7 @@ cd "$(dirname "$0")/.."
 LANGUAGE=${1:-en}
 OUT="docs/store/$LANGUAGE"
 DD="${TMPDIR:-/tmp}/sashas-puzzles-screenshots"
-BUNDLE=com.kirillrychkov.SashasPazzle
+BUNDLE=com.kirillrychkov.SashasPuzzle
 typeset -A LOCALES=(en en_US ru ru_RU de de_DE fr fr_FR es es_ES it it_IT pt-BR pt_BR ja ja_JP ko ko_KR zh-Hans zh_CN)
 LOCALE=${LOCALES[$LANGUAGE]:-en_US}
 # Upload order: the first three show in search results, so a board mid-solve
