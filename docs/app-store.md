@@ -18,7 +18,13 @@
 **Проект (уже сделано в репозитории)**
 - [x] Bundle ID `com.kirillrychkov.SashasPazzle`, автоматическая подпись,
       команда `QU2NF6T447`.
-- [x] Иконка 1024×1024 без прозрачности в `Assets.xcassets/AppIcon`.
+- [x] Иконка 1024×1024 без альфа-канала в `Assets.xcassets/AppIcon` (даже
+      полностью непрозрачный PNG с альфа-каналом App Store Connect отклоняет
+      ошибкой ITMS-90717).
+- [x] Privacy Manifest `Sources/Resources/PrivacyInfo.xcprivacy`: трекинга
+      нет, данные не собираются, `UserDefaults` — причина `CA92.1`. Без него
+      загрузка получает ITMS-91053. Новый API из «required reason» списка
+      (даты файлов, свободное место, uptime) — дописать сюда причину.
 - [x] `NSPhotoLibraryUsageDescription` (текст запроса к фото).
 - [x] `ITSAppUsesNonExemptEncryption = NO` — вопрос про шифрование при
       каждой загрузке будет пропускаться.
@@ -53,10 +59,9 @@
 - [ ] Xcode → Product → Archive (схема JigsawPuzzle, destination «Any iOS
       Device»). Затем Organizer → Distribute App → App Store Connect → Upload.
       dSYM загрузится автоматически — это нужно для расшифровки крашей.
-- [ ] Для Mac: Archive с destination «Any Mac» и та же кнопка. Если Organizer
-      пожалуется на подпись, уберите в Build Settings строку
-      `CODE_SIGN_IDENTITY[sdk=macosx*] = "-"` (она нужна только для
-      `Scripts/install-mac.sh` без сертификата).
+- [ ] Для Mac: Archive с destination «Any Mac» и та же кнопка. Release
+      подписывается сертификатом команды; ad-hoc (`CODE_SIGN_IDENTITY = "-"`)
+      остался только в Debug, а `Scripts/install-mac.sh` передаёт его сам.
 - [ ] Обработка сборки занимает 10–30 минут, потом она появляется в
       TestFlight и в версии приложения.
 - [ ] TestFlight: поставьте себе и Саше на реальные устройства и поиграйте

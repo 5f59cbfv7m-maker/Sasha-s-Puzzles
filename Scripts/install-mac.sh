@@ -14,10 +14,12 @@ DESTINATION="${1:-$HOME/Desktop}"
 PROJECT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "$PROJECT_DIR"
 
+# Release is signed with the team's certificate for the App Store. This copy is
+# only for this Mac, so sign it ad hoc: no Apple account, nothing that expires.
 echo "Building Release…"
 xcodebuild -project JigsawPuzzle.xcodeproj -scheme JigsawPuzzle \
     -destination 'platform=macOS,arch=arm64' -configuration Release build \
-    -quiet
+    CODE_SIGN_IDENTITY=- -quiet
 
 PRODUCTS_DIR="$(xcodebuild -project JigsawPuzzle.xcodeproj -scheme JigsawPuzzle \
     -destination 'platform=macOS,arch=arm64' -configuration Release \
