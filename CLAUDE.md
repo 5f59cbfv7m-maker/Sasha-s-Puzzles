@@ -63,6 +63,14 @@ makes them unit-testable and safe to run off the main thread.
 ever created**. Also: launch through `open`, never the executable directly — a
 binary started straight from a shell gets no window.
 
+**Closing the Mac window quits the app.** App Review rejected 1.0 (Guideline 4)
+because a closed window left the app running with no menu item to bring it back.
+The Mac scene is a single `Window` (listed in the Window menu, no second window
+over the one shared `AppModel`), and `AppDelegate` answers
+`applicationShouldTerminateAfterLastWindowClosed` with `true` and saves the
+live game in `applicationWillTerminate`. Do not turn it back into a
+`WindowGroup` on macOS.
+
 **Coordinate systems.** Board space is y-**down**; `CGContext` is y-**up**. Use
 `drawFlipped` for images. A piece path drawn without the flip comes out mirrored
 (this shipped a flat-top piece upside down once).

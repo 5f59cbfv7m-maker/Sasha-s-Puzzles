@@ -25,7 +25,9 @@
 - [x] `NSHumanReadableCopyright = © 2026 Kirill Rychkov`.
 - [x] Launch screen генерируется (`UILaunchScreen_Generation`).
 - [x] Sandbox + Hardened Runtime для Mac.
-- [x] Версия `MARKETING_VERSION = 1.0`, сборка `CURRENT_PROJECT_VERSION = 1`.
+- [x] Mac: закрытие окна сохраняет игру и завершает приложение, окно есть
+      в меню Window (замечание ревью по Guideline 4 к сборке 1.0 (1)).
+- [x] Версия `MARKETING_VERSION = 1.0`, сборка `CURRENT_PROJECT_VERSION = 2`.
       Каждая новая загрузка в App Store Connect — увеличить сборку (2, 3, …).
 
 **App Store Connect → My Apps → «+»**
