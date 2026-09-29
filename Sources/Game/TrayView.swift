@@ -15,6 +15,18 @@ struct TrayView: View {
 
     private var cellSize: CGFloat { placement == .trailing ? 74 : 63 }
 
+    /// Side of the square, in board units around a piece's cell centre, that
+    /// every tray piece is fitted into: wide enough for the farthest tab of
+    /// any piece. Fitting each texture on its own put the body wherever its
+    /// tabs left room — high, low or filling the card.
+    private var pieceFrame: CGFloat {
+        let cell = session.geometry.cellSize
+        let reach = session.textures.localBounds.reduce(0) { reach, bounds in
+            max(reach, -bounds.minX, bounds.maxX - cell.width, -bounds.minY, bounds.maxY - cell.height)
+        }
+        return max(cell.width, cell.height) + 2 * reach
+    }
+
     var body: some View {
         VStack(spacing: 0) {
             header
@@ -86,8 +98,11 @@ struct TrayView: View {
 
     @ViewBuilder
     private var cells: some View {
+        let frame = pieceFrame
         ForEach(session.state.trayOrder, id: \.self) { piece in
-            TrayCell(image: session.textures.images[safe: Int(piece)] ?? nil, size: cellSize)
+            TrayCell(image: session.textures.images[safe: Int(piece)] ?? nil,
+                     bounds: session.textures.localBounds[safe: Int(piece)],
+                     pieceCell: session.geometry.cellSize, frame: frame, size: cellSize)
                 .trayDragGesture(piece: piece, placement: placement, onChanged: onChanged, onEnded: onEnded)
                 .accessibilityLabel(Text("Puzzle piece"))
                 .accessibilityHint(Text("Drag onto the board"))
@@ -97,6 +112,10 @@ struct TrayView: View {
 
 private struct TrayCell: View {
     let image: Image?
+    /// Outline bounds relative to the piece's own cell, as the texture is cut.
+    let bounds: CGRect?
+    let pieceCell: CGSize
+    let frame: CGFloat
     let size: CGFloat
 
     var body: some View {
@@ -104,11 +123,15 @@ private struct TrayCell: View {
             RoundedRectangle(cornerRadius: 18, style: .continuous)
                 .fill(Theme.card)
                 .shadow(color: .black.opacity(0.14), radius: 1.5, y: 1)
-            if let image {
+            if let image, let bounds, frame > 0 {
+                // One scale for every piece, and the cell body — not the
+                // texture — centred, so tabs stick out evenly around it.
+                let k = (size - 12) / frame
                 image
                     .resizable()
-                    .aspectRatio(contentMode: .fit)
-                    .padding(6)
+                    .frame(width: bounds.width * k, height: bounds.height * k)
+                    .offset(x: (bounds.midX - pieceCell.width / 2) * k,
+                            y: (bounds.midY - pieceCell.height / 2) * k)
                     .shadow(color: .black.opacity(0.3), radius: 4, y: 3)
             } else {
                 Image(systemName: "puzzlepiece")
