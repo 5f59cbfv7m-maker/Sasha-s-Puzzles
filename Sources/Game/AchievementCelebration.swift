@@ -226,7 +226,9 @@ struct AchievementReveal: View {
     @Environment(AppSettings.self) private var settings
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @State private var visible = false
-    @State private var arrived: Set<Int> = []
+    /// Medals on the card so far. Only those take room, so the caption
+    /// moves aside as each one lands instead of waiting beside a gap.
+    @State private var arrived = 0
     @State private var landed = 0
     @State private var bursts: [Int: Date] = [:]
 
@@ -236,7 +238,7 @@ struct AchievementReveal: View {
     var body: some View {
         HStack(spacing: 14) {
             HStack(spacing: -badge * 0.2) {
-                ForEach(Array(achievements.enumerated()), id: \.element) { index, achievement in
+                ForEach(Array(achievements.prefix(arrived).enumerated()), id: \.element) { index, achievement in
                     AchievementBadge(achievement: achievement, size: badge,
                                      celebration: index < landed ? 1 : 0, armed: true)
                         .shadow(color: .black.opacity(0.18), radius: 4, y: 2)
@@ -246,12 +248,14 @@ struct AchievementReveal: View {
                                     .frame(width: badge * 5, height: badge * 5)
                             }
                         }
-                        .scaleEffect(arrived.contains(index) || reduceMotion ? 1 : 1.9)
-                        .offset(y: arrived.contains(index) || reduceMotion ? 0 : -badge * 2.4)
-                        .opacity(arrived.contains(index) ? 1 : 0)
                         .zIndex(Double(index))
+                        .transition(reduceMotion ? .opacity : .asymmetric(
+                            insertion: .modifier(active: Fall(height: badge * 2.4), identity: Fall(height: 0)),
+                            removal: .identity))
                 }
             }
+            // The row keeps its height before the first medal arrives.
+            .frame(minHeight: badge)
             VStack(alignment: .leading, spacing: 2) {
                 Kicker(text: "new achievement").foregroundStyle(Theme.accentDeep)
                 Text("\(current.title) — \(current.detail)")
@@ -275,14 +279,14 @@ struct AchievementReveal: View {
     private func run() async {
         // After the card's own entrance, so the two do not compete.
         try? await Task.sleep(for: .seconds(0.9))
-        withAnimation(.easeOut(duration: 0.3)) { visible = true }
         for (index, achievement) in achievements.enumerated() {
             if !reduceMotion {
                 onDrop(achievement)
                 if achievement == .nightmare { try? await Task.sleep(for: .seconds(0.45)) }
             }
             withAnimation(reduceMotion ? .easeOut(duration: 0.3) : .spring(response: 0.42, dampingFraction: 0.6)) {
-                _ = arrived.insert(index)
+                visible = true
+                arrived = index + 1
             }
             try? await Task.sleep(for: .seconds(0.28))
             withAnimation(.snappy) { landed = index + 1 }
@@ -295,6 +299,18 @@ struct AchievementReveal: View {
             try? await Task.sleep(for: .seconds(1.4))
             bursts[index] = nil
         }
+    }
+}
+
+/// A medal on its way down: above its place, larger, and not yet visible.
+private struct Fall: ViewModifier {
+    let height: CGFloat
+
+    func body(content: Content) -> some View {
+        content
+            .scaleEffect(height == 0 ? 1 : 1.9)
+            .offset(y: -height)
+            .opacity(height == 0 ? 1 : 0)
     }
 }
 
