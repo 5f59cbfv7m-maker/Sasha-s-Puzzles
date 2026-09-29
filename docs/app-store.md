@@ -17,7 +17,7 @@
 
 **Проект (уже сделано в репозитории)**
 - [x] Bundle ID `com.kirillrychkov.SashasPuzzle`, автоматическая подпись,
-      команда `QU2NF6T447`.
+      команда `J656PYWTCP`.
 - [x] Иконка 1024×1024 без альфа-канала в `Assets.xcassets/AppIcon` (даже
       полностью непрозрачный PNG с альфа-каналом App Store Connect отклоняет
       ошибкой ITMS-90717).

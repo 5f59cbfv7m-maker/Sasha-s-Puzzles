@@ -287,7 +287,8 @@ GitHub repository is public.
 ## Device installs
 
 iOS builds carry the iCloud and Game Center entitlements, so installing on a
-device needs the team (`QU2NF6T447`) in Xcode → Settings → Accounts; a free
+device needs the team (`J656PYWTCP`, Peter Sarapkin — the team that signed
+1.0 in the App Store) in Xcode → Settings → Accounts; a free
 Apple ID cannot sign those capabilities. The Mac Debug build still runs ad hoc.
 
 Free Apple ID: builds expire after **7 days**, at most 10 App IDs can be created
