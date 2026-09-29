@@ -68,6 +68,11 @@ struct RootView: View {
             // the size class would otherwise resize the sheet, which changes
             // the size class, which re-lays out the content — forever.
             .presentationSizing(.page)
+            // Handed over explicitly: the iPad build running on a Mac hosts
+            // the sheet without the presenter's environment, and 1.0 crashed
+            // there on the first onboarding frame ("No Observable object").
+            .environment(model)
+            .environment(model.settings)
         }
         .preferredColorScheme(model.settings.appearance.colorScheme)
         .onChange(of: music, initial: true) { Feedback.shared.setMusic(music, settings: model.settings) }
