@@ -4,7 +4,7 @@ import Observation
 /// One finished game. Everything the profile shows — totals, best times, the
 /// daily streak, achievements, the weekly chart — is derived from this list,
 /// so there is exactly one thing to persist and nothing to keep in sync.
-nonisolated struct SolvedRecord: Codable, Sendable, Identifiable {
+nonisolated struct SolvedRecord: Codable, Sendable, Identifiable, Equatable {
     var id = UUID().uuidString
     var itemID: String
     var category: ArtCategory
@@ -15,22 +15,103 @@ nonisolated struct SolvedRecord: Codable, Sendable, Identifiable {
     var isUserPhoto: Bool
 }
 
+/// The history as it is stored, locally and in iCloud.
+nonisolated struct StatsArchive: Codable, Sendable, Equatable {
+    var records: [SolvedRecord] = []
+    /// The latest "Reset statistics" on any device. Games finished before it
+    /// are gone everywhere, so a device that was offline during the reset
+    /// cannot bring them back.
+    var resetAt: Date?
+
+    /// Records are only ever added, so merging is a union by id — minus
+    /// whatever the newest reset wiped.
+    func merged(with other: StatsArchive) -> StatsArchive {
+        let reset = [resetAt, other.resetAt].compactMap(\.self).max()
+        var seen = Set<String>()
+        let records = (records + other.records)
+            .filter { record in reset.map { record.date > $0 } ?? true }
+            .filter { seen.insert($0.id).inserted }
+            .sorted { $0.date < $1.date }
+        return StatsArchive(records: records, resetAt: reset)
+    }
+}
+
+/// Where the history is mirrored beyond this device: iCloud in the app, an
+/// in-memory stand-in in tests, nothing in stage runs and ad-hoc builds.
+@MainActor
+protocol RecordMirror: AnyObject {
+    func load() -> StatsArchive?
+    func save(_ archive: StatsArchive)
+    /// Set by `PlayerStats`; called when another device changed the mirror.
+    var onExternalChange: (() -> Void)? { get set }
+}
+
 /// What the completion screen reports about the game just finished.
 struct CompletionSummary: Equatable {
     var previousBest: TimeInterval?
     var newAchievements: [Achievement]
 }
 
-/// The player's history, mirrored to one JSON file in the app container.
+/// The player's history, kept in one JSON file in the app container and
+/// merged with every other device on the same Apple Account through the mirror.
 @Observable
 @MainActor
 final class PlayerStats {
     private(set) var records: [SolvedRecord] = []
+    @ObservationIgnored private var resetAt: Date?
     @ObservationIgnored private let url: URL
+    @ObservationIgnored private let mirror: RecordMirror?
+    /// Fired whenever records arrive from another device.
+    @ObservationIgnored var onExternalChange: (() -> Void)?
 
-    init(directory: URL = PhotoLibraryStore.containerDirectory) {
+    init(directory: URL = PhotoLibraryStore.containerDirectory, mirror: RecordMirror? = nil) {
         url = directory.appending(path: "stats.json")
-        records = (try? JSONDecoder().decode([SolvedRecord].self, from: Data(contentsOf: url))) ?? []
+        self.mirror = mirror
+        apply(Self.read(url))
+        mirror?.onExternalChange = { [weak self] in self?.pull() }
+        pull()
+    }
+
+    private var archive: StatsArchive { StatsArchive(records: records, resetAt: resetAt) }
+
+    private func apply(_ archive: StatsArchive) {
+        if records != archive.records { records = archive.records }
+        resetAt = archive.resetAt
+    }
+
+    /// Reads both layouts: the archive, and the bare record list of 1.0.
+    private static func read(_ url: URL) -> StatsArchive {
+        guard let data = try? Data(contentsOf: url) else { return StatsArchive() }
+        if let archive = try? JSONDecoder().decode(StatsArchive.self, from: data) { return archive }
+        return StatsArchive(records: (try? JSONDecoder().decode([SolvedRecord].self, from: data)) ?? [])
+    }
+
+    /// Takes in what other devices added; hands back what this one has that they lack.
+    private func pull() {
+        guard let mirror else { return }
+        guard let remote = mirror.load() else {
+            if archive != StatsArchive() { mirror.save(archive) }
+            return
+        }
+        let merged = archive.merged(with: remote)
+        if merged != archive {
+            apply(merged)
+            write()
+            onExternalChange?()
+        }
+        if merged != remote { mirror.save(merged) }
+    }
+
+    /// Writes locally, then publishes — merged with the mirror first, because
+    /// saving to it replaces whatever another device put there meanwhile.
+    private func persist() {
+        if let remote = mirror?.load() { apply(archive.merged(with: remote)) }
+        write()
+        mirror?.save(archive)
+    }
+
+    private func write() {
+        try? JSONEncoder().encode(archive).write(to: url, options: .atomic)
     }
 
     @discardableResult
@@ -46,14 +127,16 @@ final class PlayerStats {
         let before = Achievement.allCases.filter { $0.isUnlocked(in: self) }
         let previousBest = bestTime(for: solved.itemID)
         records.append(solved)
-        try? JSONEncoder().encode(records).write(to: url, options: .atomic)
+        persist()
         let new = Achievement.allCases.filter { $0.isUnlocked(in: self) && !before.contains($0) }
         return CompletionSummary(previousBest: previousBest, newAchievements: new)
     }
 
+    /// Clears the history here and on every other device.
     func reset() {
         records = []
-        try? FileManager.default.removeItem(at: url)
+        resetAt = .now
+        persist()
     }
 
     // MARK: - Derived
@@ -84,6 +167,26 @@ final class PlayerStats {
     }
 
     var dailySolvedToday: Bool { dailyDays.contains(Calendar.current.startOfDay(for: .now)) }
+
+    /// Today's best time on the daily puzzle, if it has been solved.
+    var dailyBestToday: TimeInterval? {
+        let calendar = Calendar.current
+        return records.filter { isDaily($0) && calendar.isDateInToday($0.date) }.map(\.elapsed).min()
+    }
+
+    /// The longest run of consecutive daily puzzles ever, not just the current one.
+    var longestStreak: Int {
+        let calendar = Calendar.current
+        var best = 0, run = 0
+        var previous: Date?
+        for day in dailyDays.sorted() {
+            let follows = previous.flatMap { calendar.date(byAdding: .day, value: 1, to: $0) } == day
+            run = follows ? run + 1 : 1
+            best = max(best, run)
+            previous = day
+        }
+        return best
+    }
 
     /// Consecutive daily puzzles ending today or, if today's is still open, yesterday.
     var streak: Int {

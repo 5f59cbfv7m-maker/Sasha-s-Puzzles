@@ -14,6 +14,7 @@ struct ProfileView: View {
             VStack(alignment: .leading, spacing: 24) {
                 header
                 tiles
+                friends
                 chart
                 achievements
             }
@@ -101,6 +102,70 @@ struct ProfileView: View {
         .padding(EdgeInsets(top: 18, leading: 14, bottom: 18, trailing: 14))
         .background(tinted ? Theme.sageTint : Theme.card,
                     in: RoundedRectangle(cornerRadius: 22, style: .continuous))
+    }
+
+    /// Friends' leaderboards in Game Center. Hidden in builds that are not
+    /// signed for it (ad-hoc Mac builds, stage runs).
+    @ViewBuilder
+    private var friends: some View {
+        let gameCenter = model.gameCenter
+        if gameCenter.isAvailable {
+            VStack(alignment: .leading, spacing: 12) {
+                HStack(alignment: .firstTextBaseline, spacing: 10) {
+                    Text("With friends").font(Theme.display(19))
+                    Text(verbatim: "Game Center").font(Theme.body(13)).foregroundStyle(Theme.faint)
+                    Spacer(minLength: 0)
+                    if gameCenter.isSignedIn {
+                        Button { afterDismiss { gameCenter.showDashboard() } } label: {
+                            Text("All").font(Theme.body(14, .bold)).foregroundStyle(Theme.accentDeep)
+                        }
+                        .buttonStyle(.plain)
+                    }
+                }
+                if gameCenter.isSignedIn {
+                    LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 12), count: isCompact ? 1 : 3),
+                              spacing: 12) {
+                        ForEach(GameCenter.Board.allCases) { board in
+                            Button { afterDismiss { gameCenter.show(board) } } label: { boardRow(board) }
+                                .buttonStyle(PressableStyle())
+                        }
+                    }
+                } else if gameCenter.needsSignIn {
+                    PillButton(title: "Sign in to Game Center", symbol: "person.2.fill", style: .sage, size: 15) {
+                        gameCenter.presentSignIn()
+                    }
+                } else {
+                    Text("Sign in to Game Center in the system settings to compare results with friends.")
+                        .font(Theme.body(14)).foregroundStyle(Theme.muted)
+                }
+            }
+        }
+    }
+
+    private func boardRow(_ board: GameCenter.Board) -> some View {
+        HStack(spacing: 12) {
+            Image(systemName: board.symbol)
+                .font(.system(size: 17, weight: .bold))
+                .foregroundStyle(Theme.onAccent)
+                .frame(width: 40, height: 40)
+                .background(Theme.accent, in: Circle())
+            Text(board.title).font(Theme.body(15, .bold)).lineLimit(2).multilineTextAlignment(.leading)
+            Spacer(minLength: 0)
+            Image(systemName: "chevron.right").font(.system(size: 13, weight: .bold)).foregroundStyle(Theme.faint)
+        }
+        .padding(EdgeInsets(top: 12, leading: 14, bottom: 12, trailing: 14))
+        .background(Theme.card, in: RoundedRectangle(cornerRadius: 20, style: .continuous))
+        .contentShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
+    }
+
+    /// Game Center presents from the main window, which cannot while this
+    /// sheet covers it — close the sheet, then open Game Center.
+    private func afterDismiss(_ action: @escaping @MainActor () -> Void) {
+        dismiss()
+        Task {
+            try? await Task.sleep(for: .milliseconds(450))
+            action()
+        }
     }
 
     /// Twelve bars, one per week; the busiest week takes the accent.

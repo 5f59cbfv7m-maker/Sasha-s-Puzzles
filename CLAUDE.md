@@ -12,7 +12,7 @@ xcodebuild -project JigsawPuzzle.xcodeproj -scheme JigsawPuzzle \
 ```
 
 Swap the destination for `platform=iOS Simulator,name=iPhone 17 Pro` or
-`name=iPad Pro 13-inch (M5)`. **68 tests in 8 suites must pass** before any change
+`name=iPad Pro 13-inch (M5)`. **71 tests in 8 suites must pass** before any change
 is called done. Grep the output for `^✔ Test run` — xcodebuild buries it in noise.
 
 `./Scripts/install-mac.sh [destination]` builds Release and drops the `.app`
@@ -32,6 +32,8 @@ mismatch — it is deliberate.
 | `Sources/Game/` | `GameSession` plus the playing screen |
 | `Sources/Library/` | Image pipeline, caches, photo import, home screen |
 | `Sources/Persistence/PlayerStats.swift` | Solved-game records; streak, best times, achievements and the weekly chart are all derived from them |
+| `Sources/Persistence/CloudRecordMirror.swift` | The same records in iCloud key-value storage, merged across the player's devices |
+| `Sources/App/GameCenter.swift` | Friends' leaderboards and the achievement wall in Game Center, reported from `PlayerStats` |
 | `Sources/Support/Theme.swift` | Design tokens (colours, type), shared controls (`PillButton`, `RoundIconButton`, `PillSegments`), the `PuzzleMark` logo |
 
 `Engine/` knows nothing about SwiftUI. Keep it that way — that is what
@@ -159,6 +161,30 @@ taller than the screen, and switch to a denser layout on a compact vertical
 size class — before that, "Play again" and "Library" were below the screen.
 Check with `--stage completed --landscape` on the smallest iPhone.
 
+**iCloud and Game Center only exist in team-signed builds.** The entitlements
+are split: `Config/JigsawPuzzle.entitlements` (sandbox only) signs the Mac
+Debug build and `install-mac.sh`, both ad hoc; `JigsawPuzzle-Store.entitlements`
+signs the Mac Release build and `JigsawPuzzle-iOS.entitlements` every iOS
+build. macOS kills an ad-hoc app that claims iCloud or Game Center, so never
+put those keys in the plain file. `CloudRecordMirror.isAvailable` reads the
+entitlement at run time (and is false in any stage run, so `--clear-saves`
+cannot wipe the family's history on every device); `ProfileView` hides the
+friends section when it is false.
+
+**Synced stats merge, they never overwrite.** Records are only ever added,
+so `StatsArchive.merged` is a union by id; a reset is a timestamp that drops
+every older record on every device. `PlayerStats.persist` merges with iCloud
+before saving, because a key-value save replaces what another device wrote.
+The 1.0 file (a bare `[SolvedRecord]`) still loads.
+
+**Game Center identifiers are forever.** `GameCenter.Board` raw values and
+`Achievement.gameCenterID` must match App Store Connect → Game Center, and a
+leaderboard or achievement that has shipped can never be deleted or renamed.
+`daily_time` is a recurring board (1 day, from 00:00 GMT+5) scored in
+seconds, lower first; the other two are classic, higher first. Achievement
+art is `docs/gamecenter/` (made by `Scripts/make-achievement-badges.swift`,
+no SF Symbols — their licence forbids that use).
+
 **Measured frames go stale across a rotation.** `onGeometryChange` reading
 `frame(in: .named("game"))` fires once with the final landscape frame and then
 again with a bogus frame from the rotation animation — and never again. The
@@ -257,6 +283,10 @@ Never publish a screenshot containing the user's own photos or saved games; the
 GitHub repository is public.
 
 ## Device installs
+
+iOS builds carry the iCloud and Game Center entitlements, so installing on a
+device needs the team (`QU2NF6T447`) in Xcode → Settings → Accounts; a free
+Apple ID cannot sign those capabilities. The Mac Debug build still runs ad hoc.
 
 Free Apple ID: builds expire after **7 days**, at most 10 App IDs can be created
 per 7 days (and they cannot be deleted — renaming the bundle burns them fast),

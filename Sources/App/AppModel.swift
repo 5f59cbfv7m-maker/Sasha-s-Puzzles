@@ -18,7 +18,9 @@ final class AppModel {
     let settings = AppSettings()
     #endif
     let library = PhotoLibraryStore()
-    let stats = PlayerStats()
+    /// Solved games, merged across the player's devices through iCloud.
+    let stats: PlayerStats
+    let gameCenter: GameCenter
     /// Shared so the menu bar can drive zoom and fit without reaching into views.
     let boardController = BoardInputController()
 
@@ -46,7 +48,16 @@ final class AppModel {
 
     @ObservationIgnored private let saveStore = SaveStore()
 
-    init() { refreshSaves() }
+    init() {
+        // iCloud and Game Center come as a pair: both need a build signed by
+        // the team, and neither may run in a stage sandbox.
+        let signed = CloudRecordMirror.isAvailable
+        stats = PlayerStats(mirror: signed ? CloudRecordMirror() : nil)
+        gameCenter = GameCenter(isAvailable: signed)
+        refreshSaves()
+        stats.onExternalChange = { [weak self] in self?.gameCenter.report() }
+        gameCenter.start(with: stats)
+    }
 
     var resumable: [GameSnapshot] { savedGames.filter { !$0.isComplete } }
 
@@ -85,6 +96,7 @@ final class AppModel {
         session?.onComplete = { [weak self] finished in
             guard let self else { return }
             lastCompletion = stats.record(finished)
+            gameCenter.report()
         }
     }
 
