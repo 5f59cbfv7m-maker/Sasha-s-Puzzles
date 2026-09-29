@@ -24,6 +24,8 @@ private struct FittedCard<Content: View>: View {
             }
             .scrollBounceBehavior(.basedOnSize)
             .scrollIndicators(.hidden)
+            // Falling medals and their bursts reach past the card.
+            .scrollClipDisabled()
         }
     }
 }
@@ -158,6 +160,9 @@ struct CompletionOverlay: View {
     private let compact = false
     #endif
     @State private var appeared = false
+    /// The nightmare medal falls in the dark and lands with a flash.
+    @State private var night = 0.0
+    @State private var flash = 0.0
 
     private var pace: String {
         let minutes = max(session.elapsed, 60) / 60
@@ -205,24 +210,11 @@ struct CompletionOverlay: View {
                     }
                     .padding(.top, compact ? 16 : 26)
 
-                    if let achievement = model.lastCompletion?.newAchievements.first {
-                        HStack(spacing: 14) {
-                            Image(systemName: achievement.symbol)
-                                .font(.system(size: 20, weight: .bold))
-                                .foregroundStyle(Theme.onAccent)
-                                .frame(width: compact ? 36 : 48, height: compact ? 36 : 48)
-                                .background(Theme.accent, in: Circle())
-                            VStack(alignment: .leading, spacing: 2) {
-                                Kicker(text: "new achievement").foregroundStyle(Theme.accentDeep)
-                                Text("\(achievement.title) — \(achievement.detail)")
-                                    .font(Theme.body(17, .bold)).lineLimit(2)
-                            }
-                            Spacer(minLength: 0)
-                        }
-                        .padding(compact ? EdgeInsets(top: 8, leading: 12, bottom: 8, trailing: 12)
-                                         : EdgeInsets(top: 14, leading: 16, bottom: 14, trailing: 16))
-                        .background(Theme.surface, in: RoundedRectangle(cornerRadius: 20, style: .continuous))
-                        .padding(.top, compact ? 12 : 18)
+                    if let news = model.lastCompletion?.newAchievements, !news.isEmpty {
+                        AchievementReveal(achievements: news, compact: compact,
+                                          onDrop: { if $0 == .nightmare { withAnimation(.easeIn(duration: 0.4)) { night = 0.6 } } },
+                                          onLand: { if $0 == .nightmare { lightning() } })
+                            .padding(.top, compact ? 12 : 18)
                     }
 
                     HStack(spacing: 12) {
@@ -240,10 +232,18 @@ struct CompletionOverlay: View {
                 .opacity(appeared ? 1 : 0)
                 .padding(compact ? 12 : 20)
             }
+            Color.black.opacity(night).ignoresSafeArea().allowsHitTesting(false)
+            Color.white.opacity(flash).ignoresSafeArea().allowsHitTesting(false)
         }
         .onAppear {
             withAnimation(.spring(response: 0.7, dampingFraction: 0.6)) { appeared = true }
         }
+    }
+
+    private func lightning() {
+        night = 0
+        flash = 0.75
+        withAnimation(.easeOut(duration: 0.8)) { flash = 0 }
     }
 
     private var checkmark: some View {

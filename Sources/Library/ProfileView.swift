@@ -22,6 +22,8 @@ struct ProfileView: View {
         }
         .background(Theme.bg)
         .foregroundStyle(Theme.text)
+        // Looked at: the "New" marks stay for this visit and go after it.
+        .onDisappear { model.markAchievementsSeen() }
         #if os(macOS)
         .frame(minWidth: 640, minHeight: 720)
         #endif
@@ -204,6 +206,7 @@ struct ProfileView: View {
 
     private var achievements: some View {
         let unlocked = Achievement.allCases.filter { $0.isUnlocked(in: stats) }
+        let unseen = model.unseenAchievements
         return VStack(alignment: .leading, spacing: 12) {
             HStack(alignment: .firstTextBaseline, spacing: 10) {
                 Text("Achievements").font(Theme.display(19))
@@ -213,7 +216,8 @@ struct ProfileView: View {
             LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 12), count: isCompact ? 1 : 2),
                       spacing: 12) {
                 ForEach(Achievement.allCases) { achievement in
-                    AchievementRow(achievement: achievement, unlocked: unlocked.contains(achievement))
+                    AchievementRow(achievement: achievement, unlocked: unlocked.contains(achievement),
+                                   isNew: unseen.contains(achievement))
                 }
             }
         }
@@ -223,16 +227,15 @@ struct ProfileView: View {
 struct AchievementRow: View {
     let achievement: Achievement
     let unlocked: Bool
+    /// Earned since the player last opened the profile.
+    var isNew = false
 
     var body: some View {
         HStack(spacing: 14) {
             Group {
                 if unlocked {
-                    Image(systemName: achievement.symbol)
-                        .font(.system(size: 20, weight: .bold))
-                        .foregroundStyle(Theme.onAccent)
-                        .frame(width: 48, height: 48)
-                        .background(achievement.category == nil ? Theme.accent : Theme.sage, in: Circle())
+                    AchievementBadge(achievement: achievement)
+                        .modifier(NewMedalGlow(active: isNew))
                 } else {
                     Image(systemName: "lock")
                         .font(.system(size: 18, weight: .bold))
@@ -242,7 +245,17 @@ struct AchievementRow: View {
                 }
             }
             VStack(alignment: .leading, spacing: 2) {
-                Text(achievement.title).font(Theme.body(16, .bold)).lineLimit(1)
+                HStack(spacing: 8) {
+                    Text(achievement.title).font(Theme.body(16, .bold)).lineLimit(1)
+                    if isNew {
+                        Text("New")
+                            .font(Theme.body(11, .bold))
+                            .textCase(.uppercase)
+                            .foregroundStyle(Theme.onAccent)
+                            .padding(.horizontal, 8).padding(.vertical, 3)
+                            .background(Theme.accent, in: Capsule())
+                    }
+                }
                 Text(achievement.detail).font(Theme.body(13)).foregroundStyle(Theme.muted).lineLimit(2)
             }
             Spacer(minLength: 0)
@@ -250,6 +263,12 @@ struct AchievementRow: View {
         .padding(EdgeInsets(top: 14, leading: 16, bottom: 14, trailing: 16))
         .background(unlocked ? Theme.card : Theme.surface,
                     in: RoundedRectangle(cornerRadius: 20, style: .continuous))
+        .overlay {
+            if isNew {
+                RoundedRectangle(cornerRadius: 20, style: .continuous)
+                    .strokeBorder(Theme.accent.opacity(0.55), lineWidth: 1.5)
+            }
+        }
         .opacity(unlocked ? 1 : 0.6)
         .accessibilityElement(children: .combine)
     }

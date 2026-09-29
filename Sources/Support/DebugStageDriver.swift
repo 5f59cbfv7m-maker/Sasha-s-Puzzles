@@ -18,6 +18,14 @@ enum DebugStageDriver {
         return CommandLine.arguments[safe: index + 1]
     }
 
+    /// `--achievements sprinter,space` makes the next completion announce
+    /// these, to look at the reveal without earning them.
+    static var forcedAchievements: [Achievement]? {
+        guard let index = CommandLine.arguments.firstIndex(of: "--achievements"),
+              let list = CommandLine.arguments[safe: index + 1] else { return nil }
+        return list.split(separator: ",").compactMap { Achievement(rawValue: String($0)) }
+    }
+
     static func run(model: AppModel) async {
         guard let stage = requestedStage else { return }
         // Stats too: otherwise every staged solve adds one, and the tenth
@@ -47,6 +55,13 @@ enum DebugStageDriver {
 
         case "settings":
             model.showSettings = true
+
+        case "profile":
+            // Everything earned so far shows as new.
+            model.settings.hasSeenOnboarding = true
+            model.settings.seenAchievements = []
+            await settle(2.5)
+            model.showProfile = true
 
         case "setup":
             model.openSetup(for: picture)

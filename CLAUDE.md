@@ -33,6 +33,7 @@ mismatch — it is deliberate.
 | `Sources/Library/` | Image pipeline, caches, photo import, home screen |
 | `Sources/Persistence/PlayerStats.swift` | Solved-game records; streak, best times, achievements and the weekly chart are all derived from them |
 | `Sources/Persistence/CloudRecordMirror.swift` | The same records in iCloud key-value storage, merged across the player's devices |
+| `Sources/Game/AchievementCelebration.swift` | Achievement medals (number, stopwatch, motif or category photo) and the completion card's reveal: drop, piece burst, chime, per-medal flourish; the profile's "New" glow |
 | `Sources/App/GameCenter.swift` | Friends' leaderboards and the achievement wall in Game Center, reported from `PlayerStats` |
 | `Sources/Support/Theme.swift` | Design tokens (colours, type), shared controls (`PillButton`, `RoundIconButton`, `PillSegments`), the `PuzzleMark` logo |
 
@@ -261,8 +262,9 @@ There is no way to read back a live SwiftUI window — `cacheDisplay` and
 
 - **`DebugStageDriver`** (debug builds only) drives the app into a named state at
   launch: `open -n "<app>" --args --stage huge --clear-saves`. Stages: `library`,
-  `dark`, `settings`, `setup`, `board`, `scattered`, `snapped`, `hint`,
-  `completed`, `huge`, `hugeSolved`. `--tray-trailing` forces the landscape
+  `dark`, `settings`, `profile`, `setup`, `board`, `scattered`, `snapped`, `hint`,
+  `completed`, `huge`, `hugeSolved`. `--achievements sprinter,space` makes the
+  completion announce those, to look at the reveal without earning them. `--tray-trailing` forces the landscape
   layout on a portrait simulator (there is no `simctl` rotate); add
   `-AppleLanguages "(en)" -onboarding YES -appearance light` to pin the rest.
   On the Mac a stage run sizes the window to 1440×900 pt. Any stage run also

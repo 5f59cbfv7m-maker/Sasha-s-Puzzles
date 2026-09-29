@@ -151,6 +151,16 @@ struct HomeView: View {
             RoundIconButton(symbol: "folder.badge.plus", size: chip) { isImportingFiles = true }
                 .accessibilityLabel(Text("Import from Files"))
             RoundIconButton(symbol: "person.fill", size: chip) { model.showProfile = true }
+                .overlay(alignment: .topTrailing) {
+                    // An achievement not yet looked at in the profile.
+                    if !model.unseenAchievements.isEmpty {
+                        Circle().fill(Theme.accent)
+                            .frame(width: 11, height: 11)
+                            .overlay(Circle().strokeBorder(Theme.bg, lineWidth: 2))
+                            .offset(x: 1, y: -1)
+                            .transition(.scale)
+                    }
+                }
                 .accessibilityLabel(Text("Profile"))
             RoundIconButton(symbol: "gearshape", size: chip) { model.showSettings = true }
                 .accessibilityLabel(Text("Settings"))

@@ -51,6 +51,9 @@ final class AppSettings {
     /// Draw a thin outline around every piece; helps on busy pictures.
     var showPieceOutlines: Bool { didSet { write(showPieceOutlines, "outlines") } }
     var hasSeenOnboarding: Bool { didSet { write(hasSeenOnboarding, "onboarding") } }
+    /// Achievements already looked at in the profile. `nil` until the first
+    /// launch that knows about them, so an update does not flag old ones as new.
+    var seenAchievements: Set<String>? { didSet { write(Array(seenAchievements ?? []), "seenAchievements") } }
     /// Asked on the last onboarding step, editable in the profile. Capped so a
     /// pasted paragraph cannot push the profile header off screen.
     var playerName: String {
@@ -79,6 +82,7 @@ final class AppSettings {
         defaultAspect = PuzzleAspect(rawValue: defaults.string(forKey: "aspect") ?? "") ?? .original
         showPieceOutlines = defaults.object(forKey: "outlines") as? Bool ?? true
         hasSeenOnboarding = defaults.bool(forKey: "onboarding")
+        seenAchievements = (defaults.array(forKey: "seenAchievements") as? [String]).map(Set.init)
         playerName = defaults.string(forKey: "playerName") ?? ""
     }
 

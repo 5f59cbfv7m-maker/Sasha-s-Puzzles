@@ -57,6 +57,18 @@ final class AppModel {
         refreshSaves()
         stats.onExternalChange = { [weak self] in self?.gameCenter.report() }
         gameCenter.start(with: stats)
+        if settings.seenAchievements == nil { markAchievementsSeen() }
+    }
+
+    /// Unlocked achievements the player has not looked at in the profile —
+    /// earned here or on another device.
+    var unseenAchievements: [Achievement] {
+        let seen = settings.seenAchievements ?? []
+        return Achievement.allCases.filter { !seen.contains($0.rawValue) && $0.isUnlocked(in: stats) }
+    }
+
+    func markAchievementsSeen() {
+        settings.seenAchievements = Set(Achievement.allCases.filter { $0.isUnlocked(in: stats) }.map(\.rawValue))
     }
 
     var resumable: [GameSnapshot] { savedGames.filter { !$0.isComplete } }
@@ -96,6 +108,9 @@ final class AppModel {
         session?.onComplete = { [weak self] finished in
             guard let self else { return }
             lastCompletion = stats.record(finished)
+            #if DEBUG
+            if let forced = DebugStageDriver.forcedAchievements { lastCompletion?.newAchievements = forced }
+            #endif
             gameCenter.report()
         }
     }

@@ -264,8 +264,8 @@ nonisolated enum Achievement: String, CaseIterable, Identifiable, Sendable {
         case .fiftyPuzzles: "trophy.fill"
         case .sprinter: "clock.fill"
         case .nightmare: "moon.stars.fill"
-        case .weekStreak: "sparkles"
-        case .ownPhoto: "photo.fill"
+        case .weekStreak: "flame.fill"
+        case .ownPhoto: "heart.fill"
         default: category!.symbol
         }
     }

@@ -22,7 +22,7 @@ import UIKit
 final class Feedback {
     static let shared = Feedback()
 
-    enum Tone: String, CaseIterable { case snap, merge, complete }
+    enum Tone: String, CaseIterable { case snap, merge, complete, achievement }
     enum Music: String, CaseIterable { case library = "music-library", boardPiano = "music-piano", board = "music" }
 
     /// Music relative to the effects; the file's own level does the rest.
@@ -192,6 +192,19 @@ final class Feedback {
                         Partial(frequency: 522.25, amplitude: 0.11, start: 0.5, decay: 1.5),
                         Partial(frequency: 524.25, amplitude: 0.11, start: 0.5, decay: 1.5),
                         Partial(frequency: 130.81, amplitude: 0.08, start: 0.0, decay: 1.6)]
+        case .achievement:
+            // A quick bell run an octave above the chord, landing on a
+            // detuned pair that shimmers: the medal, not a second "solved".
+            duration = 1.8
+            attack = 0.005
+            partials = [Partial(frequency: 659.25, amplitude: 0.11, start: 0, decay: 6),
+                        Partial(frequency: 1_318.5, amplitude: 0.025, start: 0, decay: 10),
+                        Partial(frequency: 783.99, amplitude: 0.11, start: 0.07, decay: 6),
+                        Partial(frequency: 1_568, amplitude: 0.025, start: 0.07, decay: 10),
+                        Partial(frequency: 1_046.5, amplitude: 0.1, start: 0.14, decay: 3.5),
+                        Partial(frequency: 2_093, amplitude: 0.02, start: 0.14, decay: 8),
+                        Partial(frequency: 1_317.5, amplitude: 0.06, start: 0.24, decay: 2.4),
+                        Partial(frequency: 1_319.5, amplitude: 0.06, start: 0.24, decay: 2.4)]
         }
 
         let frames = AVAudioFrameCount(duration * format.sampleRate)
