@@ -12,7 +12,7 @@ xcodebuild -project JigsawPuzzle.xcodeproj -scheme JigsawPuzzle \
 ```
 
 Swap the destination for `platform=iOS Simulator,name=iPhone 17 Pro` or
-`name=iPad Pro 13-inch (M5)`. **66 tests in 8 suites must pass** before any change
+`name=iPad Pro 13-inch (M5)`. **67 tests in 8 suites must pass** before any change
 is called done. Grep the output for `^✔ Test run` — xcodebuild buries it in noise.
 
 `./Scripts/install-mac.sh [destination]` builds Release and drops the `.app`
@@ -146,6 +146,18 @@ by `TrayGhost`. Same idea for texture re-cuts: `PieceTextureStore.rebuild`
 on a live board stages the new textures and swaps them in once, and skips
 zoom-out entirely (the old, sharper textures downsample fine) — resetting
 `progress` there put the full-screen `LoadingOverlay` over every zoom.
+
+**Grabbing goes by the cell, not only the outline.** `GameSession.piece(at:)`
+first tests exact outlines; if that finds nothing movable it takes the topmost
+loose piece whose square cell (plus 12 % of a side) contains the point. A
+piece with four blanks is mostly holes, and outline-only hit testing made it
+nearly impossible to pick up with a finger. Locked pieces never get the slack.
+
+**Overlay cards must fit an iPhone in landscape** (under 400pt tall). The
+pause and completion cards sit in `FittedCard`, which scrolls when the card is
+taller than the screen, and switch to a denser layout on a compact vertical
+size class — before that, "Play again" and "Library" were below the screen.
+Check with `--stage completed --landscape` on the smallest iPhone.
 
 **Measured frames go stale across a rotation.** `onGeometryChange` reading
 `frame(in: .named("game"))` fires once with the final landscape frame and then

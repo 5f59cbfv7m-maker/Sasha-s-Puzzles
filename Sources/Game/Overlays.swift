@@ -11,6 +11,23 @@ private struct OverlayBackdrop: View {
     }
 }
 
+/// Centres an overlay card, and scrolls it when the screen is shorter than
+/// the card: an iPhone in landscape has well under 400pt of height, and the
+/// buttons at the bottom of the card used to sit out of reach.
+private struct FittedCard<Content: View>: View {
+    @ViewBuilder var content: Content
+
+    var body: some View {
+        GeometryReader { proxy in
+            ScrollView(.vertical) {
+                content.frame(maxWidth: .infinity, minHeight: proxy.size.height)
+            }
+            .scrollBounceBehavior(.basedOnSize)
+            .scrollIndicators(.hidden)
+        }
+    }
+}
+
 /// Shown while the picture is decoded and the pieces are cut.
 struct LoadingOverlay: View {
     let session: GameSession
@@ -88,36 +105,44 @@ struct ErrorOverlay: View {
 struct PauseOverlay: View {
     let session: GameSession
     @Environment(AppModel.self) private var model
+    #if os(iOS)
+    @Environment(\.verticalSizeClass) private var verticalSizeClass
+    private var compact: Bool { verticalSizeClass == .compact }
+    #else
+    private let compact = false
+    #endif
 
     var body: some View {
         ZStack {
             OverlayBackdrop()
-            VStack(spacing: 4) {
-                Image(systemName: "pause.fill")
-                    .font(.system(size: 32, weight: .bold))
-                    .foregroundStyle(Theme.onAccent)
-                    .frame(width: 84, height: 84)
-                    .background(Theme.accent, in: Circle())
-                Text("Break").font(Theme.display(30)).padding(.top, 16)
-                Text("The table is saved — come back whenever you like")
-                    .font(Theme.body(15))
-                    .foregroundStyle(Theme.muted)
-                    .multilineTextAlignment(.center)
-                Text(TimeFormatting.clock(session.elapsed))
-                    .font(Theme.display(44).monospacedDigit())
-                    .padding(.top, 14)
-                HStack(spacing: 10) {
-                    PillButton(title: "Resume", symbol: "play.fill", expand: true) { session.resume() }
-                        .keyboardShortcut(.space, modifiers: [])
-                    PillButton(title: "Library", style: .secondary, size: 17) { model.showLibrary() }
+            FittedCard {
+                VStack(spacing: 4) {
+                    Image(systemName: "pause.fill")
+                        .font(.system(size: 32, weight: .bold))
+                        .foregroundStyle(Theme.onAccent)
+                        .frame(width: compact ? 60 : 84, height: compact ? 60 : 84)
+                        .background(Theme.accent, in: Circle())
+                    Text("Break").font(Theme.display(30)).padding(.top, compact ? 10 : 16)
+                    Text("The table is saved — come back whenever you like")
+                        .font(Theme.body(15))
+                        .foregroundStyle(Theme.muted)
+                        .multilineTextAlignment(.center)
+                    Text(TimeFormatting.clock(session.elapsed))
+                        .font(Theme.display(compact ? 34 : 44).monospacedDigit())
+                        .padding(.top, compact ? 8 : 14)
+                    HStack(spacing: 10) {
+                        PillButton(title: "Resume", symbol: "play.fill", expand: true) { session.resume() }
+                            .keyboardShortcut(.space, modifiers: [])
+                        PillButton(title: "Library", style: .secondary, size: 17) { model.showLibrary() }
+                    }
+                    .padding(.top, compact ? 16 : 24)
                 }
-                .padding(.top, 24)
+                .padding(compact ? 24 : 40)
+                .frame(maxWidth: 420)
+                .background(Theme.card, in: RoundedRectangle(cornerRadius: Theme.radiusPanel, style: .continuous))
+                .shadow(color: .black.opacity(0.3), radius: 16, y: 10)
+                .padding(20)
             }
-            .padding(40)
-            .frame(maxWidth: 420)
-            .background(Theme.card, in: RoundedRectangle(cornerRadius: Theme.radiusPanel, style: .continuous))
-            .shadow(color: .black.opacity(0.3), radius: 16, y: 10)
-            .padding(20)
         }
         .transition(.opacity)
     }
@@ -126,6 +151,12 @@ struct PauseOverlay: View {
 struct CompletionOverlay: View {
     let session: GameSession
     @Environment(AppModel.self) private var model
+    #if os(iOS)
+    @Environment(\.verticalSizeClass) private var verticalSizeClass
+    private var compact: Bool { verticalSizeClass == .compact }
+    #else
+    private let compact = false
+    #endif
     @State private var appeared = false
 
     private var pace: String {
@@ -148,71 +179,92 @@ struct CompletionOverlay: View {
             OverlayBackdrop()
             Confetti().ignoresSafeArea()
 
-            VStack(spacing: 0) {
-                Image(systemName: "checkmark")
-                    .font(.system(size: 46, weight: .heavy))
-                    .foregroundStyle(Theme.onAccent)
-                    .frame(width: 104, height: 104)
-                    .background(Theme.accent, in: Circle())
-                    .shadow(color: Theme.accentDeep.opacity(0.36), radius: 16, y: 10)
-                    .scaleEffect(appeared ? 1 : 0.4)
-                    .rotationEffect(.degrees(appeared ? 0 : -24))
-
-                Text("Puzzle solved!")
-                    .font(Theme.display(38))
-                    .padding(.top, 22)
-                Text("\(session.item.title) · \(session.pieceCount) pieces")
-                    .font(Theme.body(17))
-                    .foregroundStyle(Theme.muted)
-                    .padding(.top, 6)
-
-                HStack(spacing: 12) {
-                    stat(TimeFormatting.clock(session.elapsed), "time")
-                    if let best = model.lastCompletion?.previousBest, best - session.elapsed >= 1 {
-                        stat("−" + TimeFormatting.short(best - session.elapsed), "faster than record", tinted: true)
-                    } else {
-                        stat("\(session.pieceCount)", "pieces")
-                    }
-                    stat(pace, "per minute")
-                }
-                .padding(.top, 26)
-
-                if let achievement = model.lastCompletion?.newAchievements.first {
-                    HStack(spacing: 14) {
-                        Image(systemName: achievement.symbol)
-                            .font(.system(size: 20, weight: .bold))
-                            .foregroundStyle(Theme.onAccent)
-                            .frame(width: 48, height: 48)
-                            .background(Theme.accent, in: Circle())
-                        VStack(alignment: .leading, spacing: 2) {
-                            Kicker(text: "new achievement").foregroundStyle(Theme.accentDeep)
-                            Text("\(achievement.title) — \(achievement.detail)")
-                                .font(Theme.body(17, .bold)).lineLimit(2)
+            FittedCard {
+                VStack(spacing: 0) {
+                    // On an iPhone in landscape the mark sits beside the title:
+                    // stacked, it alone pushed the buttons below the screen.
+                    if compact {
+                        HStack(spacing: 16) {
+                            checkmark
+                            VStack(alignment: .leading, spacing: 2) { title; subtitle }
                         }
-                        Spacer(minLength: 0)
+                    } else {
+                        checkmark
+                        title.padding(.top, 22)
+                        subtitle.padding(.top, 6)
                     }
-                    .padding(EdgeInsets(top: 14, leading: 16, bottom: 14, trailing: 16))
-                    .background(Theme.surface, in: RoundedRectangle(cornerRadius: 20, style: .continuous))
-                    .padding(.top, 18)
-                }
 
-                HStack(spacing: 12) {
-                    PillButton(title: "Play again", expand: true) { model.restartCurrent() }
-                    PillButton(title: "Library", style: .ghost, expand: true) { model.showLibrary() }
+                    HStack(spacing: 12) {
+                        stat(TimeFormatting.clock(session.elapsed), "time")
+                        if let best = model.lastCompletion?.previousBest, best - session.elapsed >= 1 {
+                            stat("−" + TimeFormatting.short(best - session.elapsed), "faster than record", tinted: true)
+                        } else {
+                            stat("\(session.pieceCount)", "pieces")
+                        }
+                        stat(pace, "per minute")
+                    }
+                    .padding(.top, compact ? 16 : 26)
+
+                    if let achievement = model.lastCompletion?.newAchievements.first {
+                        HStack(spacing: 14) {
+                            Image(systemName: achievement.symbol)
+                                .font(.system(size: 20, weight: .bold))
+                                .foregroundStyle(Theme.onAccent)
+                                .frame(width: compact ? 36 : 48, height: compact ? 36 : 48)
+                                .background(Theme.accent, in: Circle())
+                            VStack(alignment: .leading, spacing: 2) {
+                                Kicker(text: "new achievement").foregroundStyle(Theme.accentDeep)
+                                Text("\(achievement.title) — \(achievement.detail)")
+                                    .font(Theme.body(17, .bold)).lineLimit(2)
+                            }
+                            Spacer(minLength: 0)
+                        }
+                        .padding(compact ? EdgeInsets(top: 8, leading: 12, bottom: 8, trailing: 12)
+                                         : EdgeInsets(top: 14, leading: 16, bottom: 14, trailing: 16))
+                        .background(Theme.surface, in: RoundedRectangle(cornerRadius: 20, style: .continuous))
+                        .padding(.top, compact ? 12 : 18)
+                    }
+
+                    HStack(spacing: 12) {
+                        PillButton(title: "Play again", expand: true) { model.restartCurrent() }
+                        PillButton(title: "Library", style: .ghost, expand: true) { model.showLibrary() }
+                    }
+                    .padding(.top, compact ? 18 : 26)
                 }
-                .padding(.top, 26)
+                .padding(compact ? EdgeInsets(top: 24, leading: 28, bottom: 24, trailing: 28)
+                                 : EdgeInsets(top: 44, leading: 40, bottom: 40, trailing: 40))
+                .frame(maxWidth: 560)
+                .background(Theme.card, in: RoundedRectangle(cornerRadius: Theme.radiusPanel, style: .continuous))
+                .shadow(color: .black.opacity(0.28), radius: 16, y: 10)
+                .scaleEffect(appeared ? 1 : 0.9)
+                .opacity(appeared ? 1 : 0)
+                .padding(compact ? 12 : 20)
             }
-            .padding(EdgeInsets(top: 44, leading: 40, bottom: 40, trailing: 40))
-            .frame(maxWidth: 560)
-            .background(Theme.card, in: RoundedRectangle(cornerRadius: Theme.radiusPanel, style: .continuous))
-            .shadow(color: .black.opacity(0.28), radius: 16, y: 10)
-            .scaleEffect(appeared ? 1 : 0.9)
-            .opacity(appeared ? 1 : 0)
-            .padding(20)
         }
         .onAppear {
             withAnimation(.spring(response: 0.7, dampingFraction: 0.6)) { appeared = true }
         }
+    }
+
+    private var checkmark: some View {
+        Image(systemName: "checkmark")
+            .font(.system(size: compact ? 26 : 46, weight: .heavy))
+            .foregroundStyle(Theme.onAccent)
+            .frame(width: compact ? 56 : 104, height: compact ? 56 : 104)
+            .background(Theme.accent, in: Circle())
+            .shadow(color: Theme.accentDeep.opacity(0.36), radius: 16, y: 10)
+            .scaleEffect(appeared ? 1 : 0.4)
+            .rotationEffect(.degrees(appeared ? 0 : -24))
+    }
+
+    private var title: some View {
+        Text("Puzzle solved!").font(Theme.display(compact ? 28 : 38))
+    }
+
+    private var subtitle: some View {
+        Text("\(session.item.title) · \(session.pieceCount) pieces")
+            .font(Theme.body(compact ? 15 : 17))
+            .foregroundStyle(Theme.muted)
     }
 
     private func stat(_ value: String, _ title: LocalizedStringKey, tinted: Bool = false) -> some View {
@@ -225,7 +277,7 @@ struct CompletionOverlay: View {
         }
         .foregroundStyle(tinted ? Theme.onSageTint : Theme.text)
         .frame(maxWidth: .infinity)
-        .padding(.vertical, 16)
+        .padding(.vertical, compact ? 10 : 16)
         .padding(.horizontal, 8)
         .background(tinted ? Theme.sageTint : Theme.surface,
                     in: RoundedRectangle(cornerRadius: 20, style: .continuous))

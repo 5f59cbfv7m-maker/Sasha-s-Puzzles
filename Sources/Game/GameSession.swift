@@ -250,19 +250,38 @@ final class GameSession {
 
     // MARK: - Hit testing
 
-    /// Topmost piece under a board-space point, or `nil`.
+    /// Piece under a board-space point, or `nil`.
+    ///
+    /// The exact outline wins when it belongs to a loose piece. Otherwise a
+    /// loose piece is also caught by its square cell plus a finger's slack: a
+    /// piece with four blanks is mostly holes, and a tap into one of them used
+    /// to miss it (or grab the locked picture underneath, which cannot move).
     func piece(at point: CGPoint) -> Int32? {
-        for groupID in drawOrder.reversed() {
+        let order = drawOrder.reversed()
+        var exact: Int32?
+        outline: for groupID in order {
             guard let group = state.groups[groupID] else { continue }
             for piece in group.members {
-                let origin = state.solvedOrigin(of: piece) + group.translation
-                let local = point - origin
+                let local = point - (state.solvedOrigin(of: piece) + group.translation)
                 guard textures.localBounds.indices.contains(Int(piece)),
-                      textures.localBounds[Int(piece)].contains(local) else { continue }
-                if path(for: Int(piece)).contains(local) { return piece }
+                      textures.localBounds[Int(piece)].contains(local),
+                      path(for: Int(piece)).contains(local) else { continue }
+                exact = piece
+                break outline
             }
         }
-        return nil
+        if let exact, state.group(of: exact)?.isLocked == false { return exact }
+
+        let slack = state.cellSize.minimumSide * 0.12
+        let cell = CGRect(origin: .zero, size: state.cellSize).insetBy(dx: -slack, dy: -slack)
+        for groupID in order {
+            guard let group = state.groups[groupID], !group.isLocked else { continue }
+            for piece in group.members
+            where cell.contains(point - (state.solvedOrigin(of: piece) + group.translation)) {
+                return piece
+            }
+        }
+        return exact
     }
 
     // MARK: - Dragging

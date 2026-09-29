@@ -244,6 +244,29 @@ struct SessionTests {
         #expect(session.canUndo == undoDepth, "a refused request must not push an undo step")
     }
 
+    @Test("A loose piece is caught next to its outline, a locked one is not")
+    func looseHitTestIsForgiving() {
+        let session = makeSession()
+        session.startForTesting()
+        let cell = session.geometry.cellSize
+        // Piece 0 lies loose far from home; piece 1 is locked in place.
+        _ = session.placePieceFromTray(0, at: CGPoint(x: 900, y: 900), viewScale: 1, assist: .precise)
+        _ = session.placePieceFromTray(1, at: CGPoint(x: cell.width * 1.5, y: cell.height / 2),
+                                       viewScale: 1, assist: .standard)
+        #expect(!session.state.isLocked(0) && session.state.isLocked(1))
+
+        // Just above piece 0's flat top edge: outside the outline, inside the slack.
+        let origin = session.state.solvedOrigin(of: 0) + session.state.group(of: 0)!.translation
+        let nearTop = origin + CGPoint(x: cell.width / 2, y: -cell.height * 0.05)
+        #expect(session.piece(at: nearTop) == 0)
+        #expect(session.beginDrag(at: nearTop))
+        session.endDrag(viewScale: 1, assist: .precise)
+
+        // The same spot beside the locked piece stays empty table.
+        let lockedTop = session.state.solvedOrigin(of: 1) + CGPoint(x: cell.width / 2, y: -cell.height * 0.05)
+        #expect(session.piece(at: lockedTop) == nil)
+    }
+
     @Test("A hint points at a piece without solving anything")
     func hintDoesNotSolve() {
         let session = makeSession()
