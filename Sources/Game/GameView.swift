@@ -81,7 +81,6 @@ struct GameView: View {
 
     private var board: some View {
         BoardView(session: session, settings: settings, controller: controller)
-            .overlay(alignment: .bottomLeading) { statusBar.padding(isCompact ? 14 : 18) }
             .overlay(alignment: .bottomTrailing) { zoomControls.padding(isCompact ? 14 : 18) }
     }
 
@@ -108,33 +107,46 @@ struct GameView: View {
         }
     }
 
-    /// Clock and progress. `ViewThatFits` drops to a stacked form rather than
-    /// being clipped when the board is only a phone wide.
-    private var statusBar: some View {
-        ViewThatFits(in: .horizontal) {
-            HStack(spacing: 16) {
-                clockLabel
-                Theme.track.frame(width: 1, height: 18)
-                progressLabel
-                solveProgress
-            }
-            HStack(spacing: 12) {
-                clockLabel
-                Theme.track.frame(width: 1, height: 15)
-                progressLabel
+    /// Progress and clock, in the header so the board keeps its whole area.
+    /// A phone-wide header stacks them small; a tight wide one drops the bar
+    /// before it would squeeze the title.
+    private var statusChip: some View {
+        Group {
+            if isCompact {
+                VStack(alignment: .leading, spacing: 1) {
+                    clockLabel
+                    progressLabel
+                }
+                .font(Theme.body(12, .bold).monospacedDigit())
+                .padding(.horizontal, 10).padding(.vertical, 4)
+            } else {
+                ViewThatFits(in: .horizontal) {
+                    HStack(spacing: 10) {
+                        progressLabel
+                        solveProgress
+                        Theme.track.frame(width: 1, height: 16)
+                        clockLabel
+                    }
+                    HStack(spacing: 10) {
+                        progressLabel
+                        Theme.track.frame(width: 1, height: 16)
+                        clockLabel
+                    }
+                }
+                .font(Theme.body(15, .bold).monospacedDigit())
+                .padding(.horizontal, 14).padding(.vertical, 7)
             }
         }
-        .font(Theme.body(17, .bold).monospacedDigit())
-        .padding(.horizontal, 20)
-        .padding(.vertical, 12)
-        .background(Theme.card, in: Capsule())
-        .shadow(color: .black.opacity(0.16), radius: 6, y: 3)
+        .foregroundStyle(Theme.muted)
+        .background(Theme.chip, in: Capsule())
+        .fixedSize(horizontal: isCompact, vertical: false)
+        .layoutPriority(1)
     }
 
     private var clockLabel: some View {
-        HStack(spacing: 8) {
-            Image(systemName: "clock").font(.system(size: 15, weight: .bold)).foregroundStyle(Theme.accent)
-            Text(TimeFormatting.clock(session.elapsed))
+        HStack(spacing: isCompact ? 4 : 7) {
+            Image(systemName: "clock").font(.system(size: isCompact ? 10 : 13, weight: .bold)).foregroundStyle(Theme.accent)
+            Text(TimeFormatting.clock(session.elapsed)).foregroundStyle(Theme.text)
         }
         .accessibilityElement(children: .ignore)
         .accessibilityLabel(Text("Elapsed time"))
@@ -145,14 +157,14 @@ struct GameView: View {
     /// measure of progress than "taken out of the tray".
     private var solveProgress: some View {
         ProgressBar(value: session.completion)
-            .frame(width: 110)
+            .frame(width: 80)
             .accessibilityLabel(Text("Pieces placed"))
     }
 
     private var progressLabel: some View {
-        HStack(spacing: 8) {
-            Image(systemName: "puzzlepiece").font(.system(size: 15, weight: .bold)).foregroundStyle(Theme.sage)
-            Text("\(session.placedCount)/\(session.pieceCount)")
+        HStack(spacing: isCompact ? 4 : 7) {
+            Image(systemName: "puzzlepiece").font(.system(size: isCompact ? 10 : 13, weight: .bold)).foregroundStyle(Theme.sage)
+            Text("\(session.placedCount)/\(session.pieceCount)").foregroundStyle(Theme.text)
         }
         .accessibilityElement(children: .ignore)
         .accessibilityLabel(Text("Pieces placed"))
@@ -187,7 +199,7 @@ struct GameView: View {
 
     // MARK: - Header
 
-    /// Back, title, clock and the action chips. A phone-wide header keeps hint
+    /// Back, title, progress and clock, and the action chips. A phone-wide header keeps hint
     /// and pause on the surface and folds the rest into one menu.
     private var header: some View {
         HStack(spacing: isCompact ? 8 : 12) {
@@ -198,17 +210,7 @@ struct GameView: View {
                 .lineLimit(1)
                 .minimumScaleFactor(0.7)
             Spacer(minLength: 4)
-            if !isCompact {
-                HStack(spacing: 8) {
-                    Image(systemName: "clock").font(.system(size: 14, weight: .bold))
-                    Text(TimeFormatting.clock(session.elapsed))
-                }
-                .font(Theme.body(15, .bold).monospacedDigit())
-                .foregroundStyle(Theme.muted)
-                .padding(.horizontal, 14).padding(.vertical, 7)
-                .background(Theme.chip, in: Capsule())
-                .accessibilityHidden(true)
-            }
+            statusChip
             HStack(spacing: 6) {
                 RoundIconButton(symbol: "lightbulb", style: .sage, size: 42) { session.requestHint() }
                     .disabled(session.phase != .playing)
