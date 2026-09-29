@@ -93,7 +93,7 @@ struct GameView: View {
                                 ? CGSize(width: size.width - thickness, height: size.height)
                                 : CGSize(width: size.width, height: size.height - thickness))
         let drag = trayDrag
-        return TrayView(session: session, placement: placement, onScatter: placement == .trailing ? { session.scatterTray() } : nil) { piece, location in
+        return TrayView(session: session, placement: placement, onTrayAction: placement == .trailing ? { session.performTrayAction() } : nil) { piece, location in
             drag.piece = piece
             drag.location = location
         } onEnded: { piece, location in
@@ -233,9 +233,9 @@ struct GameView: View {
                 } else {
                     RoundIconButton(symbol: "photo", size: 42) { showOriginal = true }
                         .accessibilityLabel(Text("Show Original"))
-                    RoundIconButton(symbol: "shuffle", size: 42) { session.scatterTray() }
-                        .disabled(session.phase != .playing || session.state.trayOrder.isEmpty)
-                        .accessibilityLabel(Text("Scatter Pieces"))
+                    RoundIconButton(symbol: trayActionSymbol, size: 42) { session.performTrayAction() }
+                        .disabled(session.trayAction == nil)
+                        .accessibilityLabel(Text(trayActionTitle))
                     RoundIconButton(symbol: "arrow.uturn.backward", size: 42) { session.undo() }
                         .disabled(!session.canUndo)
                         .accessibilityLabel(Text("Undo"))
@@ -254,8 +254,17 @@ struct GameView: View {
     @ViewBuilder
     private var actionButtons: some View {
         Button { showOriginal = true } label: { Label("Show Original", systemImage: "photo") }
-        Button { session.scatterTray() } label: { Label("Scatter Pieces", systemImage: "shuffle") }
-            .disabled(session.phase != .playing || session.state.trayOrder.isEmpty)
+        Button { session.performTrayAction() } label: { Label(trayActionTitle, systemImage: trayActionSymbol) }
+            .disabled(session.trayAction == nil)
+    }
+
+    /// Scatter while the tray holds pieces, gather once it is empty.
+    private var trayActionTitle: LocalizedStringKey {
+        session.trayAction == .gather ? "Gather Pieces" : "Scatter Pieces"
+    }
+
+    private var trayActionSymbol: String {
+        session.trayAction == .gather ? "tray.and.arrow.down" : "shuffle"
     }
 
     @ViewBuilder

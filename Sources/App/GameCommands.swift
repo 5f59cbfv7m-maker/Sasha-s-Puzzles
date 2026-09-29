@@ -30,9 +30,11 @@ struct GameCommands: Commands {
             Button("Hint") { model.session?.requestHint() }
                 .keyboardShortcut("h", modifiers: [.command, .shift])
                 .disabled(!model.canPlay)
-            Button("Scatter Pieces") { model.session?.scatterTray() }
-                .keyboardShortcut("s", modifiers: [.command, .shift])
-                .disabled(model.session?.state.trayOrder.isEmpty != false)
+            Button { model.session?.performTrayAction() } label: {
+                model.session?.trayAction == .gather ? Text("Gather Pieces") : Text("Scatter Pieces")
+            }
+            .keyboardShortcut("s", modifiers: [.command, .shift])
+            .disabled(model.session?.trayAction == nil)
             Divider()
             Button("Restart This Puzzle") { model.restartCurrent() }
                 .disabled(!model.canPlay)

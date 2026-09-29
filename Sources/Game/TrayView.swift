@@ -7,8 +7,9 @@ import SwiftUI
 struct TrayView: View {
     let session: GameSession
     let placement: TrayPlacement
-    /// Footer action; `nil` hides the footer (the phone keeps it in the menu).
-    var onScatter: (() -> Void)?
+    /// Footer action — scatter, or gather once the tray is empty; `nil` hides
+    /// the footer (the phone keeps it in the menu).
+    var onTrayAction: (() -> Void)?
     let onChanged: (Int32, CGPoint) -> Void
     let onEnded: (Int32, CGPoint) -> Void
 
@@ -22,10 +23,11 @@ struct TrayView: View {
             } else {
                 pieceGrid
             }
-            if let onScatter, placement == .trailing {
+            if let onTrayAction, placement == .trailing {
                 Theme.hairline.frame(height: 1)
-                PillButton(title: "Scatter on the table", style: .secondary, size: 16, expand: true, action: onScatter)
-                    .disabled(session.phase != .playing || session.state.trayOrder.isEmpty)
+                PillButton(title: session.trayAction == .gather ? "Gather from the table" : "Scatter on the table",
+                           style: .secondary, size: 16, expand: true, action: onTrayAction)
+                    .disabled(session.trayAction == nil)
                     .padding(EdgeInsets(top: 14, leading: 20, bottom: 20, trailing: 20))
             }
         }

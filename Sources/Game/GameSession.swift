@@ -386,6 +386,33 @@ final class GameSession {
         scheduleAutosave()
     }
 
+    /// Sends every loose single piece on the table back to the tray.
+    func gatherLoosePieces() {
+        guard phase == .playing, state.hasLooseSingles else { return }
+        pushUndo()
+        state.gatherLooseSingles()
+        if let selectedPiece, state.group(of: selectedPiece) == nil { self.selectedPiece = nil }
+        scheduleAutosave()
+    }
+
+    enum TrayAction { case scatter, gather }
+
+    /// What the scatter button does now: empty the tray while it holds
+    /// pieces, then pull the loose ones back — one button, two presses.
+    var trayAction: TrayAction? {
+        guard phase == .playing else { return nil }
+        if !state.trayOrder.isEmpty { return .scatter }
+        return state.hasLooseSingles ? .gather : nil
+    }
+
+    func performTrayAction() {
+        switch trayAction {
+        case .scatter: scatterTray()
+        case .gather: gatherLoosePieces()
+        case nil: break
+        }
+    }
+
     // MARK: - Assistance
 
     /// Highlights where the selected (or a random unplaced) piece belongs.

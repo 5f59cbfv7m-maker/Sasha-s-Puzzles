@@ -240,6 +240,27 @@ struct GameplayTests {
         }
     }
 
+    @Test("Gathering returns loose singles, keeps clusters and locked pieces")
+    func gatherKeepsJoinedAndLocked() {
+        var state = makeState()
+        // Locked: piece 0 at home. Cluster: 6 and 7 joined away from home.
+        state.placeFromTray(0, translation: .zero)
+        state.placeFromTray(6, translation: CGPoint(x: 900, y: 900))
+        let pair = state.placeFromTray(7, translation: CGPoint(x: 903, y: 898))
+        #expect(state.settle(group: pair, tolerance: 20).didMerge)
+        // Loose singles: 3 and 12.
+        state.placeFromTray(3, translation: CGPoint(x: 300, y: 300))
+        state.placeFromTray(12, translation: CGPoint(x: -400, y: 50))
+        #expect(state.hasLooseSingles)
+
+        state.gatherLooseSingles()
+        #expect(!state.hasLooseSingles)
+        #expect(state.trayOrder.contains(3) && state.trayOrder.contains(12))
+        #expect(state.isLocked(0))
+        #expect(state.group(of: 6)?.members.sorted() == [6, 7], "a joined cluster stays on the table")
+        #expect(state.placedCount == 3)
+    }
+
     @Test("Structure revision tracks joins but not plain movement")
     func structureRevisionOnlyTracksStructure() {
         var state = makeState()

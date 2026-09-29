@@ -146,6 +146,26 @@ nonisolated struct PuzzleState: Sendable, Codable, Equatable {
         structureRevision += 1
     }
 
+    /// Single pieces on the table that are neither joined to a neighbour nor
+    /// locked in place, bottom first.
+    var looseSingles: [Int32] {
+        groups.values
+            .filter { $0.members.count == 1 && !$0.isLocked }
+            .sorted { $0.z < $1.z }
+            .map { $0.members[0] }
+    }
+
+    var hasLooseSingles: Bool {
+        groups.values.contains { $0.members.count == 1 && !$0.isLocked }
+    }
+
+    /// The undo of a scatter: every loose single goes back to the tray.
+    /// Joined clusters stay on the table — a join is always correct, and
+    /// breaking one up would throw the player's work away.
+    mutating func gatherLooseSingles() {
+        for piece in looseSingles { returnToTray(piece) }
+    }
+
     /// Empties the tray onto the table, scattering pieces inside `area`
     /// (board units) while avoiding the board itself where possible.
     mutating func scatterTray(in area: CGRect, avoiding board: CGRect, using rng: inout SplitMix64) {
