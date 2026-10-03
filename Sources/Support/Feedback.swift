@@ -22,14 +22,17 @@ import UIKit
 final class Feedback {
     static let shared = Feedback()
 
-    enum Tone: String, CaseIterable { case snap, merge, complete, achievement }
+    enum Tone: String, CaseIterable { case snap, merge, complete, achievement, streak }
     enum Music: String, CaseIterable { case library = "music-library", boardPiano = "music-piano", board = "music" }
 
     /// Music relative to the effects; the file's own level does the rest.
     static let musicVolume: Float = 0.35
 
-    /// Seconds for one track to fade into the other.
-    static let crossfade: TimeInterval = 2
+    /// The old track fades out first; the new one comes in a beat later and
+    /// slower, so going from the library to the table eases in rather than cuts.
+    static let fadeOut: TimeInterval = 3
+    static let fadeInDelay: TimeInterval = 1
+    static let fadeIn: TimeInterval = 5
 
     /// True when a music file ships, so Settings only offers what exists.
     static let hasMusic = Music.allCases.contains { soundURL($0.rawValue) != nil }
@@ -44,11 +47,16 @@ final class Feedback {
 
     private init() {}
 
-    func report(_ outcome: SettleOutcome?, settings: AppSettings) {
+    /// `streak` marks a snap that extends a run without misses
+    /// (`GameSession.isOnStreak`); it rings instead of the plain tap.
+    func report(_ outcome: SettleOutcome?, streak: Bool = false, settings: AppSettings) {
         guard let outcome, outcome.didSnap else { return }
         if outcome.didComplete {
             play(.complete, settings: settings)
             impact(.strong, settings: settings)
+        } else if streak {
+            play(.streak, settings: settings)
+            impact(.medium, settings: settings)
         } else if outcome.didMerge {
             play(.merge, settings: settings)
             impact(.medium, settings: settings)
@@ -84,10 +92,11 @@ final class Feedback {
 
     // MARK: - Audio
 
-    func play(_ tone: Tone, settings: AppSettings) {
+    func play(_ tone: Tone, volume: Float = 1, settings: AppSettings) {
         guard settings.soundEnabled else { return }
         prepareAudioIfNeeded()
         if let file = filePlayers[tone] {
+            file.volume = volume
             file.currentTime = 0
             file.play()
             return
@@ -105,10 +114,10 @@ final class Feedback {
         currentMusic = target
         prepareAudioIfNeeded()
         for (music, player) in tracks where music != target {
-            player.setVolume(0, fadeDuration: Self.crossfade)
+            player.setVolume(0, fadeDuration: Self.fadeOut)
         }
         Task {
-            try? await Task.sleep(for: .seconds(Self.crossfade))
+            try? await Task.sleep(for: .seconds(Self.fadeOut))
             for (music, player) in tracks where music != currentMusic { player.pause() }
         }
         guard let target else { return }
@@ -119,8 +128,14 @@ final class Feedback {
             tracks[target] = loop
         }
         guard let player = tracks[target] else { return }
-        if !player.isPlaying { player.play() }
-        player.setVolume(Self.musicVolume, fadeDuration: Self.crossfade)
+        // Nothing to fade out (first launch): no reason to wait.
+        let delay = tracks.values.contains { $0 !== player && $0.isPlaying } ? Self.fadeInDelay : 0
+        Task {
+            try? await Task.sleep(for: .seconds(delay))
+            guard currentMusic == target else { return }
+            if !player.isPlaying { player.play() }
+            player.setVolume(Self.musicVolume, fadeDuration: Self.fadeIn)
+        }
     }
 
     private static func soundURL(_ name: String) -> URL? {
@@ -192,6 +207,13 @@ final class Feedback {
                         Partial(frequency: 522.25, amplitude: 0.11, start: 0.5, decay: 1.5),
                         Partial(frequency: 524.25, amplitude: 0.11, start: 0.5, decay: 1.5),
                         Partial(frequency: 130.81, amplitude: 0.08, start: 0.0, decay: 1.6)]
+        case .streak:
+            // Three quick notes climbing: the run, not the finish.
+            duration = 0.8
+            attack = 0.005
+            partials = [Partial(frequency: 880, amplitude: 0.12, start: 0, decay: 9),
+                        Partial(frequency: 1_046.5, amplitude: 0.12, start: 0.065, decay: 9),
+                        Partial(frequency: 1_396.9, amplitude: 0.12, start: 0.13, decay: 5)]
         case .achievement:
             // A quick bell run an octave above the chord, landing on a
             // detuned pair that shimmers: the medal, not a second "solved".

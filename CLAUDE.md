@@ -12,7 +12,7 @@ xcodebuild -project JigsawPuzzle.xcodeproj -scheme JigsawPuzzle \
 ```
 
 Swap the destination for `platform=iOS Simulator,name=iPhone 17 Pro` or
-`name=iPad Pro 13-inch (M5)`. **71 tests in 8 suites must pass** before any change
+`name=iPad Pro 13-inch (M5)`. **77 tests in 8 suites must pass** before any change
 is called done. Grep the output for `^✔ Test run` — xcodebuild buries it in noise.
 
 `./Scripts/install-mac.sh [destination]` builds Release and drops the `.app`
@@ -171,6 +171,17 @@ put those keys in the plain file. `CloudRecordMirror.isAvailable` reads the
 entitlement at run time (and is false in any stage run, so `--clear-saves`
 cannot wipe the family's history on every device); `ProfileView` hides the
 friends section when it is false.
+
+**One iCloud key-value store, 1 MB in all, three tenants.** `stats.v1`
+(≤ 400 KB), `games.v1` (unfinished games on bundled pictures, lzfse JSON,
+≤ 560 KB, oldest dropped first) and `settings.*` (name, preferences and seen achievements as a union;
+onboarding stays per device). Shared games merge by
+newest `updatedAt`; a game finished or deleted anywhere becomes a dated
+tombstone in `SharedGames.gone`, so deleting must go through
+`AppModel.delete` / `deleteAllSaves`, never `SaveStore` directly. Settings
+take the cloud value at launch and push what only this device has;
+`AppSettings.reload` never writes, so a fresh install cannot push its
+defaults over the family's name.
 
 **Synced stats merge, they never overwrite.** Records are only ever added,
 so `StatsArchive.merged` is a union by id; a reset is a timestamp that drops

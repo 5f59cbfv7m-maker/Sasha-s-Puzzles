@@ -217,6 +217,7 @@ struct ProfileView: View {
                       spacing: 12) {
                 ForEach(Achievement.allCases) { achievement in
                     AchievementRow(achievement: achievement, unlocked: unlocked.contains(achievement),
+                                   progress: achievement.progress(in: stats),
                                    isNew: unseen.contains(achievement))
                 }
             }
@@ -227,6 +228,8 @@ struct ProfileView: View {
 struct AchievementRow: View {
     let achievement: Achievement
     let unlocked: Bool
+    /// Shown as a bar until the medal is earned.
+    var progress: (fraction: Double, label: String)?
     /// Earned since the player last opened the profile.
     var isNew = false
 
@@ -257,6 +260,16 @@ struct AchievementRow: View {
                     }
                 }
                 Text(achievement.detail).font(Theme.body(13)).foregroundStyle(Theme.muted).lineLimit(2)
+                if let progress, !unlocked {
+                    HStack(spacing: 8) {
+                        ProgressBar(value: progress.fraction, height: 6)
+                        Text(verbatim: progress.label)
+                            .font(Theme.body(12, .bold).monospacedDigit())
+                            .foregroundStyle(Theme.muted)
+                            .fixedSize()
+                    }
+                    .padding(.top, 6)
+                }
             }
             Spacer(minLength: 0)
         }
@@ -269,7 +282,7 @@ struct AchievementRow: View {
                     .strokeBorder(Theme.accent.opacity(0.55), lineWidth: 1.5)
             }
         }
-        .opacity(unlocked ? 1 : 0.6)
+        .opacity(unlocked ? 1 : 0.8)
         .accessibilityElement(children: .combine)
     }
 }

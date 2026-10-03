@@ -208,6 +208,14 @@ woodTap(&mergeC, 0.7); mergeC.bell(88, 0.25, at: 0.04, decay: 0.5)
 mergeC.reverb(0.2)
 try effect("merge-C (дерево и колокольчик)", mergeC)
 
+// streak: several pieces in a row found their place without a miss — a snap
+// with three quick notes climbing over it.
+var streakA = Sound(seconds: 1.0)
+woodTap(&streakA, 0.6)
+for (i, note) in [81.0, 84, 89].enumerated() { streakA.kalimba(note, 0.5, at: 0.03 + Double(i) * 0.065) }
+streakA.reverb(0.15)
+try effect("streak-A (дерево и три ноты вверх)", streakA)
+
 // complete: the picture is finished. F major, like the music.
 var completeA = Sound(seconds: 2.8)
 for (i, note) in [77.0, 81, 84, 89].enumerated() { completeA.marimba(note, 0.5, at: Double(i) * 0.12) }

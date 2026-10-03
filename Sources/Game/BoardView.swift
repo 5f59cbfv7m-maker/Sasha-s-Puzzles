@@ -1,11 +1,14 @@
 import CoreGraphics
+import ImageIO
 import SwiftUI
 
 /// Bridges native pointer events to the session, and owns viewport policy.
 @MainActor
 @Observable
 final class BoardInputController: BoardEventHandling {
-    var session: GameSession?
+    var session: GameSession? {
+        didSet { session?.fitForFinale = { [weak self] in self?.glideToBoard() ?? 0 } }
+    }
     var settings: AppSettings?
     var viewSize: CGSize = .zero
     var displayScale: CGFloat = 2
@@ -35,7 +38,7 @@ final class BoardInputController: BoardEventHandling {
         guard let session, let settings else { return }
         session.updateDrag(to: session.viewport.board(point))
         let outcome = session.endDrag(viewScale: session.viewport.scale, assist: settings.snapAssist)
-        Feedback.shared.report(outcome, settings: settings)
+        Feedback.shared.report(outcome, streak: session.isOnStreak, settings: settings)
     }
 
     func boardPointerCancelled() {
@@ -90,6 +93,37 @@ final class BoardInputController: BoardEventHandling {
         scheduleTextureRefresh()
     }
 
+    /// Glides back to the whole picture for the finale, in log scale around
+    /// the view centre so a deep zoom pulls out evenly. Returns how long it takes.
+    func glideToBoard() -> TimeInterval {
+        guard let session, viewSize.width > 1 else { return 0 }
+        let from = session.viewport
+        let to = Viewport.fitting(content: session.boardRect, in: viewSize, padding: 40)
+        fittedSize = viewSize
+        let ratio = abs(log(to.scale / from.scale))
+        let shift = hypot(to.offset.width - from.offset.width, to.offset.height - from.offset.height)
+        guard ratio > 0.02 || shift > 4 else { return 0 }
+        let duration = clamp(0.5 + ratio * 0.25, 0.6, 1.1)
+        let centre = CGPoint(x: viewSize.width / 2, y: viewSize.height / 2)
+        let a = from.board(centre), b = to.board(centre)
+        refit?.cancel()
+        refit = Task { [weak self] in
+            let start = Date.now
+            while !Task.isCancelled, let session = self?.session {
+                let u = min(1, Date.now.timeIntervalSince(start) / duration)
+                let e = CGFloat(u * u * (3 - 2 * u))
+                let scale = from.scale * exp(log(to.scale / from.scale) * e)
+                let c = a + (b - a) * e
+                session.viewport = Viewport(scale: scale, offset: CGSize(width: centre.x - c.x * scale,
+                                                                         height: centre.y - c.y * scale))
+                if u >= 1 { break }
+                try? await Task.sleep(for: .milliseconds(8))
+            }
+            self?.scheduleTextureRefresh()
+        }
+        return duration
+    }
+
     func fitTable() {
         guard let session, viewSize.width > 1 else { return }
         session.viewport = .fitting(content: session.tableRect, in: viewSize, padding: 16)
@@ -142,7 +176,7 @@ struct BoardView: View {
                 if session.viewport.scale == 1 { controller.fitBoard() }
             }
         }
-        .background(BoardBackdrop())
+        .background(BoardBackdrop(table: settings.table))
         .accessibilityElement()
         .accessibilityLabel(Text("Puzzle board"))
         .accessibilityValue(Text("\(session.placedCount) of \(session.pieceCount) pieces placed"))
@@ -183,38 +217,167 @@ struct BoardView: View {
 
         guard !textures.images.isEmpty else { return }
 
+        let landing = session.landing.flatMap { landing -> (GameSession.Landing, Double)? in
+            let u = now.timeIntervalSince(landing.at) / GameSession.landingDuration
+            return u < 1 ? (landing, u) : nil
+        }
         for groupID in session.drawOrder {
             guard let group = session.state.groups[groupID] else { continue }
-            let isDragged = session.drag?.group == groupID
 
-            if isDragged {
-                // One shadow for the whole cluster reads as a single lifted object.
+            if let drag = session.drag, drag.group == groupID {
+                // Held: a touch larger around the finger, over one soft, wide
+                // shadow for the whole cluster, so it reads as a lifted object.
+                let finger = viewport.screen(drag.grab + group.translation - drag.startTranslation)
                 context.drawLayer { layer in
-                    layer.addFilter(.shadow(color: .black.opacity(0.42),
-                                            radius: 10, x: 0, y: 7))
-                    drawPieces(of: group, in: &layer, viewport: viewport,
+                    layer.addFilter(.shadow(color: .black.opacity(0.3), radius: 16, x: 0, y: 11))
+                    layer.translateBy(x: finger.x, y: finger.y)
+                    layer.scaleBy(x: GameSession.liftScale, y: GameSession.liftScale)
+                    layer.translateBy(x: -finger.x, y: -finger.y)
+                    drawPieces(of: group, in: &layer, viewport: viewport, size: size, now: now,
                                visible: visible, textures: textures)
                 }
             } else {
-                drawPieces(of: group, in: &context, viewport: viewport,
-                           visible: visible, textures: textures)
+                drawPieces(of: group, in: &context, viewport: viewport, size: size, now: now,
+                           visible: visible, textures: textures, skipping: landing?.0.pieces ?? [])
             }
+        }
+        if let (landing, u) = landing {
+            drawLanding(landing.pieces, progress: u, in: &context, viewport: viewport, textures: textures)
         }
 
         drawFlashes(in: &context, viewport: viewport, visible: visible, textures: textures, now: now)
         drawHint(in: &context, viewport: viewport, now: now)
+        drawFinale(in: &context, plate: plate, plateRect: plateRect, viewport: viewport, now: now)
+    }
+
+    /// The finished picture: light runs along the seams from the edges in to
+    /// the last piece placed and flashes there, the seams melt into one
+    /// photograph, then a soft band of light crosses it corner to corner.
+    private func drawFinale(in context: inout GraphicsContext, plate: Path, plateRect: CGRect,
+                            viewport: Viewport, now: Date) {
+        guard let start = session.completedAt, let photo = session.ghostImage else { return }
+        let t = now.timeIntervalSince(start) - GameSession.reassembly
+        func ease(_ from: Double, _ to: Double) -> Double {
+            let u = clamp((t - from) / (to - from), 0, 1)
+            return u * u * (3 - 2 * u)
+        }
+        let focus = session.finaleFocus
+        let glowColor = Color(red: 1, green: 0.93, blue: 0.75)
+        if t < 2.6 {
+            let toScreen = CGAffineTransform(scaleX: viewport.scale, y: viewport.scale)
+                .concatenating(CGAffineTransform(translationX: viewport.offset.width, y: viewport.offset.height))
+            let reach = session.seams.map { $0.mid.distance(to: focus) }.max() ?? 1
+            let width = max(2, session.geometry.cellSize.minimumSide * viewport.scale * 0.07)
+            var glow = context
+            glow.clip(to: plate)
+            glow.blendMode = .plusLighter
+            for seam in session.seams {
+                // The farthest seams light first; the wave closes in on the focus.
+                let arrival = 0.3 + 1.8 * (1 - seam.mid.distance(to: focus) / max(reach, 1))
+                let lit = exp(-pow((t - arrival) / 0.2, 2))
+                guard lit > 0.03 else { continue }
+                let line = Path(seam.path).applying(toScreen)
+                glow.stroke(line, with: .color(glowColor.opacity(0.35 * lit)), lineWidth: width * 3)
+                glow.stroke(line, with: .color(glowColor.opacity(0.95 * lit)), lineWidth: width)
+            }
+        }
+
+        var layer = context
+        layer.clip(to: plate)
+        layer.opacity = ease(2.1, 2.6)
+        layer.draw(photo, in: plateRect)
+
+        // Where the light meets: a soft flash that blooms and fades.
+        let bloom = ease(2.05, 2.3) * (1 - ease(2.4, 2.9))
+        if bloom > 0 {
+            let centre = viewport.screen(focus)
+            let radius = max(plateRect.width, plateRect.height) * (0.15 + 0.45 * ease(2.05, 2.9))
+            var flash = context
+            flash.clip(to: plate)
+            flash.blendMode = .plusLighter
+            flash.fill(plate, with: .radialGradient(
+                Gradient(colors: [glowColor.opacity(0.85 * bloom), glowColor.opacity(0)]),
+                center: centre, startRadius: 0, endRadius: radius))
+        }
+
+        let sweep = ease(2.6, 3.8)
+        guard sweep > 0, sweep < 1 else { return }
+        let along = { (u: Double) in
+            CGPoint(x: plateRect.minX + plateRect.width * u, y: plateRect.minY + plateRect.height * u)
+        }
+        let centre = -0.25 + 1.5 * sweep
+        var light = context
+        light.clip(to: plate)
+        light.blendMode = .plusLighter
+        light.fill(plate, with: .linearGradient(
+            Gradient(stops: [.init(color: .white.opacity(0), location: 0),
+                             .init(color: .white.opacity(0.45), location: 0.5),
+                             .init(color: .white.opacity(0), location: 1)]),
+            startPoint: along(centre - 0.18), endPoint: along(centre + 0.18)))
     }
 
     private func drawPieces(of group: PieceGroup, in context: inout GraphicsContext,
-                            viewport: Viewport, visible: CGRect, textures: PieceTextureStore) {
-        for piece in group.members {
+                            viewport: Viewport, size: CGSize, now: Date,
+                            visible: CGRect, textures: PieceTextureStore, skipping: Set<Int32> = []) {
+        // The finale's break-up: pieces scatter over what is on screen.
+        let breakUp = session.completedAt.map { now.timeIntervalSince($0) }
+            .flatMap { $0 < GameSession.reassembly ? $0 : nil }
+        let cell = session.geometry.cellSize
+        let scatter = CGRect(origin: viewport.board(.zero), size: size * (1 / viewport.scale))
+            .insetBy(dx: cell.width * 0.7, dy: cell.height * 0.7)
+        for piece in group.members where !skipping.contains(piece) {
             let index = Int(piece)
             guard index < textures.images.count, let image = textures.images[index] else { continue }
-            let rect = viewport.screen(
-                textures.localBounds[index].offsetBy(session.state.solvedOrigin(of: piece) + group.translation))
+            var origin = session.state.solvedOrigin(of: piece) + group.translation
+            if let breakUp {
+                origin += finaleOffset(piece, at: breakUp, scatter: scatter, home: origin)
+            }
+            let rect = viewport.screen(textures.localBounds[index].offsetBy(origin))
             guard rect.intersects(visible) else { continue }
             context.draw(image, in: rect)
         }
+    }
+
+    /// Pieces just put down, drawn on top: they shrink from the lifted size,
+    /// dip a hair below it and come to rest while the shadow fades out.
+    private func drawLanding(_ pieces: Set<Int32>, progress u: Double, in context: inout GraphicsContext,
+                             viewport: Viewport, textures: PieceTextureStore) {
+        let rects = pieces.compactMap { piece -> (Image, CGRect)? in
+            let index = Int(piece)
+            guard index < textures.images.count, let image = textures.images[index],
+                  let group = session.state.group(of: piece) else { return nil }
+            return (image, viewport.screen(textures.localBounds[index]
+                .offsetBy(session.state.solvedOrigin(of: piece) + group.translation)))
+        }
+        guard let first = rects.first?.1 else { return }
+        let centre = rects.reduce(first) { $0.union($1.1) }.center
+        let scale = 1 + (GameSession.liftScale - 1) * cos(u * .pi * 1.5) * (1 - u)
+        context.drawLayer { layer in
+            let fade = 1 - u
+            layer.addFilter(.shadow(color: .black.opacity(0.3 * fade), radius: 2 + 14 * fade, x: 0, y: 1 + 10 * fade))
+            layer.translateBy(x: centre.x, y: centre.y)
+            layer.scaleBy(x: scale, y: scale)
+            layer.translateBy(x: -centre.x, y: -centre.y)
+            for (image, rect) in rects { layer.draw(image, in: rect) }
+        }
+    }
+
+    /// Where a piece is during the reassembly, relative to its home: a beat
+    /// in place, a burst out to a random spot on screen, then home again one
+    /// piece after another in shuffled order.
+    private func finaleOffset(_ piece: Int32, at t: Double, scatter: CGRect, home: CGPoint) -> CGPoint {
+        func ease(_ from: Double, _ to: Double) -> Double {
+            let u = clamp((t - from) / (to - from), 0, 1)
+            return u * u * (3 - 2 * u)
+        }
+        var rng = SplitMix64(seed: mixSeed(session.geometry.seed, UInt64(piece), 0xB10))
+        let spot = rng.point(in: scatter) - CGPoint(x: session.geometry.cellSize.width / 2,
+                                                    y: session.geometry.cellSize.height / 2)
+        let away = spot - home
+        let out = 1 - pow(1 - clamp((t - 0.5) / 0.6, 0, 1), 3)
+        let flight = GameSession.reassemblyFlight(rank: session.finaleRank[safe: Int(piece)] ?? 0)
+        let back = ease(flight.start, flight.end)
+        return away * CGFloat(out * (1 - back))
     }
 
     private func drawFlashes(in context: inout GraphicsContext, viewport: Viewport,
@@ -273,18 +436,42 @@ struct BoardView: View {
 }
 
 /// The warm table behind the puzzle, with two soft circles for air.
+/// Or the chosen table surface, tiled; dimmed in dark mode.
 private struct BoardBackdrop: View {
+    let table: AppSettings.TableSurface
+    @Environment(\.colorScheme) private var colorScheme
+
     var body: some View {
         ZStack {
             Theme.bg
-            GeometryReader { proxy in
-                Blob(size: 340).opacity(0.8)
-                    .position(x: 80, y: proxy.size.height + 50)
-                Blob(color: Theme.blob2, size: 200).opacity(0.7)
-                    .position(x: proxy.size.width - 160, y: 20)
+            if let tile = Self.tile(table) {
+                Image(decorative: tile, scale: 2).resizable(resizingMode: .tile)
+                if colorScheme == .dark { Color.black.opacity(0.55) }
+            } else {
+                GeometryReader { proxy in
+                    Blob(size: 340).opacity(0.8)
+                        .position(x: 80, y: proxy.size.height + 50)
+                    Blob(color: Theme.blob2, size: 200).opacity(0.7)
+                        .position(x: proxy.size.width - 160, y: 20)
+                }
             }
         }
         .clipped()
         .ignoresSafeArea()
+    }
+}
+
+extension BoardBackdrop {
+    /// `table-<surface>.jpg` from `Scripts/make-table-textures.swift`, decoded once.
+    private static var tiles: [AppSettings.TableSurface: CGImage] = [:]
+
+    static func tile(_ table: AppSettings.TableSurface) -> CGImage? {
+        guard table != .plain else { return nil }
+        if let cached = tiles[table] { return cached }
+        guard let url = Bundle.main.url(forResource: "table-\(table.rawValue)", withExtension: "jpg"),
+              let source = CGImageSourceCreateWithURL(url as CFURL, nil),
+              let image = CGImageSourceCreateImageAtIndex(source, 0, nil) else { return nil }
+        tiles[table] = image
+        return image
     }
 }

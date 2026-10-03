@@ -76,6 +76,10 @@ struct RootView: View {
         }
         .preferredColorScheme(model.settings.appearance.colorScheme)
         .onChange(of: music, initial: true) { Feedback.shared.setMusic(music, settings: model.settings) }
+        // Hands the game in progress to the player's other devices.
+        .onChange(of: scenePhase) { _, phase in
+            if phase == .background { model.session?.saveNow(); model.refreshSaves() }
+        }
         .onChange(of: model.settings.musicEnabled) { Feedback.shared.setMusic(music, settings: model.settings) }
         .environment(model.settings)
         #if os(iOS)

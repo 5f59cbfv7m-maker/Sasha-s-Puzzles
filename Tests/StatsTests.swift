@@ -76,6 +76,19 @@ struct StatsTests {
         #expect(stats.weeklyPieces.last == 24 * sea.count)
     }
 
+    @Test("Achievement bars count towards each goal")
+    func achievementProgress() throws {
+        let stats = PlayerStats(directory: try temporaryDirectory())
+        #expect(Achievement.tenPuzzles.progress(in: stats).fraction == 0)
+        #expect(Achievement.sprinter.progress(in: stats).label == "– / 5:00")
+        for day in 0..<3 { stats.record(daily(daysAgo: day, elapsed: 600)) }
+        #expect(Achievement.tenPuzzles.progress(in: stats).label == "3 / 10")
+        #expect(Achievement.firstPuzzle.progress(in: stats).fraction == 1)
+        #expect(Achievement.weekStreak.progress(in: stats).label == "3 / 7")
+        // Ten minutes against five: halfway.
+        #expect(Achievement.sprinter.progress(in: stats).fraction == 0.5)
+    }
+
     @Test("The longest streak remembers a run that has since broken")
     func longestStreak() throws {
         let stats = PlayerStats(directory: try temporaryDirectory())

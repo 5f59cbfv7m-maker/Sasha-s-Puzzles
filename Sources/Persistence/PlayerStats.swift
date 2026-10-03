@@ -300,4 +300,30 @@ extension Achievement {
             return !builtIn.isEmpty && builtIn.allSatisfy { stats.isSolved($0.id) }
         }
     }
+
+    /// How far along the player is, for the profile's bar. The label is
+    /// numbers only ("3 / 10"), so it needs no translation.
+    func progress(in stats: PlayerStats) -> (fraction: Double, label: String) {
+        func count(_ done: Int, _ goal: Int) -> (fraction: Double, label: String) {
+            let done = min(done, goal)
+            return (goal > 0 ? Double(done) / Double(goal) : 0, "\(done) / \(goal)")
+        }
+        switch self {
+        case .firstPuzzle: return count(stats.puzzlesSolved, 1)
+        case .tenPuzzles: return count(stats.puzzlesSolved, 10)
+        case .fiftyPuzzles: return count(stats.puzzlesSolved, 50)
+        case .sprinter:
+            // The best 48-piece-or-more time against the five minutes.
+            guard let best = stats.records.filter({ $0.pieces >= 48 }).map(\.elapsed).min() else {
+                return (0, "– / 5:00")
+            }
+            return (min(1, 300 / max(best, 1)), "\(TimeFormatting.short(best)) / 5:00")
+        case .nightmare: return count(stats.records.map(\.pieces).max() ?? 0, 800)
+        case .weekStreak: return count(stats.streak, 7)
+        case .ownPhoto: return count(stats.records.contains(where: \.isUserPhoto) ? 1 : 0, 1)
+        default:
+            let builtIn = LibraryCatalog.builtIn().filter { $0.category == category }
+            return count(builtIn.filter { stats.isSolved($0.id) }.count, builtIn.count)
+        }
+    }
 }

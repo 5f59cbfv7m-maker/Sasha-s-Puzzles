@@ -44,6 +44,7 @@ struct GameView: View {
             if phase != .active { session.handleBackground() }
         }
         .onDisappear { session.saveNow() }
+        .task(id: session.completedAt) { await reassemblyClicks() }
         .sheet(isPresented: $showOriginal) { OriginalImageSheet(session: session) }
     }
 
@@ -79,9 +80,13 @@ struct GameView: View {
 
     // MARK: - Pieces
 
+    /// Zoom buttons only on the Mac: on a touch screen everyone pinches, and
+    /// the panel covered the board's corner on a phone.
     private var board: some View {
         BoardView(session: session, settings: settings, controller: controller)
-            .overlay(alignment: .bottomTrailing) { zoomControls.padding(isCompact ? 14 : 18) }
+        #if os(macOS)
+            .overlay(alignment: .bottomTrailing) { zoomControls.padding(18) }
+        #endif
     }
 
     /// The board fills the game space up to the tray, so its frame is derived
@@ -93,7 +98,7 @@ struct GameView: View {
                                 ? CGSize(width: size.width - thickness, height: size.height)
                                 : CGSize(width: size.width, height: size.height - thickness))
         let drag = trayDrag
-        return TrayView(session: session, placement: placement, onTrayAction: placement == .trailing ? { session.performTrayAction() } : nil) { piece, location in
+        return TrayView(session: session, placement: placement, thickness: thickness) { piece, location in
             drag.piece = piece
             drag.location = location
         } onEnded: { piece, location in
@@ -103,7 +108,7 @@ struct GameView: View {
             let outcome = session.placePieceFromTray(piece, at: boardPoint,
                                                      viewScale: session.viewport.scale,
                                                      assist: settings.snapAssist)
-            Feedback.shared.report(outcome, settings: settings)
+            Feedback.shared.report(outcome, streak: session.isOnStreak, settings: settings)
         }
     }
 
@@ -171,6 +176,7 @@ struct GameView: View {
         .accessibilityValue(Text("\(session.placedCount) of \(session.pieceCount)"))
     }
 
+    #if os(macOS)
     private var zoomControls: some View {
         VStack(spacing: 6) {
             zoomButton("plus", "Zoom in") { controller.zoomStep(1.25) }
@@ -196,6 +202,7 @@ struct GameView: View {
         .buttonStyle(PressableStyle())
         .accessibilityLabel(Text(label))
     }
+    #endif
 
     // MARK: - Header
 
@@ -217,7 +224,7 @@ struct GameView: View {
                     .accessibilityLabel(Text("Hint"))
                 if isCompact {
                     Menu {
-                        actionButtons
+                        Button { showOriginal = true } label: { Label("Show Original", systemImage: "photo") }
                         Divider()
                         undoRedoButtons
                     } label: {
@@ -233,9 +240,6 @@ struct GameView: View {
                 } else {
                     RoundIconButton(symbol: "photo", size: 42) { showOriginal = true }
                         .accessibilityLabel(Text("Show Original"))
-                    RoundIconButton(symbol: trayActionSymbol, size: 42) { session.performTrayAction() }
-                        .disabled(session.trayAction == nil)
-                        .accessibilityLabel(Text(trayActionTitle))
                     RoundIconButton(symbol: "arrow.uturn.backward", size: 42) { session.undo() }
                         .disabled(!session.canUndo)
                         .accessibilityLabel(Text("Undo"))
@@ -249,22 +253,6 @@ struct GameView: View {
         .padding(.horizontal, isCompact ? 12 : 22)
         .frame(height: isCompact ? 56 : 70)
         .background(Theme.card.ignoresSafeArea())
-    }
-
-    @ViewBuilder
-    private var actionButtons: some View {
-        Button { showOriginal = true } label: { Label("Show Original", systemImage: "photo") }
-        Button { session.performTrayAction() } label: { Label(trayActionTitle, systemImage: trayActionSymbol) }
-            .disabled(session.trayAction == nil)
-    }
-
-    /// Scatter while the tray holds pieces, gather once it is empty.
-    private var trayActionTitle: LocalizedStringKey {
-        session.trayAction == .gather ? "Gather Pieces" : "Scatter Pieces"
-    }
-
-    private var trayActionSymbol: String {
-        session.trayAction == .gather ? "tray.and.arrow.down" : "shuffle"
     }
 
     @ViewBuilder
@@ -298,6 +286,21 @@ struct GameView: View {
         .accessibilityLabel(Text(paused ? "Resume" : "Pause"))
     }
 
+    /// A quiet tap as each piece lands home in the finale's reassembly,
+    /// thinned out so a big puzzle ticks rather than buzzes.
+    private func reassemblyClicks() async {
+        guard let start = session.completedAt else { return }
+        let landings = session.finaleRank.map { GameSession.reassemblyFlight(rank: $0).end }.sorted()
+        var last = -1.0
+        for time in landings where time - last >= 0.07 {
+            last = time
+            let wait = start.addingTimeInterval(time).timeIntervalSinceNow
+            if wait > 0 { try? await Task.sleep(for: .seconds(wait)) }
+            if Task.isCancelled { return }
+            Feedback.shared.play(.snap, volume: 0.3, settings: settings)
+        }
+    }
+
     // MARK: - Overlays
 
     @ViewBuilder
@@ -311,8 +314,9 @@ struct GameView: View {
         if session.phase == .paused, session.loadFailure == nil {
             PauseOverlay(session: session)
         }
-        if session.phase == .completed {
+        if session.phase == .completed, session.finaleDone {
             CompletionOverlay(session: session)
+                .transition(.opacity)
         }
     }
 
@@ -331,12 +335,8 @@ struct GameView: View {
     }
 
     private func trayThickness(for size: CGSize) -> CGFloat {
-        #if os(macOS)
-        return clamp(size.width * 0.22, 240, 320)
-        #else
-        return size.width > size.height || CommandLine.arguments.contains("--tray-trailing")
-            ? clamp(size.width * 0.24, 220, 300) : clamp(size.height * 0.2, 130, 220)
-        #endif
+        trayPlacement(for: size) == .trailing
+            ? TrayView.trailingWidth(viewWidth: size.width) : clamp(size.height * 0.2, 130, 220)
     }
 
 }
@@ -346,14 +346,20 @@ private struct TrayGhost: View {
     let drag: GameView.TrayDragState
 
     var body: some View {
-        if let piece = drag.piece, let image = session.textures.images[safe: Int(piece)] ?? nil {
-            let size = max(44, session.geometry.cellSize.minimumSide * session.viewport.scale * 1.6)
+        if let piece = drag.piece, let image = session.textures.images[safe: Int(piece)] ?? nil,
+           let bounds = session.textures.localBounds[safe: Int(piece)] {
+            // The size it will have on the board, barely lifted, so it can be
+            // lined up exactly; only a very zoomed-out board gets a floor of
+            // 44 pt so the piece is not lost under the finger.
+            let cell = session.geometry.cellSize
+            let scale = max(session.viewport.scale, 44 / cell.minimumSide) * GameSession.liftScale
             image
                 .resizable()
-                .aspectRatio(contentMode: .fit)
-                .frame(width: size, height: size)
-                .shadow(color: .black.opacity(0.4), radius: 10, y: 6)
-                .position(drag.location)
+                .frame(width: bounds.width * scale, height: bounds.height * scale)
+                .shadow(color: .black.opacity(0.3), radius: 16, y: 11)
+                // The drop puts the cell's centre under the finger; so does the ghost.
+                .position(x: drag.location.x + (bounds.midX - cell.width / 2) * scale,
+                          y: drag.location.y + (bounds.midY - cell.height / 2) * scale)
                 .allowsHitTesting(false)
         }
     }

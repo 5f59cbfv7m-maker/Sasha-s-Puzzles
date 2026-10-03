@@ -159,6 +159,42 @@ struct PersistenceTests {
         #expect(settings.displayName == "Маша")
         #expect(AppSettings(defaults: defaults).playerName == " Маша ")
     }
+
+    @Test("Shared games: newest copy wins, tombstones drop older copies, finished games become tombstones")
+    func sharedGamesMerge() throws {
+        let t0 = Date(timeIntervalSince1970: 1_000_000)
+        func game(_ id: String, at seconds: Double, complete: Bool = false, photo: Bool = false) -> GameSnapshot {
+            var snapshot = sampleSnapshot(id: id)
+            snapshot.updatedAt = t0.addingTimeInterval(seconds)
+            snapshot.isComplete = complete
+            if photo { snapshot.source = .imported(fileName: "mine.jpg") }
+            return snapshot
+        }
+        let ipad = SharedGames(local: [game("a", at: 10), game("b", at: 5), game("done", at: 20, complete: true),
+                                       game("photo", at: 1, photo: true)])
+        #expect(ipad.games.map(\.id) == ["a", "b"])
+        #expect(ipad.gone["done"] == t0.addingTimeInterval(20))
+
+        let phone = SharedGames(local: [game("a", at: 30), game("b", at: 2), game("done", at: 15)],
+                                gone: ["b": t0.addingTimeInterval(4)])
+        let merged = ipad.merged(with: phone, now: t0)
+        // "a": the phone's later copy. "b": the iPad played it after the phone deleted it.
+        // "done": finished on the iPad after the phone's last save.
+        #expect(merged.games.map(\.id) == ["a", "b"])
+        #expect(merged.games.first?.updatedAt == t0.addingTimeInterval(30))
+        #expect(ipad.merged(with: phone, now: t0).games.count == phone.merged(with: ipad, now: t0).games.count)
+
+        // An 800-piece game, compressed as iCloud stores it, leaves room for a dozen.
+        var state = PuzzleState(columns: 40, rows: 20, cellSize: CGSize(width: 50, height: 50))
+        var rng = SplitMix64(seed: 9)
+        state.shuffleTray(using: &rng)
+        for piece in 0..<Int32(600) { _ = state.placeFromTray(piece, translation: CGPoint(x: Double(piece) * 1.37, y: 41.3)) }
+        var big = game("big", at: 0)
+        big.state = state
+        let data = try JSONEncoder().encode(SharedGames(games: [big]))
+        let packed = try (data as NSData).compressed(using: .lzfse) as Data
+        #expect(packed.count < 45_000, "800-piece save packs to \(packed.count) bytes")
+    }
 }
 
 @Suite("Photo library", .serialized)

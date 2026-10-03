@@ -7,13 +7,42 @@ import SwiftUI
 struct TrayView: View {
     let session: GameSession
     let placement: TrayPlacement
-    /// Footer action — scatter, or gather once the tray is empty; `nil` hides
-    /// the footer (the phone keeps it in the menu).
-    var onTrayAction: (() -> Void)?
+    /// Width of a trailing tray, height of a bottom one.
+    let thickness: CGFloat
     let onChanged: (Int32, CGPoint) -> Void
     let onEnded: (Int32, CGPoint) -> Void
 
-    private var cellSize: CGFloat { placement == .trailing ? 74 : 63 }
+    static let gridPadding: CGFloat = 10
+    static let gridSpacing: CGFloat = 8
+    private static var trailingColumns: Int {
+        #if os(macOS)
+        3
+        #else
+        2
+        #endif
+    }
+
+    /// A side tray exactly as wide as its columns, so no spare margin eats
+    /// into the board. The iPad gets two large columns rather than three small ones.
+    static func trailingWidth(viewWidth: CGFloat) -> CGFloat {
+        #if os(macOS)
+        let cell: CGFloat = 72
+        #else
+        let cell: CGFloat = UIDevice.current.userInterfaceIdiom == .pad ? clamp(viewWidth * 0.08, 96, 112) : 72
+        #endif
+        let columns = CGFloat(trailingColumns)
+        return columns * cell + (columns - 1) * gridSpacing + 2 * gridPadding
+    }
+
+    private var cellSize: CGFloat {
+        guard placement == .trailing else { return 63 }
+        let columns = CGFloat(Self.trailingColumns)
+        return floor((thickness - 2 * Self.gridPadding - (columns - 1) * Self.gridSpacing) / columns)
+    }
+
+    /// Wide side trays carry labelled buttons at the foot; a bottom strip or a
+    /// narrow phone tray puts icons in the header instead.
+    private var footerButtons: Bool { placement == .trailing && thickness >= 220 }
 
     /// Side of the square, in board units around a piece's cell centre, that
     /// every tray piece is fitted into: wide enough for the farthest tab of
@@ -35,12 +64,17 @@ struct TrayView: View {
             } else {
                 pieceGrid
             }
-            if let onTrayAction, placement == .trailing {
+            if footerButtons {
                 Theme.hairline.frame(height: 1)
-                PillButton(title: session.trayAction == .gather ? "Gather from the table" : "Scatter on the table",
-                           style: .secondary, size: 16, expand: true, action: onTrayAction)
-                    .disabled(session.trayAction == nil)
-                    .padding(EdgeInsets(top: 14, leading: 20, bottom: 20, trailing: 20))
+                VStack(spacing: 10) {
+                    PillButton(title: "Scatter Pieces", symbol: "shuffle",
+                               style: .secondary, size: 15, expand: true) { session.scatterTray() }
+                        .disabled(!session.canScatter)
+                    PillButton(title: "Gather Pieces", symbol: "tray.and.arrow.down",
+                               style: .secondary, size: 15, expand: true) { session.gatherLoosePieces() }
+                        .disabled(!session.canGather)
+                }
+                .padding(EdgeInsets(top: 12, leading: 12, bottom: 16, trailing: 12))
             }
         }
         .background(Theme.surface)
@@ -51,15 +85,24 @@ struct TrayView: View {
             Text("Pieces")
                 .font(Theme.display(placement == .trailing ? 19 : 17))
             Spacer()
+            if !footerButtons {
+                // No room for a footer under a horizontal strip or a narrow tray.
+                RoundIconButton(symbol: "shuffle", style: .card, size: 30) { session.scatterTray() }
+                    .disabled(!session.canScatter)
+                    .accessibilityLabel(Text("Scatter Pieces"))
+                RoundIconButton(symbol: "tray.and.arrow.down", style: .card, size: 30) { session.gatherLoosePieces() }
+                    .disabled(!session.canGather)
+                    .accessibilityLabel(Text("Gather Pieces"))
+            }
             Text("\(session.state.trayOrder.count)")
                 .font(Theme.body(14, .bold).monospacedDigit())
                 .foregroundStyle(Theme.muted)
                 .padding(.horizontal, 12).padding(.vertical, 4)
                 .background(Theme.card, in: Capsule())
         }
-        .padding(.horizontal, placement == .trailing ? 20 : 16)
-        .padding(.top, placement == .trailing ? 18 : 12)
-        .padding(.bottom, placement == .trailing ? 12 : 10)
+        .padding(.horizontal, placement == .trailing ? 14 : 16)
+        .padding(.top, placement == .trailing ? 18 : 8)
+        .padding(.bottom, placement == .trailing ? 12 : 6)
     }
 
     private var emptyState: some View {
@@ -80,13 +123,14 @@ struct TrayView: View {
 
     @ViewBuilder
     private var pieceGrid: some View {
-        let columns = [GridItem(.adaptive(minimum: cellSize, maximum: cellSize), spacing: 10)]
+        let columns = Array(repeating: GridItem(.fixed(cellSize), spacing: Self.gridSpacing), count: Self.trailingColumns)
         let rows = [GridItem(.adaptive(minimum: cellSize, maximum: cellSize), spacing: 10)]
 
         if placement == .trailing {
             ScrollView(.vertical) {
-                LazyVGrid(columns: columns, spacing: 10) { cells }
-                    .padding(EdgeInsets(top: 0, leading: 16, bottom: 16, trailing: 16))
+                LazyVGrid(columns: columns, spacing: Self.gridSpacing) { cells }
+                    .padding(EdgeInsets(top: 0, leading: Self.gridPadding, bottom: Self.gridPadding,
+                                        trailing: Self.gridPadding))
             }
         } else {
             ScrollView(.horizontal) {
@@ -126,7 +170,7 @@ private struct TrayCell: View {
             if let image, let bounds, frame > 0 {
                 // One scale for every piece, and the cell body — not the
                 // texture — centred, so tabs stick out evenly around it.
-                let k = (size - 12) / frame
+                let k = (size - 6) / frame
                 image
                     .resizable()
                     .frame(width: bounds.width * k, height: bounds.height * k)

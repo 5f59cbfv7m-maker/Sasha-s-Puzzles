@@ -51,10 +51,48 @@ final class GameSession {
     /// Pieces flashing green after a successful connection.
     private(set) var flashes: [Int32: Date] = [:]
     private(set) var hint: Hint?
-    private(set) var lastOutcome: SettleOutcome?
+    /// Pieces just put down: they sink from the lifted size with a small bounce.
+    struct Landing: Equatable {
+        var pieces: Set<Int32>
+        var at: Date
+    }
+    private(set) var landing: Landing?
+    static let landingDuration: TimeInterval = 0.26
+    /// How much a piece grows while it is held.
+    static let liftScale: CGFloat = 1.035
+    private(set) var lastOutcome: SettleOutcome? {
+        didSet { if let lastOutcome { snapStreak = lastOutcome.didSnap ? snapStreak + 1 : 0 } }
+    }
+    /// Drops in a row that snapped; any drop that misses starts it over.
+    @ObservationIgnored private(set) var snapStreak = 0
+    static let streakLength = 3
+    /// From the third snap in a row until the next miss, snaps ring the streak sound.
+    var isOnStreak: Bool { snapStreak >= Self.streakLength }
     var selectedPiece: Int32?
 
     private(set) var elapsed: TimeInterval = 0
+    /// When the last piece went in; the board plays its finale from here.
+    private(set) var completedAt: Date?
+    /// Set by the board: brings the whole picture into view and returns how
+    /// long that takes, so the finale starts once the zoom has settled.
+    @ObservationIgnored var fitForFinale: (() -> TimeInterval)?
+    /// False while the finale plays, so the completion card waits for it.
+    private(set) var finaleDone = true
+    /// The finished picture breaks apart and puts itself back together
+    /// (`reassembly` seconds); then the seams glow ~2.3 s, the light band
+    /// crosses, and the photo stays on its own a moment before the card.
+    static let reassembly: TimeInterval = 3.4
+    static let finaleDuration: TimeInterval = reassembly + 5.3
+    /// When a piece with this rank leaves its scatter spot and lands home again,
+    /// in seconds after completion.
+    static func reassemblyFlight(rank: Double) -> (start: Double, end: Double) {
+        (1.4 + rank * 1.5, 1.9 + rank * 1.5)
+    }
+    /// Order in which each piece flies home during the reassembly, 0..<1.
+    @ObservationIgnored private(set) var finaleRank: [Double] = []
+    /// The finale's seams (board units) and where their light converges: the last piece placed.
+    @ObservationIgnored private(set) var seams: [(path: CGPath, mid: CGPoint)] = []
+    @ObservationIgnored private(set) var finaleFocus: CGPoint = .zero
     /// Fired once when the last group locks into place; the app records stats here.
     @ObservationIgnored var onComplete: ((GameSession) -> Void)?
     private(set) var canUndo = false
@@ -149,7 +187,7 @@ final class GameSession {
 
         textures.rebuild(geometry: geometry, source: image,
                          pixelScale: max(1, viewport.scale * displayScale),
-                         outlines: settings.showPieceOutlines)
+                         outlines: settings.showPieceOutlines, cardboard: settings.cardboardPieces)
 
         if phase != .completed {
             phase = .playing
@@ -171,7 +209,7 @@ final class GameSession {
         guard let source else { return }
         textures.rebuild(geometry: geometry, source: source,
                          pixelScale: max(0.6, viewport.scale * displayScale),
-                         outlines: settings.showPieceOutlines)
+                         outlines: settings.showPieceOutlines, cardboard: settings.cardboardPieces)
     }
 
     // MARK: - Clock
@@ -318,9 +356,11 @@ final class GameSession {
             refreshUndoFlags()
             return nil
         }
+        landing = Landing(pieces: Set(state.groups[drag.group]?.members ?? []), at: .now)
         let tolerance = state.snapTolerance(viewScale: viewScale, assist: assist.multiplier)
         let outcome = state.settle(group: drag.group, tolerance: tolerance)
         lastOutcome = outcome
+        scheduleEffectsExpiry()
         if outcome.didSnap {
             let now = Date.now
             let pieces = outcome.connectedPieces.isEmpty
@@ -353,6 +393,8 @@ final class GameSession {
         let translation = point - centre
         let group = state.placeFromTray(piece, translation: translation)
         selectedPiece = piece
+        landing = Landing(pieces: [piece], at: .now)
+        scheduleEffectsExpiry()
         let tolerance = state.snapTolerance(viewScale: viewScale, assist: assist.multiplier)
         let outcome = state.settle(group: group, tolerance: tolerance)
         lastOutcome = outcome
@@ -395,23 +437,10 @@ final class GameSession {
         scheduleAutosave()
     }
 
-    enum TrayAction { case scatter, gather }
-
-    /// What the scatter button does now: empty the tray while it holds
-    /// pieces, then pull the loose ones back — one button, two presses.
-    var trayAction: TrayAction? {
-        guard phase == .playing else { return nil }
-        if !state.trayOrder.isEmpty { return .scatter }
-        return state.hasLooseSingles ? .gather : nil
-    }
-
-    func performTrayAction() {
-        switch trayAction {
-        case .scatter: scatterTray()
-        case .gather: gatherLoosePieces()
-        case nil: break
-        }
-    }
+    /// The tray's two buttons: empty the tray onto the table, and send the
+    /// loose pieces back. Each works whenever there is something to move.
+    var canScatter: Bool { phase == .playing && !state.trayOrder.isEmpty }
+    var canGather: Bool { phase == .playing && state.hasLooseSingles }
 
     // MARK: - Assistance
 
@@ -438,6 +467,7 @@ final class GameSession {
 
     func clearExpiredEffects(now: Date = .now) {
         if let hint, hint.expires < now { self.hint = nil }
+        if let landing, now.timeIntervalSince(landing.at) >= Self.landingDuration { self.landing = nil }
         flashes = flashes.filter { now.timeIntervalSince($0.value) < Self.flashDuration }
         scheduleEffectsExpiry()
     }
@@ -449,7 +479,7 @@ final class GameSession {
     private func scheduleEffectsExpiry() {
         effectsTask?.cancel()
         let deadlines = flashes.values.map { $0.addingTimeInterval(Self.flashDuration) }
-            + [hint?.expires].compactMap { $0 }
+            + [hint?.expires, landing?.at.addingTimeInterval(Self.landingDuration)].compactMap { $0 }
         guard let next = deadlines.min() else {
             effectsTask = nil
             return
@@ -464,7 +494,7 @@ final class GameSession {
     static let flashDuration: TimeInterval = 0.85
 
     var needsAnimationTicks: Bool {
-        !flashes.isEmpty || hint != nil || phase == .completed
+        !flashes.isEmpty || hint != nil || landing != nil || phase == .completed
     }
 
     // MARK: - Undo / redo
@@ -504,6 +534,21 @@ final class GameSession {
     private func finish() {
         stopClock()
         phase = .completed
+        let lead = fitForFinale?() ?? 0
+        completedAt = .now.addingTimeInterval(lead)
+        finaleDone = false
+        seams = geometry.seams
+        var rng = SplitMix64(seed: geometry.seed &+ 0xF1AE)
+        finaleRank = Array(repeating: 0, count: pieceCount)
+        for (rank, piece) in rng.shuffled(Array(0..<pieceCount)).enumerated() {
+            finaleRank[piece] = Double(rank) / Double(max(1, pieceCount))
+        }
+        let focusPiece = Int(selectedPiece ?? Int32(pieceCount / 2))
+        finaleFocus = geometry.cellFrame(of: focusPiece).center
+        Task { [weak self] in
+            try? await Task.sleep(for: .seconds(Self.finaleDuration + lead))
+            self?.finaleDone = true
+        }
         drag = nil
         hint = nil
         withAnimation(.spring(duration: 0.8)) {

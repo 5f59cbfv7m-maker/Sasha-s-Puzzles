@@ -4,11 +4,37 @@ struct SettingsView: View {
     @Environment(AppModel.self) private var model
     @Environment(\.dismiss) private var dismiss
     @State private var confirmReset = false
+    @State private var showCredits = false
 
     var body: some View {
+        Group {
+            if showCredits { creditsPage } else { settingsPage }
+        }
+        .background(Theme.surface)
+        .tint(Theme.accent)
+        .foregroundStyle(Theme.text)
+        .confirmationDialog("Delete all saved games and statistics?", isPresented: $confirmReset,
+                            titleVisibility: .visible) {
+            Button("Delete", role: .destructive) {
+                model.deleteAllSaves()
+                model.stats.reset()
+            }
+            Button("Cancel", role: .cancel) {}
+        } message: {
+            Text("They are also removed on your other devices that use the same iCloud account.")
+        }
+        // A minimum size is a *window* constraint: the macOS Settings scene needs
+        // one, but on iOS this sheet is the phone screen and 460pt forces the
+        // form wider than it, clipping the Done button off the trailing edge.
+        #if os(macOS)
+        .frame(minWidth: 520, minHeight: 600)
+        #endif
+    }
+
+    private var settingsPage: some View {
         @Bindable var settings = model.settings
 
-        VStack(spacing: 0) {
+        return VStack(spacing: 0) {
             HStack {
                 Text("Settings").font(Theme.display(28))
                 Spacer()
@@ -26,6 +52,13 @@ struct SettingsView: View {
                         }
                         toggle("Picture guide on the table", $settings.showGhostImage)
                         toggle("Outline pieces", $settings.showPieceOutlines)
+                        toggle("Cardboard pieces", $settings.cardboardPieces)
+                        VStack(alignment: .leading, spacing: 10) {
+                            Text("Table").font(Theme.body(16))
+                            PillSegments(options: AppSettings.TableSurface.allCases,
+                                         selection: $settings.table, title: { $0.title }, expand: true)
+                        }
+                        .padding(EdgeInsets(top: 13, leading: 14, bottom: 13, trailing: 14))
                     }
                     group("Feedback") {
                         toggle("Sounds", $settings.soundEnabled)
@@ -94,6 +127,19 @@ struct SettingsView: View {
                         }
                         .buttonStyle(.plain)
                     }
+                    group("About") {
+                        Button { showCredits = true } label: {
+                            HStack {
+                                Text("Photo credits").font(Theme.body(16))
+                                Spacer()
+                                Image(systemName: "chevron.right")
+                                    .font(.system(size: 13, weight: .bold)).foregroundStyle(Theme.faint)
+                            }
+                            .padding(EdgeInsets(top: 13, leading: 14, bottom: 13, trailing: 14))
+                            .contentShape(Rectangle())
+                        }
+                        .buttonStyle(.plain)
+                    }
                     Text("Sasha's Puzzles · \(LibraryCatalog.count) built-in pictures · \(model.library.userItems.count) of your photos · works entirely offline")
                         .font(Theme.body(13))
                         .foregroundStyle(Theme.faint)
@@ -104,23 +150,55 @@ struct SettingsView: View {
                 .padding(EdgeInsets(top: 0, leading: 22, bottom: 26, trailing: 22))
             }
         }
-        .background(Theme.surface)
-        .tint(Theme.accent)
-        .foregroundStyle(Theme.text)
-        .confirmationDialog("Delete all saved games and statistics?", isPresented: $confirmReset,
-                            titleVisibility: .visible) {
-            Button("Delete", role: .destructive) {
-                model.deleteAllSaves()
-                model.stats.reset()
+    }
+
+    /// Who took each built-in photograph, by category; a row opens the
+    /// photo on Unsplash.
+    private var creditsPage: some View {
+        VStack(spacing: 0) {
+            HStack(spacing: 12) {
+                RoundIconButton(symbol: "chevron.left", size: 40) { showCredits = false }
+                    .accessibilityLabel(Text("Back"))
+                Text("Photo credits").font(Theme.display(28)).lineLimit(1).minimumScaleFactor(0.7)
+                Spacer()
+                PillButton(title: "Done", size: 15) { dismiss() }
+                    .keyboardShortcut(.cancelAction)
             }
-            Button("Cancel", role: .cancel) {}
+            .padding(EdgeInsets(top: 26, leading: 26, bottom: 18, trailing: 26))
+
+            ScrollView {
+                LazyVStack(alignment: .leading, spacing: 18) {
+                    Text("All built-in pictures are photographs from Unsplash. Thank you to the photographers!")
+                        .font(Theme.body(14)).foregroundStyle(Theme.muted)
+                        .padding(.horizontal, 12)
+                    ForEach(ArtCategory.allCases.filter { $0 != .mine }) { category in
+                        group(LocalizedStringKey(category.title)) {
+                            ForEach(LibraryCatalog.builtIn().filter { $0.category == category }
+                                .sorted { $0.title.localizedStandardCompare($1.title) == .orderedAscending }) { item in
+                                if let credit = PhotoCredits.credit(for: item) {
+                                    Link(destination: credit.url) {
+                                        HStack(spacing: 12) {
+                                            VStack(alignment: .leading, spacing: 2) {
+                                                Text(item.title).font(Theme.body(16))
+                                                Text(verbatim: credit.photographer)
+                                                    .font(Theme.body(13)).foregroundStyle(Theme.muted)
+                                            }
+                                            Spacer()
+                                            Image(systemName: "arrow.up.right")
+                                                .font(.system(size: 13, weight: .bold)).foregroundStyle(Theme.faint)
+                                        }
+                                        .padding(EdgeInsets(top: 11, leading: 14, bottom: 11, trailing: 14))
+                                        .contentShape(Rectangle())
+                                    }
+                                    .buttonStyle(.plain)
+                                }
+                            }
+                        }
+                    }
+                }
+                .padding(EdgeInsets(top: 0, leading: 22, bottom: 26, trailing: 22))
+            }
         }
-        // A minimum size is a *window* constraint: the macOS Settings scene needs
-        // one, but on iOS this sheet is the phone screen and 460pt forces the
-        // form wider than it, clipping the Done button off the trailing edge.
-        #if os(macOS)
-        .frame(minWidth: 520, minHeight: 600)
-        #endif
     }
 
     // MARK: - Building blocks

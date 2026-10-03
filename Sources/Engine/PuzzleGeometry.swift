@@ -160,6 +160,19 @@ nonisolated struct PuzzleGeometry: Sendable {
         return verticalCuts[row * (columns - 1) + column]
     }
 
+    /// Every interior cut once, in board coordinates, with its midpoint: the
+    /// seams of the finished picture.
+    var seams: [(path: CGPath, mid: CGPoint)] {
+        (horizontalCuts + verticalCuts).map { cut in
+            let path = CGMutablePath()
+            path.move(to: cut.start)
+            for segment in cut.segments {
+                path.addCurve(to: segment.end, control1: segment.control1, control2: segment.control2)
+            }
+            return (path, CGPoint(x: (cut.start.x + cut.end.x) / 2, y: (cut.start.y + cut.end.y) / 2))
+        }
+    }
+
     // MARK: - Piece outline
 
     /// The four boundary curves of a piece, clockwise from the top-left corner.

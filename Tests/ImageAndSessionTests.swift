@@ -91,6 +91,32 @@ struct ImageTests {
         }
     }
 
+    @Test("Cardboard pieces carry a visible grain; plain ones stay flat")
+    func cardboardGrain() throws {
+        let geometry = PuzzleGeometry(columns: 6, rows: 4, aspect: 1.5, seed: 4242)
+        let source = makeImage(width: 900, height: 600)
+        func spread(cardboard: Bool) throws -> Double {
+            let image = try #require(PieceTextureStore.renderPiece(8, geometry: geometry, source: source,
+                                                                    pixelScale: 2, outlines: false,
+                                                                    cardboard: cardboard))
+            let read = try #require(CGContext.bitmap(size: CGSize(width: image.width, height: image.height)))
+            read.draw(image, in: CGRect(x: 0, y: 0, width: image.width, height: image.height))
+            let bytes = try #require(read.data).assumingMemoryBound(to: UInt8.self)
+            // The middle of the piece: inside the outline whatever its tabs.
+            var values: [Double] = []
+            for y in image.height * 2 / 5..<image.height * 3 / 5 {
+                for x in image.width * 2 / 5..<image.width * 3 / 5 {
+                    values.append(Double(bytes[y * read.bytesPerRow + x * 4 + 1]))
+                }
+            }
+            let mean = values.reduce(0, +) / Double(values.count)
+            return (values.map { ($0 - mean) * ($0 - mean) }.reduce(0, +) / Double(values.count)).squareRoot()
+        }
+        let plain = try spread(cardboard: false), card = try spread(cardboard: true)
+        #expect(plain < 1)
+        #expect(card > 6, "grain spread \(card)")
+    }
+
     @Test("A zoom re-cut keeps the board drawn and skips zooming out")
     @MainActor
     func textureRecutIsSilent() async throws {
@@ -140,6 +166,69 @@ struct SessionTests {
         let item = LibraryCatalog.builtIn()[0]
         return GameSession(item: item, aspect: .landscape32, targetPieces: pieces, seed: 4242,
                            saveStore: SaveStore(directory: directory))
+    }
+
+    @Test("From the third snap in a row the streak rings until a miss, then builds up again")
+    func snapStreak() {
+        let session = makeSession()
+        session.startForTesting()
+        func drop(_ piece: Int32, away: CGFloat = 0) {
+            let cell = session.geometry.cellSize
+            let centre = session.state.solvedOrigin(of: piece)
+                + CGPoint(x: cell.width / 2 - away, y: cell.height / 2)
+            _ = session.placePieceFromTray(piece, at: centre, viewScale: 1, assist: .precise)
+        }
+        drop(0); drop(1)
+        #expect(!session.isOnStreak)
+        drop(2)
+        #expect(session.isOnStreak)
+        drop(3)
+        #expect(session.isOnStreak, "every snap after the third keeps the streak")
+        drop(4, away: 5000)
+        #expect(session.snapStreak == 0 && !session.isOnStreak)
+        drop(5); drop(6)
+        #expect(!session.isOnStreak)
+        drop(7)
+        #expect(session.isOnStreak)
+    }
+
+    @Test("Scatter and gather are two buttons, each live when it has pieces to move")
+    func scatterAndGather() {
+        let session = makeSession()
+        session.startForTesting()
+        #expect(session.canScatter && !session.canGather)
+        session.scatterTray()
+        #expect(!session.canScatter && session.canGather)
+        session.gatherLoosePieces()
+        #expect(session.canScatter && !session.canGather)
+    }
+
+    @Test("A saved board's preview shows assembled pieces, and only faintly the rest")
+    func boardPreview() throws {
+        let session = makeSession()
+        session.startForTesting()
+        let cell = session.geometry.cellSize
+        for piece: Int32 in [0, 1] {
+            _ = session.placePieceFromTray(piece, at: session.state.solvedOrigin(of: piece)
+                + CGPoint(x: cell.width / 2, y: cell.height / 2), viewScale: 1, assist: .precise)
+        }
+        let board = session.geometry.boardSize
+        let width = 300, height = Int((300 * board.height / board.width).rounded())
+        let red = try #require(CGContext.bitmap(size: CGSize(width: width, height: height)))
+        red.setFillColor(CGColor(red: 1, green: 0, blue: 0, alpha: 1))
+        red.fill(CGRect(x: 0, y: 0, width: width, height: height))
+        let source = try #require(red.makeImage())
+        let preview = try #require(BoardPreview.render(session.snapshot(), image: source))
+        #expect(preview.width == width && preview.height == height)
+
+        let read = try #require(CGContext.bitmap(size: CGSize(width: width, height: height)))
+        read.draw(preview, in: CGRect(x: 0, y: 0, width: width, height: height))
+        let bytes = try #require(read.data).assumingMemoryBound(to: UInt8.self)
+        // Memory rows run top-down; BGRA, alpha last.
+        func alpha(_ x: Int, _ y: Int) -> UInt8 { bytes[y * read.bytesPerRow + x * 4 + 3] }
+        let scale = Double(width) / board.width
+        #expect(alpha(Int(cell.width * 0.5 * scale), Int(cell.height * 0.5 * scale)) == 255)
+        #expect(alpha(width - Int(cell.width * 0.5 * scale), height - Int(cell.height * 0.5 * scale)) < 80)
     }
 
     @Test("A new session is consistent before anything is loaded")

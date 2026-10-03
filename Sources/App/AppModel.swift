@@ -13,9 +13,10 @@ final class AppModel {
     }
 
     #if DEBUG
-    let settings = StageSandbox.isActive ? AppSettings(defaults: StageSandbox.makeDefaults()) : AppSettings()
+    let settings = StageSandbox.isActive ? AppSettings(defaults: StageSandbox.makeDefaults())
+        : AppSettings(cloud: CloudRecordMirror.isAvailable ? .default : nil)
     #else
-    let settings = AppSettings()
+    let settings = AppSettings(cloud: CloudRecordMirror.isAvailable ? .default : nil)
     #endif
     let library = PhotoLibraryStore()
     /// Solved games, merged across the player's devices through iCloud.
@@ -47,6 +48,8 @@ final class AppModel {
     private(set) var savedGames: [GameSnapshot] = []
 
     @ObservationIgnored private let saveStore = SaveStore()
+    /// Unfinished games shared with the player's other devices.
+    @ObservationIgnored private let sharedGames: CloudGamesMirror?
 
     init() {
         // iCloud and Game Center come as a pair: both need a build signed by
@@ -54,7 +57,9 @@ final class AppModel {
         let signed = CloudRecordMirror.isAvailable
         stats = PlayerStats(mirror: signed ? CloudRecordMirror() : nil)
         gameCenter = GameCenter(isAvailable: signed)
+        sharedGames = signed ? CloudGamesMirror() : nil
         refreshSaves()
+        sharedGames?.onExternalChange = { [weak self] in self?.refreshSaves() }
         stats.onExternalChange = { [weak self] in self?.gameCenter.report() }
         gameCenter.start(with: stats)
         if settings.seenAchievements == nil { markAchievementsSeen() }
@@ -68,12 +73,29 @@ final class AppModel {
     }
 
     func markAchievementsSeen() {
-        settings.seenAchievements = Set(Achievement.allCases.filter { $0.isUnlocked(in: stats) }.map(\.rawValue))
+        // A union: marks seen on another device stay, even for medals this one has not synced yet.
+        settings.seenAchievements = (settings.seenAchievements ?? [])
+            .union(Achievement.allCases.filter { $0.isUnlocked(in: stats) }.map(\.rawValue))
     }
 
     var resumable: [GameSnapshot] { savedGames.filter { !$0.isComplete } }
 
-    func refreshSaves() {
+    /// Reloads saves after trading with iCloud: newer copies from other
+    /// devices come in, games finished or deleted elsewhere go, and what this
+    /// device has goes up. `gone` adds tombstones for games deleted here.
+    func refreshSaves(gone: [String: Date] = [:]) {
+        if let sharedGames {
+            let local = saveStore.load()
+            let merged = SharedGames(local: local, gone: gone).merged(with: sharedGames.load() ?? SharedGames())
+            for game in merged.games.reversed()
+            where local.first(where: { $0.id == game.id }).map({ $0.updatedAt < game.updatedAt }) ?? true {
+                try? saveStore.save(game)
+            }
+            for game in local where !game.isComplete && game.id != session?.id {
+                if let at = merged.gone[game.id], at >= game.updatedAt { try? saveStore.delete(id: game.id) }
+            }
+            sharedGames.save(merged)
+        }
         savedGames = saveStore.load()
     }
 
@@ -138,12 +160,13 @@ final class AppModel {
 
     func delete(_ snapshot: GameSnapshot) {
         try? saveStore.delete(id: snapshot.id)
-        refreshSaves()
+        refreshSaves(gone: [snapshot.id: .now])
     }
 
     func deleteAllSaves() {
+        let gone = Dictionary(savedGames.map { ($0.id, Date.now) }, uniquingKeysWith: max)
         try? saveStore.deleteAll()
-        refreshSaves()
+        refreshSaves(gone: gone)
     }
 
     // MARK: - Menu commands

@@ -9,11 +9,12 @@ import Security
 ///
 /// Key-value storage suits this exactly: a small blob, no schema, no CloudKit
 /// console, and the system syncs it even while the app is closed. Its limit
-/// is 1 MB; about 5,000 games fit, and past that the oldest stay local only.
+/// is 1 MB for the whole store, shared with saved games and settings; this
+/// key takes up to 400 KB, about 2,000 games, and past that the oldest stay local only.
 @MainActor
 final class CloudRecordMirror: RecordMirror {
     private static let key = "stats.v1"
-    private static let byteLimit = 1_000_000 - 16_384
+    private static let byteLimit = 400_000
 
     var onExternalChange: (() -> Void)?
     private let store = NSUbiquitousKeyValueStore.default
@@ -59,5 +60,48 @@ final class CloudRecordMirror: RecordMirror {
         #else
         return true
         #endif
+    }
+}
+
+/// Unfinished games in the same key-value store, compressed. Saves are small
+/// (geometry regenerates from the seed), but the store holds 1 MB in all, so
+/// the oldest games stay local only once the share is full.
+@MainActor
+final class CloudGamesMirror {
+    private static let key = "games.v1"
+    private static let byteLimit = 560_000
+
+    var onExternalChange: (() -> Void)?
+    private let store = NSUbiquitousKeyValueStore.default
+    private var observer: NSObjectProtocol?
+
+    init() {
+        observer = NotificationCenter.default.addObserver(
+            forName: NSUbiquitousKeyValueStore.didChangeExternallyNotification,
+            object: store, queue: .main
+        ) { [weak self] note in
+            let keys = note.userInfo?[NSUbiquitousKeyValueStoreChangedKeysKey] as? [String] ?? []
+            guard keys.contains(Self.key) else { return }
+            MainActor.assumeIsolated { self?.onExternalChange?() }
+        }
+    }
+
+    func load() -> SharedGames? {
+        guard let packed = store.data(forKey: Self.key),
+              let data = try? (packed as NSData).decompressed(using: .lzfse) as Data else { return nil }
+        return try? JSONDecoder().decode(SharedGames.self, from: data)
+    }
+
+    func save(_ shared: SharedGames) {
+        var shared = shared
+        while true {
+            guard let data = try? JSONEncoder().encode(shared),
+                  let packed = try? (data as NSData).compressed(using: .lzfse) as Data else { return }
+            if packed.count <= Self.byteLimit || shared.games.isEmpty {
+                store.set(packed, forKey: Self.key)
+                return
+            }
+            shared.games.removeLast()
+        }
     }
 }

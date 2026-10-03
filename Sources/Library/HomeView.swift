@@ -28,7 +28,7 @@ struct HomeView: View {
                     LazyVGrid(columns: columns, spacing: 18) {
                         ForEach(items) { item in
                             PictureCard(item: item, solved: solvedTime(for: item),
-                                        inProgress: progressPieces(for: item)) {
+                                        inProgress: unfinishedGame(for: item)) {
                                 model.openSetup(for: item)
                             }
                             .contextMenu { contextMenu(for: item) }
@@ -84,8 +84,8 @@ struct HomeView: View {
         model.stats.bestTime(for: item.id)
     }
 
-    private func progressPieces(for item: LibraryItem) -> Int? {
-        model.savedGames.first { !$0.isComplete && $0.itemID == item.id }?.pieceCount
+    private func unfinishedGame(for item: LibraryItem) -> GameSnapshot? {
+        model.savedGames.first { !$0.isComplete && $0.itemID == item.id }
     }
 
     // MARK: - Sections
@@ -367,14 +367,15 @@ private struct PictureCard: View {
     let item: LibraryItem
     /// Elapsed time of a finished game with this picture, if any.
     let solved: TimeInterval?
-    /// Piece count of an unfinished saved game, if any.
-    let inProgress: Int?
+    /// An unfinished saved game with this picture, if any.
+    let inProgress: GameSnapshot?
     let action: () -> Void
 
     var body: some View {
         Button(action: action) {
             VStack(alignment: .leading, spacing: 0) {
-                LibraryThumbnail(item: item)
+                // A solved picture shows the photo; an unfinished one its board.
+                LibraryThumbnail(item: item, snapshot: solved == nil ? inProgress : nil)
                     .washed()
                     .aspectRatio(3.0 / 2.0, contentMode: .fit)
                     .frame(maxWidth: .infinity)
@@ -412,7 +413,7 @@ private struct PictureCard: View {
         if solved != nil {
             Tag(text: String(localized: "Solved"), style: .sage)
         } else if let inProgress {
-            Tag(text: String(localized: "\(inProgress) pieces"), style: .card)
+            Tag(text: String(localized: "\(inProgress.pieceCount) pieces"), style: .card)
         }
     }
 }
@@ -425,7 +426,7 @@ private struct ResumeCard: View {
     var body: some View {
         Button(action: action) {
             HStack(spacing: 14) {
-                LibraryThumbnail(item: snapshot.libraryItem, longSide: 220)
+                LibraryThumbnail(item: snapshot.libraryItem, longSide: 220, snapshot: snapshot)
                     .washed()
                     .frame(width: 96, height: 68)
                     .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
