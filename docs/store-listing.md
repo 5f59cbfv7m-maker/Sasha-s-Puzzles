@@ -51,14 +51,7 @@
 >
 > Also on Mac with keyboard shortcuts, undo and redo.
 
-**What's New (1.2):**
-- Unfinished puzzles, your name and settings now sync between iPhone, iPad and Mac through iCloud.
-- A new finale: the finished picture breaks apart, puts itself back together and lights up.
-- Separate buttons to scatter and gather pieces, and a roomier tray on iPad.
-- A special sound for three correct pieces in a row.
-- The library shows how far you got.
-- Progress bars on achievements, photo credits in Settings.
-- Smoother music and gentler piece dragging.
+**What's New (1.2):** см. [Что нового 1.2.md](Что%20нового%201.2.md).
 
 ## Русский — Russian
 
@@ -92,14 +85,7 @@
 >
 > Есть и на Mac — с клавиатурными сокращениями, отменой и повтором.
 
-**What's New (1.2):**
-- Начатые пазлы, имя и настройки синхронизируются между iPhone, iPad и Mac через iCloud.
-- Новый финал: собранная картинка рассыпается, сама собирается заново и вспыхивает светом.
-- Отдельные кнопки «Рассыпать» и «Вернуть», на iPad — просторный лоток с крупными деталями.
-- Особый звук за три верные детали подряд.
-- В библиотеке видно, сколько уже собрано.
-- Шкалы прогресса у достижений, авторы фотографий в настройках.
-- Плавнее музыка, мягче перетаскивание деталей.
+**What's New (1.2):** см. [Что нового 1.2.md](Что%20нового%201.2.md).
 
 ## Deutsch — German
 
@@ -133,14 +119,7 @@
 >
 > Auch für den Mac – mit Tastaturkürzeln, Widerrufen und Wiederholen.
 
-**What's New (1.2):**
-- Angefangene Puzzles, dein Name und die Einstellungen werden über iCloud zwischen iPhone, iPad und Mac abgeglichen.
-- Neues Finale: Das fertige Bild zerfällt, setzt sich von selbst wieder zusammen und leuchtet auf.
-- Getrennte Tasten zum Verstreuen und Einsammeln, eine geräumigere Ablage auf dem iPad.
-- Ein eigener Klang für drei richtige Teile in Folge.
-- Die Bibliothek zeigt, wie weit du schon bist.
-- Fortschrittsbalken bei den Erfolgen, Fotonachweis in den Einstellungen.
-- Sanftere Musikübergänge und angenehmeres Ziehen der Teile.
+**What's New (1.2):** см. [Что нового 1.2.md](Что%20нового%201.2.md).
 
 ## Français — French
 
@@ -174,14 +153,7 @@
 >
 > Également sur Mac, avec raccourcis clavier, annuler et rétablir.
 
-**What's New (1.2):**
-- Les puzzles en cours, votre prénom et vos réglages se synchronisent entre iPhone, iPad et Mac via iCloud.
-- Nouveau final : l’image terminée se disperse, se reconstitue toute seule et s’illumine.
-- Des boutons séparés pour éparpiller et ramasser les pièces, un casier plus spacieux sur iPad.
-- Un son spécial pour trois bonnes pièces d’affilée.
-- La bibliothèque montre où vous en êtes.
-- Des barres de progression pour les succès, les crédits photo dans les réglages.
-- Une musique plus douce et des pièces plus agréables à déplacer.
+**What's New (1.2):** см. [Что нового 1.2.md](Что%20нового%201.2.md).
 
 ## Español — Spanish
 
@@ -215,14 +187,7 @@
 >
 > También en Mac, con atajos de teclado, deshacer y rehacer.
 
-**What's New (1.2):**
-- Los puzles empezados, tu nombre y los ajustes se sincronizan entre iPhone, iPad y Mac con iCloud.
-- Nuevo final: la imagen terminada se deshace, se vuelve a montar sola y se ilumina.
-- Botones separados para esparcir y recoger piezas, y una bandeja más amplia en el iPad.
-- Un sonido especial por tres piezas correctas seguidas.
-- La biblioteca muestra cuánto llevas.
-- Barras de progreso en los logros y créditos de las fotos en Ajustes.
-- Música más suave y piezas más agradables de arrastrar.
+**What's New (1.2):** см. [Что нового 1.2.md](Что%20нового%201.2.md).
 
 ## Italiano — Italian
 
@@ -256,14 +221,7 @@
 >
 > C'è anche su Mac, con scorciatoie da tastiera, annulla e ripeti.
 
-**What's New (1.2):**
-- Puzzle iniziati, nome e impostazioni si sincronizzano tra iPhone, iPad e Mac tramite iCloud.
-- Nuovo finale: l’immagine completata si scompone, si ricompone da sola e si illumina.
-- Pulsanti separati per sparpagliare e raccogliere i pezzi, e un vassoio più ampio su iPad.
-- Un suono speciale per tre pezzi giusti di fila.
-- La libreria mostra a che punto sei.
-- Barre di avanzamento per i traguardi, crediti fotografici nelle impostazioni.
-- Musica più morbida e pezzi più piacevoli da trascinare.
+**What's New (1.2):** см. [Что нового 1.2.md](Что%20нового%201.2.md).
 
 ## Português (Brasil) — Portuguese (Brazil)
 
@@ -297,14 +255,7 @@
 >
 > Também no Mac, com atalhos de teclado, desfazer e refazer.
 
-**What's New (1.2):**
-- Quebra-cabeças começados, seu nome e os ajustes agora sincronizam entre iPhone, iPad e Mac pelo iCloud.
-- Novo final: a imagem pronta se desfaz, se monta sozinha de novo e se ilumina.
-- Botões separados para espalhar e recolher peças, e uma bandeja mais espaçosa no iPad.
-- Um som especial para três peças certas seguidas.
-- A biblioteca mostra até onde você chegou.
-- Barras de progresso nas conquistas e créditos das fotos nos Ajustes.
-- Música mais suave e peças mais gostosas de arrastar.
+**What's New (1.2):** см. [Что нового 1.2.md](Что%20нового%201.2.md).
 
 ## 日本語 — Japanese
 
@@ -338,14 +289,7 @@
 >
 > Mac 版もあります。キーボードショートカット、取り消しとやり直しに対応。
 
-**What's New (1.2):**
-- 途中のパズル、名前、設定が iCloud で iPhone・iPad・Mac 間で同期されるようになりました。
-- 新しいフィナーレ：完成した絵がばらばらになり、ひとりでに組み上がって光ります。
-- 「ばらまく」と「集める」のボタンを分けました。iPad ではトレイが広くなりました。
-- 3 つ続けて正しくはめると特別な音が鳴ります。
-- ライブラリで進み具合がひと目でわかります。
-- 実績に進捗バー、設定に写真のクレジットを追加しました。
-- 音楽の切り替えがなめらかに、ピースのドラッグがより心地よくなりました。
+**What's New (1.2):** см. [Что нового 1.2.md](Что%20нового%201.2.md).
 
 ## 한국어 — Korean
 
@@ -379,14 +323,7 @@
 >
 > Mac에서도 사용할 수 있습니다. 단축키, 실행 취소와 다시 실행을 지원합니다.
 
-**What's New (1.2):**
-- 하던 퍼즐, 이름, 설정이 이제 iCloud로 iPhone, iPad, Mac 간에 동기화됩니다.
-- 새로운 피날레: 완성된 그림이 흩어졌다가 스스로 다시 맞춰지고 빛납니다.
-- 흩뿌리기와 모으기 버튼을 분리하고, iPad에서는 트레이를 넓혔습니다.
-- 세 조각을 연속으로 맞히면 특별한 소리가 납니다.
-- 라이브러리에서 얼마나 맞췄는지 보입니다.
-- 업적 진행 막대와 설정의 사진 출처를 추가했습니다.
-- 더 부드러운 음악 전환과 더 편안한 조각 드래그.
+**What's New (1.2):** см. [Что нового 1.2.md](Что%20нового%201.2.md).
 
 ## 简体中文 — Chinese (Simplified)
 
@@ -420,12 +357,5 @@
 >
 > Mac 版同样具备：键盘快捷键、撤销与重做。
 
-**What's New (1.2):**
-- 未完成的拼图、你的名字和设置现在通过 iCloud 在 iPhone、iPad 和 Mac 之间同步。
-- 全新结尾：完成的图片散开，再自动拼回原样并闪耀光芒。
-- “散开”和“收回”拆分为两个按钮，iPad 上的托盘更宽敞。
-- 连续放对三块会响起特别的音效。
-- 图库中可以看到每幅拼图的进度。
-- 成就增加进度条，设置中新增照片来源。
-- 音乐过渡更柔和，拖动拼块更顺手。
+**What's New (1.2):** см. [Что нового 1.2.md](Что%20нового%201.2.md).
 

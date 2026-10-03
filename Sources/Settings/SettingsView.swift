@@ -232,9 +232,11 @@ struct SettingsView: View {
         .padding(EdgeInsets(top: 13, leading: 14, bottom: 13, trailing: 14))
     }
 
+    /// Label left, switch right on every platform: a bare `Toggle` fills the
+    /// row on iOS but hugs its label on the Mac, which centred both.
     private func toggle(_ title: LocalizedStringKey, _ isOn: Binding<Bool>) -> some View {
-        Toggle(isOn: isOn) { Text(title).font(Theme.body(16)) }
-            .toggleStyle(.switch)
-            .padding(EdgeInsets(top: 13, leading: 14, bottom: 13, trailing: 14))
+        row(title) {
+            Toggle(title, isOn: isOn).labelsHidden().toggleStyle(.switch)
+        }
     }
 }
