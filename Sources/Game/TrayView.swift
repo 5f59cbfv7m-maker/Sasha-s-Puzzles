@@ -236,6 +236,7 @@ private struct TrayPan: UIGestureRecognizerRepresentable {
     func handleUIGestureRecognizerAction(_ pan: DirectionalPan, context: Context) {
         let location = context.converter.convert(globalPoint: pan.location(in: nil), to: .named("game"))
         switch pan.state {
+        case .began: Feedback.shared.dragBegan(in: pan.view)
         case .changed: onChanged(location)
         case .ended: onEnded(location)
         // A cancelled drag must not place the piece: a point outside the

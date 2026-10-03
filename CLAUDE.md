@@ -183,6 +183,16 @@ take the cloud value at launch and push what only this device has;
 `AppSettings.reload` never writes, so a fresh install cannot push its
 defaults over the family's name.
 
+**One `GameView` per game.** "Play again" swaps `model.session` but keeps the
+`.game` route, so `RootView` gives the view `.id(session.id)`; without it the
+old view's `didLoad` skipped loading the new game (stuck at "Cutting… 2 %").
+
+**Apple Pencil Pro haptics need `UICanvasFeedbackGenerator`** on the view the
+Pencil touched, plus a location; a plain impact generator never reaches the
+Pencil. Tray drags start in the tray's view, so `Feedback.dragBegan(in:)` moves
+the generator to wherever a drag begins (on the board's view only, tray drops
+were silent).
+
 **Synced stats merge, they never overwrite.** Records are only ever added,
 so `StatsArchive.merged` is a union by id; a reset is a timestamp that drops
 every older record on every device. `PlayerStats.persist` merges with iCloud

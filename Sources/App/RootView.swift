@@ -27,7 +27,9 @@ struct RootView: View {
                             }
                         case .game:
                             if let session = model.session {
-                                GameView(session: session)
+                                // A fresh view per game: "Play again" keeps the route, and
+                                // the old view's state would skip loading the new game.
+                                GameView(session: session).id(session.id)
                             } else {
                                 ContentUnavailableView("No game in progress", systemImage: "puzzlepiece")
                             }

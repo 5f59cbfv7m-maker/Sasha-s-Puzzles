@@ -73,10 +73,23 @@ final class Feedback {
     enum Strength { case light, medium, strong }
 
     #if os(iOS)
-    /// The board's touch view. A generator tied to it and given a location
-    /// plays in Apple Pencil Pro when the Pencil was the input — the iPad
-    /// itself has no Taptic Engine — and on the iPhone as before.
+    /// The board's touch view; drop points arrive in its coordinates.
     weak var canvas: UIView?
+    /// A canvas generator is the only kind that plays in Apple Pencil Pro (the
+    /// iPad itself has no Taptic Engine), and only from the view the Pencil
+    /// touched — so it moves to wherever a drag starts: the board or the tray.
+    private var pencil: UICanvasFeedbackGenerator?
+    private weak var pencilView: UIView?
+
+    func dragBegan(in view: UIView?) {
+        guard UIDevice.current.userInterfaceIdiom == .pad, let view else { return }
+        if view !== pencilView {
+            if let pencil, let old = pencilView { old.removeInteraction(pencil) }
+            pencil = UICanvasFeedbackGenerator(view: view)
+            pencilView = view
+        }
+        pencil?.prepare()
+    }
     #endif
 
     func impact(_ strength: Strength, at point: CGPoint? = nil, settings: AppSettings) {
@@ -95,8 +108,9 @@ final class Feedback {
         case .medium: .medium
         case .strong: .heavy
         }
-        if let canvas, let point {
-            UIImpactFeedbackGenerator(style: style, view: canvas).impactOccurred(at: point)
+        if UIDevice.current.userInterfaceIdiom == .pad, let pencil, let pencilView, let point {
+            let at = canvas.map { $0.convert(point, to: pencilView) } ?? point
+            if strength == .strong { pencil.pathCompleted(at: at) } else { pencil.alignmentOccurred(at: at) }
         } else {
             UIImpactFeedbackGenerator(style: style).impactOccurred()
         }

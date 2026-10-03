@@ -189,6 +189,7 @@ extension BoardEventView: UIViewRepresentable {
             switch recognizer.state {
             case .began:
                 lastPanTranslation = .zero
+                Feedback.shared.dragBegan(in: self)
                 isDraggingPiece = handler?.boardPointerDown(at: point, isSecondary: false) ?? false
             case .changed:
                 if isDraggingPiece {
