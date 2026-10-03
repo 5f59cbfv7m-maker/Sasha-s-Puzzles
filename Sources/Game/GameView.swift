@@ -12,6 +12,10 @@ struct GameView: View {
     @Environment(\.displayScale) private var displayScale
     @Environment(\.scenePhase) private var scenePhase
     @Environment(\.isCompact) private var isCompact
+    #if os(iOS)
+    @Environment(\.preferredPencilSqueezeAction) private var squeezeAction
+    @Environment(\.preferredPencilDoubleTapAction) private var doubleTapAction
+    #endif
 
     private var controller: BoardInputController { model.boardController }
     @State private var trayDrag = TrayDragState()
@@ -46,6 +50,16 @@ struct GameView: View {
         .onDisappear { session.saveNow() }
         .task(id: session.completedAt) { await reassemblyClicks() }
         .sheet(isPresented: $showOriginal) { OriginalImageSheet(session: session) }
+        #if os(iOS)
+        // Apple Pencil Pro: squeeze for a hint, double tap to undo — unless
+        // the player turned the gesture off in Settings → Apple Pencil.
+        .onPencilSqueeze { phase in
+            if case .ended = phase, squeezeAction != .ignore { session.requestHint() }
+        }
+        .onPencilDoubleTap { _ in
+            if doubleTapAction != .ignore, session.phase == .playing { session.undo() }
+        }
+        #endif
     }
 
     private var content: some View {
@@ -108,7 +122,7 @@ struct GameView: View {
             let outcome = session.placePieceFromTray(piece, at: boardPoint,
                                                      viewScale: session.viewport.scale,
                                                      assist: settings.snapAssist)
-            Feedback.shared.report(outcome, streak: session.isOnStreak, settings: settings)
+            Feedback.shared.report(outcome, streak: session.isOnStreak, at: location, settings: settings)
         }
     }
 

@@ -49,20 +49,22 @@ final class Feedback {
 
     /// `streak` marks a snap that extends a run without misses
     /// (`GameSession.isOnStreak`); it rings instead of the plain tap.
-    func report(_ outcome: SettleOutcome?, streak: Bool = false, settings: AppSettings) {
+    /// `point` is where the piece landed, in the board view: with it, the tap
+    /// plays in Apple Pencil Pro when the Pencil made the move.
+    func report(_ outcome: SettleOutcome?, streak: Bool = false, at point: CGPoint? = nil, settings: AppSettings) {
         guard let outcome, outcome.didSnap else { return }
         if outcome.didComplete {
             play(.complete, settings: settings)
-            impact(.strong, settings: settings)
+            impact(.strong, at: point, settings: settings)
         } else if streak {
             play(.streak, settings: settings)
-            impact(.medium, settings: settings)
+            impact(.medium, at: point, settings: settings)
         } else if outcome.didMerge {
             play(.merge, settings: settings)
-            impact(.medium, settings: settings)
+            impact(.medium, at: point, settings: settings)
         } else {
             play(.snap, settings: settings)
-            impact(.light, settings: settings)
+            impact(.light, at: point, settings: settings)
         }
     }
 
@@ -70,7 +72,14 @@ final class Feedback {
 
     enum Strength { case light, medium, strong }
 
-    func impact(_ strength: Strength, settings: AppSettings) {
+    #if os(iOS)
+    /// The board's touch view. A generator tied to it and given a location
+    /// plays in Apple Pencil Pro when the Pencil was the input — the iPad
+    /// itself has no Taptic Engine — and on the iPhone as before.
+    weak var canvas: UIView?
+    #endif
+
+    func impact(_ strength: Strength, at point: CGPoint? = nil, settings: AppSettings) {
         guard settings.hapticsEnabled else { return }
         #if os(macOS)
         // Trackpad haptics; a no-op on hardware without a Force Touch surface.
@@ -86,7 +95,11 @@ final class Feedback {
         case .medium: .medium
         case .strong: .heavy
         }
-        UIImpactFeedbackGenerator(style: style).impactOccurred()
+        if let canvas, let point {
+            UIImpactFeedbackGenerator(style: style, view: canvas).impactOccurred(at: point)
+        } else {
+            UIImpactFeedbackGenerator(style: style).impactOccurred()
+        }
         #endif
     }
 

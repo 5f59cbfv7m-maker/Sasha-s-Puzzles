@@ -161,6 +161,8 @@ private struct TrayCell: View {
     let pieceCell: CGSize
     let frame: CGFloat
     let size: CGFloat
+    /// A hovering Apple Pencil (or pointer) lifts the piece a few points.
+    @State private var isHovered = false
 
     var body: some View {
         ZStack {
@@ -177,6 +179,8 @@ private struct TrayCell: View {
                     .offset(x: (bounds.midX - pieceCell.width / 2) * k,
                             y: (bounds.midY - pieceCell.height / 2) * k)
                     .shadow(color: .black.opacity(0.3), radius: 4, y: 3)
+                    .scaleEffect(isHovered ? 1 + 6 / size : 1)
+                    .shadow(color: .black.opacity(isHovered ? 0.12 : 0), radius: 8, y: 5)
             } else {
                 Image(systemName: "puzzlepiece")
                     .foregroundStyle(Theme.track)
@@ -184,6 +188,7 @@ private struct TrayCell: View {
         }
         .frame(width: size, height: size)
         .contentShape(Rectangle())
+        .onHover { hovering in withAnimation(.easeOut(duration: 0.15)) { isHovered = hovering } }
     }
 }
 

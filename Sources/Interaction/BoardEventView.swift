@@ -157,6 +157,21 @@ extension BoardEventView: UIViewRepresentable {
             let pinch = UIPinchGestureRecognizer(target: self, action: #selector(handlePinch))
             pinch.delegate = self
             addGestureRecognizer(pinch)
+
+            // Apple Pencil hovering above the glass, or a trackpad pointer.
+            addGestureRecognizer(UIHoverGestureRecognizer(target: self, action: #selector(handleHover)))
+        }
+
+        override func didMoveToWindow() {
+            super.didMoveToWindow()
+            if window != nil { Feedback.shared.canvas = self }
+        }
+
+        @objc private func handleHover(_ recognizer: UIHoverGestureRecognizer) {
+            switch recognizer.state {
+            case .began, .changed: handler?.boardHover(at: recognizer.location(in: self))
+            default: handler?.boardHover(at: nil)
+            }
         }
 
         @available(*, unavailable)

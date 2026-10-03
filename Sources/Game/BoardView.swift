@@ -38,7 +38,7 @@ final class BoardInputController: BoardEventHandling {
         guard let session, let settings else { return }
         session.updateDrag(to: session.viewport.board(point))
         let outcome = session.endDrag(viewScale: session.viewport.scale, assist: settings.snapAssist)
-        Feedback.shared.report(outcome, streak: session.isOnStreak, settings: settings)
+        Feedback.shared.report(outcome, streak: session.isOnStreak, at: point, settings: settings)
     }
 
     func boardPointerCancelled() {
@@ -221,10 +221,27 @@ struct BoardView: View {
             let u = now.timeIntervalSince(landing.at) / GameSession.landingDuration
             return u < 1 ? (landing, u) : nil
         }
+        // A loose piece under a hovering Pencil (or pointer) rises a hair.
+        let hover = controller.hoverPoint
+        let hovered = hover.flatMap { point -> Int32? in
+            guard session.phase == .playing, session.drag == nil,
+                  let piece = session.piece(at: viewport.board(point)),
+                  let group = session.state.group(of: piece), !group.isLocked else { return nil }
+            return group.id
+        }
         for groupID in session.drawOrder {
             guard let group = session.state.groups[groupID] else { continue }
 
-            if let drag = session.drag, drag.group == groupID {
+            if groupID == hovered, let hover {
+                context.drawLayer { layer in
+                    layer.addFilter(.shadow(color: .black.opacity(0.12), radius: 6, x: 0, y: 3))
+                    layer.translateBy(x: hover.x, y: hover.y)
+                    layer.scaleBy(x: GameSession.liftScale, y: GameSession.liftScale)
+                    layer.translateBy(x: -hover.x, y: -hover.y)
+                    drawPieces(of: group, in: &layer, viewport: viewport, size: size, now: now,
+                               visible: visible, textures: textures, skipping: landing?.0.pieces ?? [])
+                }
+            } else if let drag = session.drag, drag.group == groupID {
                 // Held: a touch larger around the finger, over one soft, wide
                 // shadow for the whole cluster, so it reads as a lifted object.
                 let finger = viewport.screen(drag.grab + group.translation - drag.startTranslation)
