@@ -46,12 +46,19 @@
 > BUILT FOR THE IPAD
 > Drag pieces from the tray with your finger, pinch to zoom, scatter pieces across the whole table or keep them tidy. Works in portrait and landscape, light and dark.
 >
-> COMPLETELY OFFLINE
-> No account, no ads, no tracking, nothing leaves your device. The table is saved automatically — come back whenever you like.
+> NO ACCOUNT, NO ADS
+> No account, no ads, no tracking. The game works without internet and saves the table automatically. With iCloud, your progress, unfinished puzzles and settings follow you from iPad to iPhone and Mac.
 >
 > Also on Mac with keyboard shortcuts, undo and redo.
 
-**What's New (1.0):** First release.
+**What's New (1.2):**
+- Unfinished puzzles, your name and settings now sync between iPhone, iPad and Mac through iCloud.
+- A new finale: the finished picture breaks apart, puts itself back together and lights up.
+- Separate buttons to scatter and gather pieces, and a roomier tray on iPad.
+- A special sound for three correct pieces in a row.
+- The library shows how far you got.
+- Progress bars on achievements, photo credits in Settings.
+- Smoother music and gentler piece dragging.
 
 ## Русский — Russian
 
@@ -80,12 +87,19 @@
 > СДЕЛАНО ДЛЯ IPAD
 > Перетаскивайте детали из лотка пальцем, масштабируйте щипком, рассыпайте детали по всему столу или держите их в порядке. Работает в портретной и альбомной ориентации, в светлой и тёмной теме.
 >
-> ПОЛНОСТЬЮ ОФЛАЙН
-> Без аккаунта, рекламы и слежки — ничего не покидает устройство. Стол сохраняется сам, возвращайтесь когда удобно.
+> БЕЗ АККАУНТА И РЕКЛАМЫ
+> Без аккаунта, рекламы и слежки. Игра работает без интернета, а стол сохраняется сам. С iCloud прогресс, начатые пазлы и настройки переходят с iPad на iPhone и Mac.
 >
 > Есть и на Mac — с клавиатурными сокращениями, отменой и повтором.
 
-**What's New (1.0):** Первый выпуск.
+**What's New (1.2):**
+- Начатые пазлы, имя и настройки синхронизируются между iPhone, iPad и Mac через iCloud.
+- Новый финал: собранная картинка рассыпается, сама собирается заново и вспыхивает светом.
+- Отдельные кнопки «Рассыпать» и «Вернуть», на iPad — просторный лоток с крупными деталями.
+- Особый звук за три верные детали подряд.
+- В библиотеке видно, сколько уже собрано.
+- Шкалы прогресса у достижений, авторы фотографий в настройках.
+- Плавнее музыка, мягче перетаскивание деталей.
 
 ## Deutsch — German
 
@@ -114,12 +128,19 @@
 > FÜR DAS IPAD GEMACHT
 > Zieh Teile mit dem Finger aus der Ablage, zoome mit zwei Fingern, verstreue die Teile über den ganzen Tisch oder halte sie ordentlich. Funktioniert im Hoch- und Querformat, hell und dunkel.
 >
-> KOMPLETT OFFLINE
-> Kein Konto, keine Werbung, kein Tracking – nichts verlässt dein Gerät. Der Tisch wird automatisch gespeichert, komm zurück, wann du willst.
+> OHNE KONTO, OHNE WERBUNG
+> Kein Konto, keine Werbung, kein Tracking. Das Spiel läuft ohne Internet und speichert den Tisch automatisch. Mit iCloud wandern Fortschritt, angefangene Puzzles und Einstellungen vom iPad auf iPhone und Mac.
 >
 > Auch für den Mac – mit Tastaturkürzeln, Widerrufen und Wiederholen.
 
-**What's New (1.0):** Erste Version.
+**What's New (1.2):**
+- Angefangene Puzzles, dein Name und die Einstellungen werden über iCloud zwischen iPhone, iPad und Mac abgeglichen.
+- Neues Finale: Das fertige Bild zerfällt, setzt sich von selbst wieder zusammen und leuchtet auf.
+- Getrennte Tasten zum Verstreuen und Einsammeln, eine geräumigere Ablage auf dem iPad.
+- Ein eigener Klang für drei richtige Teile in Folge.
+- Die Bibliothek zeigt, wie weit du schon bist.
+- Fortschrittsbalken bei den Erfolgen, Fotonachweis in den Einstellungen.
+- Sanftere Musikübergänge und angenehmeres Ziehen der Teile.
 
 ## Français — French
 
@@ -148,12 +169,19 @@
 > PENSÉ POUR L'IPAD
 > Faites glisser les pièces du casier du doigt, zoomez à deux doigts, éparpillez les pièces sur toute la table ou gardez-les rangées. Portrait et paysage, clair et sombre.
 >
-> ENTIÈREMENT HORS LIGNE
-> Pas de compte, pas de publicité, pas de suivi : rien ne quitte votre appareil. La table est enregistrée automatiquement, revenez quand vous voulez.
+> SANS COMPTE NI PUBLICITÉ
+> Pas de compte, pas de publicité, pas de suivi. Le jeu fonctionne sans internet et enregistre la table automatiquement. Avec iCloud, votre progression, vos puzzles en cours et vos réglages vous suivent de l’iPad à l’iPhone et au Mac.
 >
 > Également sur Mac, avec raccourcis clavier, annuler et rétablir.
 
-**What's New (1.0):** Première version.
+**What's New (1.2):**
+- Les puzzles en cours, votre prénom et vos réglages se synchronisent entre iPhone, iPad et Mac via iCloud.
+- Nouveau final : l’image terminée se disperse, se reconstitue toute seule et s’illumine.
+- Des boutons séparés pour éparpiller et ramasser les pièces, un casier plus spacieux sur iPad.
+- Un son spécial pour trois bonnes pièces d’affilée.
+- La bibliothèque montre où vous en êtes.
+- Des barres de progression pour les succès, les crédits photo dans les réglages.
+- Une musique plus douce et des pièces plus agréables à déplacer.
 
 ## Español — Spanish
 
@@ -182,12 +210,19 @@
 > HECHO PARA EL IPAD
 > Arrastra piezas de la bandeja con el dedo, haz zoom con dos dedos, esparce las piezas por toda la mesa o mantenlas ordenadas. Vertical y horizontal, claro y oscuro.
 >
-> TOTALMENTE SIN CONEXIÓN
-> Sin cuenta, sin anuncios, sin seguimiento: nada sale de tu dispositivo. La mesa se guarda sola, vuelve cuando quieras.
+> SIN CUENTA NI ANUNCIOS
+> Sin cuenta, sin anuncios, sin seguimiento. El juego funciona sin internet y la mesa se guarda sola. Con iCloud, tu progreso, los puzles empezados y los ajustes pasan del iPad al iPhone y al Mac.
 >
 > También en Mac, con atajos de teclado, deshacer y rehacer.
 
-**What's New (1.0):** Primera versión.
+**What's New (1.2):**
+- Los puzles empezados, tu nombre y los ajustes se sincronizan entre iPhone, iPad y Mac con iCloud.
+- Nuevo final: la imagen terminada se deshace, se vuelve a montar sola y se ilumina.
+- Botones separados para esparcir y recoger piezas, y una bandeja más amplia en el iPad.
+- Un sonido especial por tres piezas correctas seguidas.
+- La biblioteca muestra cuánto llevas.
+- Barras de progreso en los logros y créditos de las fotos en Ajustes.
+- Música más suave y piezas más agradables de arrastrar.
 
 ## Italiano — Italian
 
@@ -216,12 +251,19 @@
 > PENSATO PER L'IPAD
 > Trascina i pezzi dal vassoio con il dito, ingrandisci con due dita, sparpaglia i pezzi su tutto il tavolo o tienili in ordine. Verticale e orizzontale, chiaro e scuro.
 >
-> COMPLETAMENTE OFFLINE
-> Nessun account, nessuna pubblicità, nessun tracciamento: niente lascia il dispositivo. Il tavolo si salva da solo, torna quando vuoi.
+> NESSUN ACCOUNT, NESSUNA PUBBLICITÀ
+> Nessun account, nessuna pubblicità, nessun tracciamento. Il gioco funziona senza internet e il tavolo si salva da solo. Con iCloud progressi, puzzle iniziati e impostazioni passano da iPad a iPhone e Mac.
 >
 > C'è anche su Mac, con scorciatoie da tastiera, annulla e ripeti.
 
-**What's New (1.0):** Prima versione.
+**What's New (1.2):**
+- Puzzle iniziati, nome e impostazioni si sincronizzano tra iPhone, iPad e Mac tramite iCloud.
+- Nuovo finale: l’immagine completata si scompone, si ricompone da sola e si illumina.
+- Pulsanti separati per sparpagliare e raccogliere i pezzi, e un vassoio più ampio su iPad.
+- Un suono speciale per tre pezzi giusti di fila.
+- La libreria mostra a che punto sei.
+- Barre di avanzamento per i traguardi, crediti fotografici nelle impostazioni.
+- Musica più morbida e pezzi più piacevoli da trascinare.
 
 ## Português (Brasil) — Portuguese (Brazil)
 
@@ -250,12 +292,19 @@
 > FEITO PARA O IPAD
 > Arraste as peças da bandeja com o dedo, use o zoom com dois dedos, espalhe as peças pela mesa toda ou mantenha tudo em ordem. Retrato e paisagem, claro e escuro.
 >
-> TOTALMENTE OFFLINE
-> Sem conta, sem anúncios, sem rastreamento — nada sai do seu aparelho. A mesa é salva sozinha; volte quando quiser.
+> SEM CONTA E SEM ANÚNCIOS
+> Sem conta, sem anúncios, sem rastreamento. O jogo funciona sem internet e a mesa é salva sozinha. Com o iCloud, seu progresso, os quebra-cabeças começados e os ajustes vão do iPad para o iPhone e o Mac.
 >
 > Também no Mac, com atalhos de teclado, desfazer e refazer.
 
-**What's New (1.0):** Primeira versão.
+**What's New (1.2):**
+- Quebra-cabeças começados, seu nome e os ajustes agora sincronizam entre iPhone, iPad e Mac pelo iCloud.
+- Novo final: a imagem pronta se desfaz, se monta sozinha de novo e se ilumina.
+- Botões separados para espalhar e recolher peças, e uma bandeja mais espaçosa no iPad.
+- Um som especial para três peças certas seguidas.
+- A biblioteca mostra até onde você chegou.
+- Barras de progresso nas conquistas e créditos das fotos nos Ajustes.
+- Música mais suave e peças mais gostosas de arrastar.
 
 ## 日本語 — Japanese
 
@@ -284,12 +333,19 @@
 > iPad のために
 > トレイからピースを指でドラッグ、ピンチで拡大縮小。ピースをテーブル全体に散らすことも、きちんと並べておくこともできます。縦向きも横向きも、ライトもダークも。
 >
-> 完全オフライン
-> アカウントも広告もトラッキングもありません。データが端末から出ることはありません。テーブルは自動保存されるので、いつでも続きから。
+> アカウント不要・広告なし
+> アカウントも広告もトラッキングもありません。インターネットなしで遊べて、テーブルは自動保存。iCloud を使えば、進行状況や途中のパズル、設定が iPad から iPhone や Mac へ引き継がれます。
 >
 > Mac 版もあります。キーボードショートカット、取り消しとやり直しに対応。
 
-**What's New (1.0):** 最初のリリースです。
+**What's New (1.2):**
+- 途中のパズル、名前、設定が iCloud で iPhone・iPad・Mac 間で同期されるようになりました。
+- 新しいフィナーレ：完成した絵がばらばらになり、ひとりでに組み上がって光ります。
+- 「ばらまく」と「集める」のボタンを分けました。iPad ではトレイが広くなりました。
+- 3 つ続けて正しくはめると特別な音が鳴ります。
+- ライブラリで進み具合がひと目でわかります。
+- 実績に進捗バー、設定に写真のクレジットを追加しました。
+- 音楽の切り替えがなめらかに、ピースのドラッグがより心地よくなりました。
 
 ## 한국어 — Korean
 
@@ -318,12 +374,19 @@
 > iPad를 위해 만들었습니다
 > 트레이에서 조각을 손가락으로 끌어오고, 두 손가락으로 확대·축소하고, 조각을 테이블 전체에 흩뿌리거나 가지런히 둘 수 있습니다. 세로와 가로, 밝은 테마와 어두운 테마를 모두 지원합니다.
 >
-> 완전 오프라인
-> 계정도, 광고도, 추적도 없습니다. 어떤 데이터도 기기를 떠나지 않습니다. 테이블은 자동으로 저장되니 언제든 이어서 맞추세요.
+> 계정도 광고도 없이
+> 계정도, 광고도, 추적도 없습니다. 인터넷 없이도 플레이할 수 있고 테이블은 자동으로 저장됩니다. iCloud를 사용하면 진행 상황, 하던 퍼즐, 설정이 iPad에서 iPhone과 Mac으로 이어집니다.
 >
 > Mac에서도 사용할 수 있습니다. 단축키, 실행 취소와 다시 실행을 지원합니다.
 
-**What's New (1.0):** 첫 번째 출시입니다.
+**What's New (1.2):**
+- 하던 퍼즐, 이름, 설정이 이제 iCloud로 iPhone, iPad, Mac 간에 동기화됩니다.
+- 새로운 피날레: 완성된 그림이 흩어졌다가 스스로 다시 맞춰지고 빛납니다.
+- 흩뿌리기와 모으기 버튼을 분리하고, iPad에서는 트레이를 넓혔습니다.
+- 세 조각을 연속으로 맞히면 특별한 소리가 납니다.
+- 라이브러리에서 얼마나 맞췄는지 보입니다.
+- 업적 진행 막대와 설정의 사진 출처를 추가했습니다.
+- 더 부드러운 음악 전환과 더 편안한 조각 드래그.
 
 ## 简体中文 — Chinese (Simplified)
 
@@ -352,10 +415,17 @@
 > 为 iPad 而生
 > 用手指把拼块从托盘拖出来，双指缩放，把拼块撒满整张桌子，或者让它们整整齐齐。竖屏横屏、浅色深色都支持。
 >
-> 完全离线
-> 没有账号，没有广告，没有追踪，数据不会离开你的设备。拼图桌会自动保存，随时回来继续。
+> 无需账号，没有广告
+> 没有账号，没有广告，没有追踪。无需联网即可游玩，拼图桌会自动保存。开启 iCloud 后，进度、未完成的拼图和设置会从 iPad 同步到 iPhone 和 Mac。
 >
 > Mac 版同样具备：键盘快捷键、撤销与重做。
 
-**What's New (1.0):** 首个版本。
+**What's New (1.2):**
+- 未完成的拼图、你的名字和设置现在通过 iCloud 在 iPhone、iPad 和 Mac 之间同步。
+- 全新结尾：完成的图片散开，再自动拼回原样并闪耀光芒。
+- “散开”和“收回”拆分为两个按钮，iPad 上的托盘更宽敞。
+- 连续放对三块会响起特别的音效。
+- 图库中可以看到每幅拼图的进度。
+- 成就增加进度条，设置中新增照片来源。
+- 音乐过渡更柔和，拖动拼块更顺手。
 
