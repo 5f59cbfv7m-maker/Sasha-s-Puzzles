@@ -17,6 +17,10 @@ struct GameView: View {
     @Environment(\.preferredPencilDoubleTapAction) private var doubleTapAction
     #endif
 
+    #if os(macOS)
+    @State private var headerWidth: CGFloat = 0
+    #endif
+
     private var controller: BoardInputController { model.boardController }
     @State private var trayDrag = TrayDragState()
     @State private var showOriginal = false
@@ -94,13 +98,8 @@ struct GameView: View {
 
     // MARK: - Pieces
 
-    /// Zoom buttons only on the Mac: on a touch screen everyone pinches, and
-    /// the panel covered the board's corner on a phone.
     private var board: some View {
         BoardView(session: session, settings: settings, controller: controller)
-        #if os(macOS)
-            .overlay(alignment: .bottomTrailing) { zoomControls.padding(18) }
-        #endif
     }
 
     /// The board fills the game space up to the tray, so its frame is derived
@@ -191,17 +190,18 @@ struct GameView: View {
     }
 
     #if os(macOS)
+    /// Zoom only on the Mac, in the header out of the way of the pieces: on a
+    /// touch screen everyone pinches.
     private var zoomControls: some View {
-        VStack(spacing: 6) {
-            zoomButton("plus", "Zoom in") { controller.zoomStep(1.25) }
+        HStack(spacing: 0) {
             zoomButton("minus", "Zoom out") { controller.zoomStep(0.8) }
-            Theme.track.frame(width: 24, height: 1).padding(.vertical, 2)
+            zoomButton("plus", "Zoom in") { controller.zoomStep(1.25) }
+            Theme.track.frame(width: 1, height: 16).padding(.horizontal, 4)
             zoomButton("rectangle.center.inset.filled", "Fit board") { controller.fitBoard() }
             zoomButton("arrow.up.left.and.arrow.down.right", "Fit table") { controller.fitTable() }
         }
-        .padding(10)
-        .background(Theme.card, in: RoundedRectangle(cornerRadius: 22, style: .continuous))
-        .shadow(color: .black.opacity(0.16), radius: 6, y: 3)
+        .padding(.horizontal, 4)
+        .background(Theme.chip, in: Capsule())
     }
 
     private func zoomButton(_ symbol: String, _ label: LocalizedStringKey,
@@ -210,7 +210,7 @@ struct GameView: View {
             Image(systemName: symbol)
                 .font(.system(size: 15, weight: .bold))
                 .foregroundStyle(Theme.text)
-                .frame(width: 38, height: 38)
+                .frame(width: 36, height: 34)
                 .contentShape(Circle())
         }
         .buttonStyle(PressableStyle())
@@ -231,6 +231,10 @@ struct GameView: View {
                 .lineLimit(1)
                 .minimumScaleFactor(0.7)
             Spacer(minLength: 4)
+            #if os(macOS)
+            // A narrow window keeps the clock and actions; zoom is in the View menu.
+            if headerWidth >= 900 { zoomControls }
+            #endif
             statusChip
             HStack(spacing: 6) {
                 RoundIconButton(symbol: "lightbulb", style: .sage, size: 42) { session.requestHint() }
@@ -266,6 +270,9 @@ struct GameView: View {
         }
         .padding(.horizontal, isCompact ? 12 : 22)
         .frame(height: isCompact ? 56 : 70)
+        #if os(macOS)
+        .onGeometryChange(for: CGFloat.self) { $0.size.width } action: { headerWidth = $0 }
+        #endif
         .background(Theme.card.ignoresSafeArea())
     }
 
