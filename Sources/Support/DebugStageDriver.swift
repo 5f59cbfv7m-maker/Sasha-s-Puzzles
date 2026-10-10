@@ -99,6 +99,45 @@ enum DebugStageDriver {
             model.boardController.fitTable()
             await settle(0.6)
 
+        case "showcase":
+            // A hands-free solve for the promo video: rotate first, cut,
+            // scatter, then carry every piece home at a human pace.
+            await rotateIfAsked()
+            model.start(item: picture, aspect: .landscape32, pieces: 48)
+            await waitForBoard(model)
+            model.session?.scatterTray()
+            await settle(0.5)
+            model.boardController.fitTable()
+            await settle(2.0)
+            if let session = model.session { await carryHome(session) }
+            return
+
+        case "preview":
+            // The App Store preview, in one take: the library, the set-up,
+            // a scatter, a solve at a player's pace and the finale.
+            #if os(iOS)
+            let phone = UIDevice.current.userInterfaceIdiom == .phone
+            #else
+            let phone = false
+            #endif
+            // The set-up screen shows the choice the game then starts with.
+            model.settings.defaultDifficulty = .hard
+            model.settings.defaultAspect = phone ? .portrait23 : .square
+            // Generous: a cold launch's splash can run long, and a push made
+            // under it shows the set-up for a blink only.
+            await settle(5.5)
+            model.openSetup(for: picture)
+            await settle(3.0)
+            model.start(item: picture, aspect: phone ? .portrait23 : .square, pieces: 48)
+            await waitForBoard(model)
+            await settle(1.0)
+            model.session?.scatterTray()
+            await settle(0.6)
+            model.boardController.fitTable()
+            await settle(1.2)
+            if let session = model.session { await carryHome(session) }
+            return
+
         case "hugeSolved":
             model.start(item: picture, aspect: .landscape32, pieces: 800)
             await waitForBoard(model, timeout: 90)
@@ -109,9 +148,13 @@ enum DebugStageDriver {
         default:
             break
         }
+        await rotateIfAsked()
+    }
+
+    /// `simctl` cannot rotate a simulator; `--landscape` rotates the scene
+    /// once the stage is up, the way a player turns the phone mid-game.
+    private static func rotateIfAsked() async {
         #if canImport(UIKit)
-        // `simctl` cannot rotate a simulator; `--landscape` rotates the scene
-        // once the stage is up, the way a player turns the phone mid-game.
         if CommandLine.arguments.contains("--landscape") || CommandLine.arguments.contains("--landscape-left") {
             let scene = UIApplication.shared.connectedScenes.first as? UIWindowScene
             let orientation: UIInterfaceOrientationMask = CommandLine.arguments.contains("--landscape-left") ? .landscapeLeft : .landscapeRight
@@ -119,6 +162,45 @@ enum DebugStageDriver {
             await settle(1.0)
         }
         #endif
+    }
+
+    /// Animated version of `assembleSome`: edge pieces first, then the middle
+    /// row by row, each carried along an eased arc in ~0.5 s, as a player would.
+    private static func carryHome(_ session: GameSession) async {
+        let columns = session.geometry.columns, rows = session.geometry.rows
+        func isEdge(_ p: Int32) -> Bool {
+            let c = Int(p) % columns, r = Int(p) / columns
+            return c == 0 || r == 0 || c == columns - 1 || r == rows - 1
+        }
+        let order = (0..<Int32(columns * rows)).sorted { a, b in
+            isEdge(a) != isEdge(b) ? isEdge(a) : a < b
+        }
+        let cell = session.geometry.cellSize
+        // A piece buried under another can't be grabbed yet; later passes
+        // pick it up once whatever covered it has gone home.
+        for _ in 0..<4 {
+            for piece in order {
+                guard let group = session.state.group(of: piece), !group.isHome else { continue }
+                let home = session.state.solvedOrigin(of: piece) + CGPoint(x: cell.width / 2, y: cell.height / 2)
+                let offsets = [CGPoint.zero, CGPoint(x: 0.25, y: 0), CGPoint(x: -0.25, y: 0), CGPoint(x: 0, y: 0.25), CGPoint(x: 0, y: -0.25)]
+                guard let grab = offsets.map({ home + group.translation + CGPoint(x: $0.x * cell.width, y: $0.y * cell.height) })
+                        .first(where: { point in session.piece(at: point).flatMap { session.state.group(of: $0)?.id } == group.id }),
+                      session.beginDrag(at: grab) else { continue }
+                let target = grab - group.translation
+                let steps = 30
+                for i in 1...steps {
+                    let t = Double(i) / Double(steps)
+                    let e = t < 0.5 ? 4 * t * t * t : 1 - pow(-2 * t + 2, 3) / 2
+                    let lift = sin(.pi * t) * cell.height * 0.6
+                    session.updateDrag(to: CGPoint(x: grab.x + (target.x - grab.x) * e,
+                                                   y: grab.y + (target.y - grab.y) * e - lift))
+                    await settle(1.0 / 60)
+                }
+                _ = session.endDrag(viewScale: session.viewport.scale, assist: .generous)
+                await settle(0.18)
+            }
+            if session.state.isComplete { break }
+        }
     }
 
     /// Snaps pieces into place through the real drag path, so what ends up on
