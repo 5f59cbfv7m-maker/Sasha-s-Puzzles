@@ -21,9 +21,9 @@
 
 ## English (U.S.)
 
-**Subtitle:** Jigsaws from your own photos
+**Subtitle:** Cozy puzzles for every day
 
-**Promotional text:** A calm jigsaw table with a new puzzle every day. Turn any photo into a puzzle — 12 to 800 pieces, fully offline.
+**Promotional text:** A new puzzle every day. Solve seven in a row and a secret picture opens up. 170 photos, your own pictures, 12 to 800 pieces and no ads.
 
 **Keywords:** `jigsaw,daily,relax,offline,family,kids,brain,mindful,zen,nature,animals,landscape,art,picture,calm`
 
@@ -52,9 +52,9 @@
 
 ## Русский — Russian
 
-**Subtitle:** Пазлы из ваших фотографий
+**Subtitle:** Уютные пазлы на каждый день
 
-**Promotional text:** Спокойный стол для пазлов и новый пазл каждый день. Любое фото становится пазлом — от 12 до 800 деталей, полностью офлайн.
+**Promotional text:** Новый пазл каждый день. Соберите семь подряд — и откроется секретная картинка. 170 фотографий, ваши снимки, от 12 до 800 деталей и никакой рекламы.
 
 **Keywords:** `пазл,головоломка,мозаика,фото,картинки,антистресс,релакс,офлайн,семья,дети,природа,животные,пейзаж`
 
@@ -83,9 +83,9 @@
 
 ## Deutsch — German
 
-**Subtitle:** Puzzles aus deinen Fotos
+**Subtitle:** Gemütlich puzzeln, jeden Tag
 
-**Promotional text:** Ein ruhiger Puzzletisch und jeden Tag ein neues Puzzle. Jedes Foto wird zum Puzzle – 12 bis 800 Teile, komplett offline.
+**Promotional text:** Jeden Tag ein neues Puzzle. Sieben in Folge öffnen ein Geheimbild. 170 Fotos, deine eigenen Bilder, 12 bis 800 Teile und keine Werbung.
 
 **Keywords:** `legespiel,täglich,entspannen,offline,familie,kinder,bilder,gehirnjogging,natur,tiere,landschaft`
 
@@ -114,9 +114,9 @@
 
 ## Français — French
 
-**Subtitle:** Des puzzles avec vos photos
+**Subtitle:** Des puzzles doux chaque jour
 
-**Promotional text:** Une table de puzzle paisible et un nouveau puzzle chaque jour. N'importe quelle photo devient un puzzle : de 12 à 800 pièces, hors ligne.
+**Promotional text:** Un nouveau puzzle chaque jour. Sept d’affilée, et une image secrète s’ouvre. 170 photos, vos propres clichés, de 12 à 800 pièces et aucune publicité.
 
 **Keywords:** `casse-tête,jeu,détente,quotidien,hors,ligne,famille,enfants,pièces,image,zen,nature,animaux,paysage`
 
@@ -145,9 +145,9 @@
 
 ## Español — Spanish
 
-**Subtitle:** Rompecabezas con tus fotos
+**Subtitle:** Puzles acogedores cada día
 
-**Promotional text:** Una mesa de rompecabezas tranquila y un puzle nuevo cada día. Cualquier foto se convierte en rompecabezas: de 12 a 800 piezas, sin conexión.
+**Promotional text:** Un puzle nuevo cada día. Resuelve siete seguidos y se abrirá una imagen secreta. 170 fotos, tus propias fotos, de 12 a 800 piezas y sin anuncios.
 
 **Keywords:** `puzle,juego,relax,diario,offline,familia,niños,piezas,calma,imagen,mente,naturaleza,animales,paisaje`
 
@@ -176,9 +176,9 @@
 
 ## Italiano — Italian
 
-**Subtitle:** Puzzle dalle tue foto
+**Subtitle:** Puzzle accoglienti ogni giorno
 
-**Promotional text:** Un tavolo da puzzle tranquillo e un puzzle nuovo ogni giorno. Qualsiasi foto diventa un puzzle: da 12 a 800 pezzi, completamente offline.
+**Promotional text:** Un nuovo puzzle ogni giorno. Completane sette di fila e si apre un’immagine segreta. 170 foto, i tuoi scatti, da 12 a 800 pezzi e nessuna pubblicità.
 
 **Keywords:** `rompicapo,gioco,relax,giornaliero,offline,famiglia,bambini,pezzi,immagini,natura,animali,paesaggi`
 
@@ -207,9 +207,9 @@
 
 ## Português (Brasil) — Portuguese (Brazil)
 
-**Subtitle:** Quebra-cabeças com suas fotos
+**Subtitle:** Quebra-cabeças para todo dia
 
-**Promotional text:** Uma mesa de quebra-cabeça tranquila e um novo desafio todo dia. Qualquer foto vira quebra-cabeça: de 12 a 800 peças, totalmente offline.
+**Promotional text:** Um quebra-cabeça novo todo dia. Monte sete seguidos e uma imagem secreta se abre. 170 fotos, suas próprias fotos, de 12 a 800 peças e sem anúncios.
 
 **Keywords:** `quebra-cabeça,jogo,relaxar,diário,offline,família,crianças,peças,imagem,natureza,animais,paisagem`
 
@@ -238,9 +238,9 @@
 
 ## 日本語 — Japanese
 
-**Subtitle:** 写真がそのままジグソーパズルに
+**Subtitle:** 毎日楽しめる癒しのパズル
 
-**Promotional text:** 静かなパズルテーブルと、毎日届く新しいパズル。どんな写真もパズルになります。12〜800ピース、完全オフライン。
+**Promotional text:** 毎日新しいパズル。7日連続で完成させるとシークレット写真が開きます。170枚の写真とあなたの写真、12〜800ピース、広告なし。
 
 **Keywords:** `パズル,脳トレ,暇つぶし,癒し,リラックス,毎日,オフライン,家族,子ども,知育,ピース,絵合わせ,風景,動物,自然,大人`
 
@@ -269,9 +269,9 @@
 
 ## 한국어 — Korean
 
-**Subtitle:** 내 사진으로 만드는 직소 퍼즐
+**Subtitle:** 매일 즐기는 아늑한 퍼즐
 
-**Promotional text:** 조용한 퍼즐 테이블과 매일 새로 도착하는 퍼즐. 어떤 사진이든 퍼즐이 됩니다. 12~800조각, 완전 오프라인.
+**Promotional text:** 매일 새로운 퍼즐. 7일 연속 완성하면 비밀 사진이 열려요. 170장의 사진과 내 사진, 12~800조각, 광고 없음.
 
 **Keywords:** `직소퍼즐,퍼즐게임,사진퍼즐,두뇌,힐링,휴식,매일,오프라인,가족,아이,조각,그림맞추기,풍경,동물,자연`
 
@@ -300,9 +300,9 @@
 
 ## 简体中文 — Chinese (Simplified)
 
-**Subtitle:** 用你的照片拼拼图
+**Subtitle:** 每天都想玩的温馨拼图
 
-**Promotional text:** 安静的拼图桌，每天一张新拼图。任何照片都能变成拼图——12 到 800 片，完全离线。
+**Promotional text:** 每天一幅新拼图。连续完成 7 天，解锁一张秘密图片。170 张照片和你自己的照片，12 到 800 块，没有广告。
 
 **Keywords:** `拼图游戏,益智,休闲,解压,放松,每日,离线,家庭,儿童,碎片,图片,风景,动物,自然,智力`
 
@@ -331,9 +331,9 @@
 
 ## ไทย — Thai
 
-**Subtitle:** จิ๊กซอว์จากรูปของคุณเอง
+**Subtitle:** จิ๊กซอว์แสนอบอุ่นสำหรับทุกวัน
 
-**Promotional text:** โต๊ะจิ๊กซอว์แสนสงบพร้อมจิ๊กซอว์ใหม่ทุกวัน เปลี่ยนรูปใดก็ได้ให้เป็นจิ๊กซอว์ ตั้งแต่ 12 ถึง 800 ชิ้น เล่นออฟไลน์ได้ทั้งหมด
+**Promotional text:** จิ๊กซอว์ใหม่ทุกวัน ต่อครบเจ็ดวันติดกันแล้วภาพลับจะเปิดออก ภาพถ่าย 170 ภาพ รูปของคุณเอง ตั้งแต่ 12 ถึง 800 ชิ้น และไม่มีโฆษณา
 
 **Keywords:** `จิ๊กซอว์,ปริศนา,ต่อภาพ,รูปภาพ,ผ่อนคลาย,คลายเครียด,ออฟไลน์,ครอบครัว,เด็ก,ธรรมชาติ,สัตว์,วิว,ฝึกสมอง`
 
