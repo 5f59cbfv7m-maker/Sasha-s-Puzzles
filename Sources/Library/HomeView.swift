@@ -16,9 +16,10 @@ struct HomeView: View {
     private var gutter: CGFloat { isCompact ? 16 : 26 }
 
     var body: some View {
-        ScrollView {
+        let unlocks = model.unlocks
+        return ScrollView {
             LazyVStack(alignment: .leading, spacing: 26, pinnedViews: [.sectionHeaders]) {
-                header
+                header(points: unlocks.points)
                 dailyCard
                 if !model.resumable.isEmpty {
                     continueSection
@@ -28,7 +29,8 @@ struct HomeView: View {
                     LazyVGrid(columns: columns, spacing: 18) {
                         ForEach(items) { item in
                             PictureCard(item: item, solved: solvedTime(for: item),
-                                        inProgress: unfinishedGame(for: item)) {
+                                        inProgress: unfinishedGame(for: item),
+                                        lock: lock(for: item, unlocks)) {
                                 model.openSetup(for: item)
                             }
                             .contextMenu { contextMenu(for: item) }
@@ -80,6 +82,11 @@ struct HomeView: View {
         model.library.items(in: category)
     }
 
+    private func lock(for item: LibraryItem, _ unlocks: AppModel.Unlocks) -> PictureLock? {
+        guard model.isLocked(item, unlocks) else { return nil }
+        return item.category == .secret ? .secret : .points(LibraryCatalog.requiredPoints(for: item.id) ?? 0)
+    }
+
     private func solvedTime(for item: LibraryItem) -> TimeInterval? {
         model.stats.bestTime(for: item.id)
     }
@@ -94,11 +101,12 @@ struct HomeView: View {
     /// name came out as "Sasha's Puzz…" even on the widest iPhone — so the
     /// buttons move up into a bar of their own and the title sits under
     /// them, like a large navigation title.
-    private var header: some View {
+    private func header(points: Int) -> some View {
         Group {
             if isCompact {
                 VStack(alignment: .leading, spacing: 8) {
                     HStack {
+                        pointsChip(points)
                         Spacer()
                         headerButtons
                     }
@@ -112,6 +120,7 @@ struct HomeView: View {
                     headerMark
                     headerTitle
                     Spacer()
+                    pointsChip(points)
                     headerButtons
                 }
             }
@@ -134,6 +143,23 @@ struct HomeView: View {
             .font(Theme.display(isCompact ? 30 : 34))
             .lineLimit(1)
             .minimumScaleFactor(0.7)
+    }
+
+    /// The points, opening the profile where the next picture's progress is.
+    private func pointsChip(_ points: Int) -> some View {
+        Button { model.showProfile = true } label: {
+            HStack(spacing: 6) {
+                Image(systemName: "star.fill").font(.system(size: 13, weight: .bold))
+                    .foregroundStyle(Theme.accent)
+                Text(points.formatted()).font(Theme.body(15, .bold).monospacedDigit())
+            }
+            .foregroundStyle(Theme.text)
+            .padding(.horizontal, 14)
+            .frame(height: isCompact ? 40 : 44)
+            .background(Theme.chip, in: Capsule())
+        }
+        .buttonStyle(PressableStyle())
+        .accessibilityLabel(Text("\(points) points"))
     }
 
     private var headerButtons: some View {
@@ -188,20 +214,28 @@ struct HomeView: View {
                             : "\(LibraryCatalog.dailyPieces) pieces")
                 .font(Theme.body(15))
                 .foregroundStyle(Theme.muted)
-            // The week: one dot per day of the streak, the next one dashed.
+            // The week toward the next gift: six dots, then the gift as the
+            // seventh day, which opens it. Until today's puzzle is done a
+            // finished week shows as the start of the next one.
+            let week = solvedToday ? (streak - 1) % 7 + 1 : streak % 7
             HStack(spacing: 6) {
-                ForEach(0..<7, id: \.self) { day in
-                    if day < min(streak, 7) {
+                ForEach(0..<6, id: \.self) { day in
+                    if day < week {
                         Image(systemName: "checkmark")
                             .font(.system(size: 11, weight: .heavy))
                             .foregroundStyle(Theme.onAccent)
                             .frame(width: 22, height: 22)
                             .background(Theme.accent, in: Circle())
                     } else {
-                        Circle().strokeBorder(Theme.track, style: StrokeStyle(lineWidth: 2, dash: [3, 3]))
+                        Circle().strokeBorder(Theme.accent.opacity(0.55), style: StrokeStyle(lineWidth: 2.5, lineCap: .round, dash: [3.5, 3.5]))
                             .frame(width: 22, height: 22)
                     }
                 }
+                // Six dots done: the gift is next (or open) and comes alive.
+                GiftPiece(reached: week >= 6, size: 34)
+                    // The piece sits in the lower part of the picture, under
+                    // the bow; centre the piece, not the picture, on the dots.
+                    .alignmentGuide(VerticalAlignment.center) { $0.height * 0.62 }
             }
             .padding(.top, 8)
             .accessibilityHidden(true)
@@ -283,7 +317,7 @@ struct HomeView: View {
                 chip(title: "\(String(localized: "All")) \(model.library.items(in: nil).count)",
                      symbol: "square.grid.2x2.fill", value: nil)
                 ForEach(ArtCategory.allCases) { candidate in
-                    chip(title: candidate.title, symbol: nil, value: candidate)
+                    chip(title: candidate.title, symbol: candidate == .secret ? "gift.fill" : nil, value: candidate)
                 }
             }
             .padding(.horizontal, gutter)
@@ -315,7 +349,9 @@ struct HomeView: View {
 
     @ViewBuilder
     private func contextMenu(for item: LibraryItem) -> some View {
-        Button { model.openSetup(for: item) } label: { Label("Start Puzzle", systemImage: "play") }
+        if !model.isLocked(item, model.unlocks) {
+            Button { model.openSetup(for: item) } label: { Label("Start Puzzle", systemImage: "play") }
+        }
         if item.isUserPhoto {
             Button(role: .destructive) {
                 model.library.delete(item)
@@ -363,12 +399,21 @@ struct HomeView: View {
 
 // MARK: - Cards
 
+enum PictureLock: Equatable {
+    /// A reward picture: opens at this many points.
+    case points(Int)
+    /// A secret picture: opens with a week of daily puzzles in a row.
+    case secret
+}
+
 private struct PictureCard: View {
     let item: LibraryItem
     /// Elapsed time of a finished game with this picture, if any.
     let solved: TimeInterval?
     /// An unfinished saved game with this picture, if any.
     let inProgress: GameSnapshot?
+    /// Why the picture is still closed; nil when it is open.
+    var lock: PictureLock?
     let action: () -> Void
 
     var body: some View {
@@ -379,15 +424,42 @@ private struct PictureCard: View {
                     .washed()
                     .aspectRatio(3.0 / 2.0, contentMode: .fit)
                     .frame(maxWidth: .infinity)
+                    // A secret is blurred past recognition; a points reward
+                    // only enough to tease.
+                    .blur(radius: lock == nil ? 0 : lock == .secret ? 40 : 10)
+                    .overlay { if lock == .secret { Theme.card.opacity(0.35) } }
+                    .clipped()
+                    .overlay {
+                        switch lock {
+                        case .secret:
+                            GiftPiece(reached: true, size: 64, still: true)
+                                .shadow(color: .black.opacity(0.2), radius: 6, y: 3)
+                        case .points:
+                            Image(systemName: "lock.fill")
+                                .font(.system(size: 22, weight: .bold))
+                                .foregroundStyle(Theme.onAccent)
+                                .frame(width: 54, height: 54)
+                                .background(Theme.accent, in: Circle())
+                                .shadow(color: .black.opacity(0.2), radius: 6, y: 3)
+                        case nil:
+                            EmptyView()
+                        }
+                    }
                     .overlay(alignment: .topLeading) { badge.padding(10) }
                 VStack(alignment: .leading, spacing: 6) {
-                    Text(item.title)
+                    Text(lock == .secret ? String(localized: "Secret picture") : item.title)
                         .font(Theme.body(17, .bold))
                         .lineLimit(1)
                     HStack(spacing: 8) {
-                        Text(item.category.title)
-                        Circle().fill(Theme.track).frame(width: 4, height: 4)
-                        if let solved {
+                        if lock != .secret {
+                            Text(item.category.title)
+                            Circle().fill(Theme.track).frame(width: 4, height: 4)
+                        }
+                        if lock == .secret {
+                            Text("A gift for 7 daily puzzles in a row")
+                        } else if case let .points(need) = lock {
+                            Text("Unlocks at \(need) points").monospacedDigit()
+                        } else if let solved {
                             Text(TimeFormatting.clock(solved)).monospacedDigit()
                         } else {
                             Text("not solved")
@@ -404,8 +476,16 @@ private struct PictureCard: View {
             .clipShape(RoundedRectangle(cornerRadius: Theme.radiusCard, style: .continuous))
         }
         .buttonStyle(PressableStyle())
-        .accessibilityLabel(Text(item.title))
-        .accessibilityHint(Text("Opens puzzle options"))
+        .accessibilityLabel(Text(lock == .secret ? String(localized: "Secret picture") : item.title))
+        .accessibilityHint(hint)
+    }
+
+    private var hint: Text {
+        switch lock {
+        case .secret: Text("A gift for 7 daily puzzles in a row")
+        case let .points(need): Text("Unlocks at \(need) points")
+        case nil: Text("Opens puzzle options")
+        }
     }
 
     @ViewBuilder

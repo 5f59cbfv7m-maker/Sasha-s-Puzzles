@@ -50,6 +50,9 @@ protocol RecordMirror: AnyObject {
 struct CompletionSummary: Equatable {
     var previousBest: TimeInterval?
     var newAchievements: [Achievement]
+    var pointsEarned = 0
+    /// Reward pictures this game's points opened, in unlock order.
+    var unlockedPictures: [String] = []
 }
 
 /// The player's history, kept in one JSON file in the app container and
@@ -126,10 +129,19 @@ final class PlayerStats {
     func record(_ solved: SolvedRecord) -> CompletionSummary {
         let before = Achievement.allCases.filter { $0.isUnlocked(in: self) }
         let previousBest = bestTime(for: solved.itemID)
+        let pointsBefore = points, giftsBefore = giftsEarned
         records.append(solved)
         persist()
         let new = Achievement.allCases.filter { $0.isUnlocked(in: self) && !before.contains($0) }
-        return CompletionSummary(previousBest: previousBest, newAchievements: new)
+        let pointsAfter = points
+        let secrets = LibraryCatalog.secretOrder
+        let opened = Array(secrets[min(giftsBefore, secrets.count)..<min(giftsEarned, secrets.count)])
+            + LibraryCatalog.rewardOrder.filter { id in
+                let need = LibraryCatalog.requiredPoints(for: id) ?? 0
+                return need > pointsBefore && need <= pointsAfter
+            }
+        return CompletionSummary(previousBest: previousBest, newAchievements: new,
+                                 pointsEarned: pointsAfter - pointsBefore, unlockedPictures: opened)
     }
 
     /// Clears the history here and on every other device.
@@ -203,6 +215,54 @@ final class PlayerStats {
             day = calendar.date(byAdding: .day, value: -1, to: day)!
         }
         return count
+    }
+
+    // MARK: Points
+
+    /// A point a piece, and more a piece for big puzzles: they take far longer
+    /// per piece, and small ones would otherwise be the way to farm points.
+    nonisolated static func points(pieces: Int) -> Int {
+        let multiplier = pieces < 150 ? 1.0 : pieces < 500 ? 1.25 : 1.5
+        return Int((Double(pieces) * multiplier).rounded())
+    }
+
+    /// Every solved puzzle's points. The first daily puzzle of each day counts
+    /// double plus 50 a day of the streak it extended (at most 350); replays
+    /// of the daily are ordinary games, so it cannot be farmed. Nothing is
+    /// ever deducted — not for hints, not for time. Derived from the records
+    /// like everything else here, so it syncs and backfills by itself.
+    var points: Int {
+        let calendar = Calendar.current
+        var run: [Date: Int] = [:]
+        var previous: Date?
+        for day in dailyDays.sorted() {
+            let follows = previous.flatMap { calendar.date(byAdding: .day, value: 1, to: $0) } == day
+            run[day] = follows ? (run[previous!] ?? 0) + 1 : 1
+            previous = day
+        }
+        var rewarded = Set<Date>()
+        return records.reduce(0) { total, record in
+            let base = Self.points(pieces: record.pieces)
+            guard isDaily(record) else { return total + base }
+            let day = calendar.startOfDay(for: record.date)
+            guard rewarded.insert(day).inserted else { return total + base }
+            return total + base * 2 + min(run[day] ?? 1, 7) * 50
+        }
+    }
+
+    /// One gift for every seven daily puzzles in a row: a run of 15 days is
+    /// two, and a broken streak keeps what it earned.
+    var giftsEarned: Int {
+        let calendar = Calendar.current
+        var gifts = 0, run = 0
+        var previous: Date?
+        for day in dailyDays.sorted() {
+            let follows = previous.flatMap { calendar.date(byAdding: .day, value: 1, to: $0) } == day
+            run = follows ? run + 1 : 1
+            if run % 7 == 0 { gifts += 1 }
+            previous = day
+        }
+        return gifts
     }
 
     /// Pieces solved per week over the last twelve weeks, oldest first.

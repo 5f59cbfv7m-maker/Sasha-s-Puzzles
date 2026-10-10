@@ -20,6 +20,8 @@ final class GameCenter {
         case dailyTime = "daily_time"
         /// Longest run of daily puzzles on consecutive days; higher is better.
         case dailyStreak = "daily_streak"
+        /// Points from every solved puzzle; higher is better.
+        case points = "points_total"
 
         var id: String { rawValue }
 
@@ -28,6 +30,7 @@ final class GameCenter {
             case .puzzlesSolved: String(localized: "Puzzles solved")
             case .dailyTime: String(localized: "Daily puzzle — best time")
             case .dailyStreak: String(localized: "Longest daily streak")
+            case .points: String(localized: "Points")
             }
         }
 
@@ -36,6 +39,7 @@ final class GameCenter {
             case .puzzlesSolved: "puzzlepiece.fill"
             case .dailyTime: "stopwatch.fill"
             case .dailyStreak: "flame.fill"
+            case .points: "star.fill"
             }
         }
     }
@@ -49,8 +53,11 @@ final class GameCenter {
     @ObservationIgnored private var signIn: PlatformViewController?
     @ObservationIgnored private weak var stats: PlayerStats?
 
-    init(isAvailable: Bool) {
+    /// `previewSignedIn` shows the friends section as a signed-in player sees
+    /// it, for the profile stage's store screenshot; nothing reaches Game Center.
+    init(isAvailable: Bool, previewSignedIn: Bool = false) {
         self.isAvailable = isAvailable
+        isSignedIn = previewSignedIn
     }
 
     func start(with stats: PlayerStats) {
@@ -78,7 +85,7 @@ final class GameCenter {
     /// backfills whatever was solved before Game Center existed here.
     func report() {
         guard isSignedIn, let stats else { return }
-        var scores: [(Board, Int)] = [(.puzzlesSolved, stats.puzzlesSolved)]
+        var scores: [(Board, Int)] = [(.puzzlesSolved, stats.puzzlesSolved), (.points, stats.points)]
         if stats.longestStreak > 0 { scores.append((.dailyStreak, stats.longestStreak)) }
         if let best = stats.dailyBestToday { scores.append((.dailyTime, max(1, Int(best.rounded())))) }
         let unlocked = Achievement.allCases.filter { $0.isUnlocked(in: stats) }.map(\.gameCenterID)

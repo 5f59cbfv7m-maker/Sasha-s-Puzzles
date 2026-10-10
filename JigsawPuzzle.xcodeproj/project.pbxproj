@@ -161,6 +161,7 @@
 				ja,
 				ko,
 				"zh-Hans",
+				th,
 				Base,
 			);
 			mainGroup = AA00000000000000000000B1;

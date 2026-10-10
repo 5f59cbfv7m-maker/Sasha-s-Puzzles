@@ -131,12 +131,41 @@ struct PersistenceTests {
         #expect(!restored[0].isUserPhoto)
     }
 
+    @Test("Days before the new pictures keep the 1.1 daily rotation")
+    func dailyRotationKeepsPastDays() {
+        let before = LibraryCatalog.newPicturesFrom.addingTimeInterval(-86_400)
+        let day = Calendar.current.ordinality(of: .day, in: .era, for: before)!
+        #expect(LibraryCatalog.dailyItem(on: before) == LibraryCatalog.legacyItems[day % 120])
+        let after = LibraryCatalog.newPicturesFrom.addingTimeInterval(3_600)
+        let later = Calendar.current.ordinality(of: .day, in: .era, for: after)!
+        #expect(LibraryCatalog.dailyItem(on: after) == LibraryCatalog.dailyPool[later % LibraryCatalog.dailyPool.count])
+        // A secret picture is never a daily puzzle.
+        for offset in 0..<400 {
+            let day = after.addingTimeInterval(Double(offset) * 86_400)
+            #expect(LibraryCatalog.dailyItem(on: day).category != .secret)
+        }
+    }
+
+    @Test("Every secret is bundled, and every bundled picture is credited")
+    func secretsAndCredits() {
+        let items = LibraryCatalog.builtIn()
+        let secrets = items.filter { $0.category == .secret }.map(\.id)
+        #expect(Set(secrets) == Set(LibraryCatalog.secretOrder))
+        #expect(LibraryCatalog.secretOrder.count == 22)
+        for item in items {
+            #expect(PhotoCredits.credit(for: item) != nil, "no credit for \(item.id)")
+        }
+    }
+
     @Test("The built-in catalogue is the bundled photos, every picture unique")
     func catalogueIsCuratedAndUnique() {
         let items = LibraryCatalog.builtIn()
         #expect(items.count == LibraryCatalog.bundled().count)
         #expect(items.count == LibraryCatalog.count)
         #expect(Set(items.map(\.id)).count == items.count)
+        // Every picture 1.2 added is bundled, and the rest is the 1.1 library.
+        #expect(LibraryCatalog.addedIn1_2.isSubset(of: Set(items.map(\.id))))
+        #expect(LibraryCatalog.legacyItems.count == 120)
         // Every category is represented.
         for category in ArtCategory.allCases where category != .mine {
             #expect(items.contains { $0.category == category }, "no pictures for \(category)")

@@ -56,7 +56,11 @@ final class AppModel {
         // the team, and neither may run in a stage sandbox.
         let signed = CloudRecordMirror.isAvailable
         stats = PlayerStats(mirror: signed ? CloudRecordMirror() : nil)
+        #if DEBUG
+        gameCenter = GameCenter(isAvailable: signed, previewSignedIn: DebugStageDriver.requestedStage == "profile")
+        #else
         gameCenter = GameCenter(isAvailable: signed)
+        #endif
         sharedGames = signed ? CloudGamesMirror() : nil
         refreshSaves()
         sharedGames?.onExternalChange = { [weak self] in self?.refreshSaves() }
@@ -102,7 +106,21 @@ final class AppModel {
     // MARK: - Navigation
 
     func openSetup(for item: LibraryItem) {
+        guard !isLocked(item, unlocks) else { return }
         path = [.setup(itemID: item.id)]
+    }
+
+    /// What the player has earned, computed once for a whole screen of cards.
+    struct Unlocks { var points: Int; var gifts: Int }
+    var unlocks: Unlocks { Unlocks(points: stats.points, gifts: stats.giftsEarned) }
+
+    /// A reward picture the player has not reached yet. Today's daily puzzle
+    /// is open to everyone: it is the same picture worldwide, for the daily
+    /// leaderboard, and a taste of what the points open for good.
+    func isLocked(_ item: LibraryItem, _ unlocks: Unlocks) -> Bool {
+        if let index = LibraryCatalog.secretOrder.firstIndex(of: item.id) { return index >= unlocks.gifts }
+        guard let need = LibraryCatalog.requiredPoints(for: item.id) else { return false }
+        return unlocks.points < need && item.id != LibraryCatalog.dailyItem().id
     }
 
     func showLibrary() {

@@ -60,6 +60,26 @@ enum DebugStageDriver {
             // Everything earned so far shows as new.
             model.settings.hasSeenOnboarding = true
             model.settings.seenAchievements = []
+            // A few weeks of play for the store screenshot: the daily puzzle
+            // on each of the last six days and one or two others most days.
+            model.settings.playerName = "Sasha"
+            let items = model.library.builtIn
+            for day in 0..<84 {
+                let date = Date.now.addingTimeInterval(-Double(day) * 86_400 - 3_600)
+                if day < 6 {
+                    let daily = LibraryCatalog.dailyItem(on: date)
+                    model.stats.record(SolvedRecord(itemID: daily.id, category: daily.category,
+                                                    pieces: LibraryCatalog.dailyPieces, targetPieces: LibraryCatalog.dailyPieces,
+                                                    elapsed: Double(540 + day * 47), date: date, isUserPhoto: false))
+                }
+                for game in 0..<((day * 7) % 3) {
+                    let item = items[(day * 5 + game * 11) % items.count]
+                    let pieces = [48, 100, 150, 48][(day + game) % 4]
+                    model.stats.record(SolvedRecord(itemID: item.id, category: item.category, pieces: pieces,
+                                                    targetPieces: pieces, elapsed: Double(pieces) * 9,
+                                                    date: date.addingTimeInterval(-Double(game) * 5_400), isUserPhoto: false))
+                }
+            }
             await settle(2.5)
             model.showProfile = true
 

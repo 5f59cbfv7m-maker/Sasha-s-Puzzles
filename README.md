@@ -21,7 +21,7 @@
 </p>
 
 <p align="center">
-  <b>120 built-in photographs · 12 – 1000 pieces · no web view, no backend, no network access of any kind</b>
+  <b>170 built-in photographs · 12 – 1000 pieces · no web view, no backend, no network access of any kind</b>
 </p>
 
 The Xcode target, scheme and Swift module stay `JigsawPuzzle`; only the name the
@@ -47,7 +47,7 @@ app shows on screen is *Sasha's Puzzles*.
 </tr>
 <tr>
 <td align="center"><em>Nightmare mode — 805 pieces, cut in a tenth of a second</em></td>
-<td align="center"><em>The library: today's puzzle and its streak, 120 built-in
+<td align="center"><em>The library: today's puzzle and its streak, 170 built-in
 pictures plus your own photos, best times on solved cards</em></td>
 </tr>
 </table>
@@ -267,11 +267,11 @@ Measured on an Apple Silicon Mac. What makes it work:
 
 ## The picture library
 
-The built-in library is **120 photographs from Unsplash** (Unsplash License,
+The built-in library is **170 photographs from Unsplash** (Unsplash License,
 credits in [`docs/photo-credits.md`](docs/photo-credits.md)), 2560 px on the
 long side, across space, mountains, nature, sea, city, animals and abstract.
 They live in `Sources/Resources/Pictures/` as `<category>_<Title>.jpg`; the
-title is a string-catalog key translated into all ten languages.
+title is a string-catalog key translated into all eleven languages.
 
 Pictures are decoded lazily at the size actually needed and cached in memory
 (LRU) and on disk, so opening one twice is a small decode rather than a full one.
@@ -355,7 +355,7 @@ resizing are handled by the same code path as rotation.
 
 ## Features
 
-- 120 built-in photographs + your own photos (Photos and Files import)
+- 170 built-in photographs + your own photos (Photos and Files import)
 - Difficulty from 12 to 800 pieces, plus a custom slider up to 1000
 - Framing: original, 1:1, 3:2, 4:3, 16:9, 2:3 — centre-cropped, never stretched
 - True jigsaw geometry with tabs, sockets and flat borders
@@ -379,8 +379,8 @@ resizing are handled by the same code path as rotation.
 - Photographs dropped into `Sources/Resources/Pictures/` as
   `<category>_<Title>.jpg` join the library, no code changes
 - Full keyboard-shortcut menu bar on macOS
-- Ten languages (English, Russian, German, French, Spanish, Italian,
-  Brazilian Portuguese, Japanese, Korean, Simplified Chinese), Dynamic Type,
+- Eleven languages (English, Russian, German, French, Spanish, Italian,
+  Brazilian Portuguese, Japanese, Korean, Simplified Chinese, Thai), Dynamic Type,
   VoiceOver labels, light and dark
 - `docs/app-store.md` — release checklist, screenshot script
 - `docs/store-listing.md` — App Store copy in all 10 languages

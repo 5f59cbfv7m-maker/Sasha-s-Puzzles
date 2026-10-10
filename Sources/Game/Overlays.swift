@@ -176,11 +176,6 @@ struct CompletionOverlay: View {
     @State private var night = 0.0
     @State private var flash = 0.0
 
-    private var pace: String {
-        let minutes = max(session.elapsed, 60) / 60
-        return String(format: "%.1f", Double(session.pieceCount) / minutes)
-    }
-
     var body: some View {
         ZStack {
             // `Color.clear` is what takes part in layout: a filled image in a
@@ -218,7 +213,7 @@ struct CompletionOverlay: View {
                         } else {
                             stat("\(session.pieceCount)", "pieces")
                         }
-                        stat(pace, "per minute")
+                        stat("+\(model.lastCompletion?.pointsEarned ?? 0)", "points", tinted: true)
                     }
                     .padding(.top, compact ? 16 : 26)
 
@@ -226,6 +221,13 @@ struct CompletionOverlay: View {
                         AchievementReveal(achievements: news, compact: compact,
                                           onDrop: { if $0 == .nightmare { withAnimation(.easeIn(duration: 0.4)) { night = 0.6 } } },
                                           onLand: { if $0 == .nightmare { lightning() } })
+                            .padding(.top, compact ? 12 : 18)
+                    }
+
+                    if let opened = model.lastCompletion?.unlockedPictures, !opened.isEmpty {
+                        // After the medals, which take about 1.7 s each.
+                        UnlockedPictures(ids: opened, compact: compact,
+                                         delay: 1.2 + 1.7 * Double(model.lastCompletion?.newAchievements.count ?? 0))
                             .padding(.top, compact ? 12 : 18)
                     }
 
@@ -298,6 +300,50 @@ struct CompletionOverlay: View {
         .padding(.horizontal, 8)
         .background(tinted ? Theme.sageTint : Theme.surface,
                     in: RoundedRectangle(cornerRadius: 20, style: .continuous))
+    }
+}
+
+/// Reward pictures this game opened, after the medals have had their turn.
+private struct UnlockedPictures: View {
+    let ids: [String]
+    let compact: Bool
+    let delay: Double
+    @Environment(AppSettings.self) private var settings
+    @State private var visible = false
+
+    private var items: [LibraryItem] {
+        ids.compactMap { id in LibraryCatalog.builtIn().first { $0.id == id } }
+    }
+
+    var body: some View {
+        HStack(spacing: 14) {
+            HStack(spacing: -14) {
+                ForEach(items.prefix(4)) { item in
+                    LibraryThumbnail(item: item, longSide: 160)
+                        .frame(width: compact ? 44 : 58, height: compact ? 32 : 42)
+                        .clipShape(RoundedRectangle(cornerRadius: 9, style: .continuous))
+                        .overlay(RoundedRectangle(cornerRadius: 9, style: .continuous).strokeBorder(Theme.card, lineWidth: 2))
+                }
+            }
+            VStack(alignment: .leading, spacing: 2) {
+                Kicker(text: items.contains { $0.category == .secret } ? "secret picture unlocked"
+                           : items.count == 1 ? "new picture unlocked" : "new pictures unlocked")
+                    .foregroundStyle(Theme.accentDeep)
+                Text(items.map(\.title).joined(separator: ", "))
+                    .font(Theme.body(17, .bold)).lineLimit(2)
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
+        }
+        .padding(compact ? EdgeInsets(top: 8, leading: 12, bottom: 8, trailing: 12)
+                         : EdgeInsets(top: 14, leading: 16, bottom: 14, trailing: 16))
+        .background(Theme.surface, in: RoundedRectangle(cornerRadius: 20, style: .continuous))
+        .opacity(visible ? 1 : 0)
+        .scaleEffect(visible ? 1 : 0.92)
+        .task {
+            try? await Task.sleep(for: .seconds(delay))
+            withAnimation(.spring(response: 0.45, dampingFraction: 0.65)) { visible = true }
+            Feedback.shared.play(.achievement, settings: settings)
+        }
     }
 }
 

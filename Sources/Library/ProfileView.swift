@@ -14,6 +14,7 @@ struct ProfileView: View {
             VStack(alignment: .leading, spacing: 24) {
                 header
                 tiles
+                pointsCard
                 friends
                 chart
                 achievements
@@ -88,6 +89,32 @@ struct ProfileView: View {
         }
     }
 
+    /// Points and how far the next reward picture is.
+    private var pointsCard: some View {
+        let points = stats.points
+        let next = LibraryCatalog.nextThreshold(after: points)
+        let previous = LibraryCatalog.rewardThresholds.last { $0 <= points } ?? 0
+        return VStack(alignment: .leading, spacing: 10) {
+            HStack(alignment: .firstTextBaseline, spacing: 10) {
+                Image(systemName: "star.fill").font(.system(size: 18, weight: .bold))
+                    .foregroundStyle(Theme.accent)
+                Text(points.formatted()).font(Theme.display(30).monospacedDigit())
+                Text("points").font(Theme.body(14)).foregroundStyle(Theme.muted)
+                Spacer(minLength: 0)
+            }
+            if let next {
+                ProgressBar(value: Double(points - previous) / Double(next - previous))
+                Text("\(next - points) points to the next pictures")
+                    .font(Theme.body(13)).foregroundStyle(Theme.muted)
+            } else {
+                Text("Every picture is unlocked").font(Theme.body(13)).foregroundStyle(Theme.muted)
+            }
+        }
+        .padding(EdgeInsets(top: 18, leading: 16, bottom: 18, trailing: 16))
+        .background(Theme.card, in: RoundedRectangle(cornerRadius: 22, style: .continuous))
+        .accessibilityElement(children: .combine)
+    }
+
     private var hours: String {
         let hours = stats.timePlayed / 3600
         return hours < 1 ? String(localized: "\(Int(stats.timePlayed / 60)) min")
@@ -107,11 +134,11 @@ struct ProfileView: View {
     }
 
     /// Friends' leaderboards in Game Center. Hidden in builds that are not
-    /// signed for it (ad-hoc Mac builds, stage runs).
+    /// signed for it (ad-hoc Mac builds, stage runs other than `profile`).
     @ViewBuilder
     private var friends: some View {
         let gameCenter = model.gameCenter
-        if gameCenter.isAvailable {
+        if gameCenter.isAvailable || gameCenter.isSignedIn {
             VStack(alignment: .leading, spacing: 12) {
                 HStack(alignment: .firstTextBaseline, spacing: 10) {
                     Text("With friends").font(Theme.display(19))
@@ -125,7 +152,7 @@ struct ProfileView: View {
                     }
                 }
                 if gameCenter.isSignedIn {
-                    LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 12), count: isCompact ? 1 : 3),
+                    LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 12), count: isCompact ? 1 : 2),
                               spacing: 12) {
                         ForEach(GameCenter.Board.allCases) { board in
                             Button { afterDismiss { gameCenter.show(board) } } label: { boardRow(board) }

@@ -59,6 +59,55 @@ struct StatsTests {
         #expect(stats.bestTime(for: LibraryCatalog.dailyItem().id) == 240)
     }
 
+    @Test("Points: a point a piece, more for big puzzles, the daily doubled once a day with a streak bonus")
+    func points() throws {
+        #expect(PlayerStats.points(pieces: 48) == 48)
+        #expect(PlayerStats.points(pieces: 150) == 188)
+        #expect(PlayerStats.points(pieces: 800) == 1200)
+
+        let stats = PlayerStats(directory: try temporaryDirectory())
+        stats.record(SolvedRecord(itemID: "bundled.sea_Clownfish", category: .sea, pieces: 48, targetPieces: 48,
+                                  elapsed: 300, date: .now, isUserPhoto: false))
+        #expect(stats.points == 48)
+        // Two days in a row: 2 × 188 + 50, then 2 × 188 + 100.
+        stats.record(daily(daysAgo: 1))
+        stats.record(daily(daysAgo: 0))
+        #expect(stats.points == 48 + 426 + 476)
+        // Replaying today's daily is an ordinary game.
+        let replay = stats.record(daily(daysAgo: 0))
+        #expect(replay.pointsEarned == 188)
+    }
+
+    @Test("Points open the reward pictures four at a time, one per category")
+    func rewardPictures() throws {
+        let order = LibraryCatalog.rewardOrder
+        #expect(order.count == LibraryCatalog.rewardThresholds.count * 4)
+        #expect(Set(order) == LibraryCatalog.addedIn1_2)
+        for tier in stride(from: 0, to: order.count, by: 4) {
+            let categories = order[tier..<tier + 4].map { $0.split(separator: "_")[0] }
+            #expect(Set(categories).count == 4)
+        }
+        let stats = PlayerStats(directory: try temporaryDirectory())
+        let first = stats.record(SolvedRecord(itemID: "bundled.sea_Clownfish", category: .sea, pieces: 300,
+                                              targetPieces: 300, elapsed: 3000, date: .now, isUserPhoto: false))
+        #expect(first.pointsEarned == 375)
+        #expect(first.unlockedPictures == Array(order.prefix(4)))
+        #expect(LibraryCatalog.nextThreshold(after: stats.points) == 1_000)
+    }
+
+    @Test("Every seven daily puzzles in a row open one secret picture, and a broken streak keeps it")
+    func secretGifts() throws {
+        let stats = PlayerStats(directory: try temporaryDirectory())
+        for day in (9...14).reversed() { stats.record(daily(daysAgo: day)) }
+        #expect(stats.giftsEarned == 0)
+        let seventh = stats.record(daily(daysAgo: 8))
+        #expect(stats.giftsEarned == 1)
+        #expect(seventh.unlockedPictures.first == LibraryCatalog.secretOrder[0])
+        // A gap, then a fresh run of seven earns the second.
+        for day in (0...6).reversed() { stats.record(daily(daysAgo: day)) }
+        #expect(stats.giftsEarned == 2)
+    }
+
     @Test("A category achievement needs every built-in picture of that category")
     func categoryAchievement() throws {
         let stats = PlayerStats(directory: try temporaryDirectory())

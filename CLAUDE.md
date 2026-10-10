@@ -12,7 +12,7 @@ xcodebuild -project JigsawPuzzle.xcodeproj -scheme JigsawPuzzle \
 ```
 
 Swap the destination for `platform=iOS Simulator,name=iPhone 17 Pro` or
-`name=iPad Pro 13-inch (M5)`. **77 tests in 8 suites must pass** before any change
+`name=iPad Pro 13-inch (M5)`. **82 tests in 8 suites must pass** before any change
 is called done. Grep the output for `^✔ Test run` — xcodebuild buries it in noise.
 
 `./Scripts/install-mac.sh [destination]` builds Release and drops the `.app`
@@ -223,7 +223,7 @@ becomes `sea_X.jpg`, which is why `LibraryCatalog.bundled()` and
 `Feedback.soundURL` look up with `subdirectory: nil`. Consequences: no two
 resources may share a name, and a `.gitkeep`/README inside those folders is
 copied too (two of them collide with "multiple commands produce"). The
-`Pictures/` folder holds the 120 bundled photographs (credits in
+`Pictures/` folder holds the 170 bundled photographs (credits in
 `docs/photo-credits.md`). `Sounds/` holds the effects made by
 `Scripts/make-sounds.swift` — CAF, not AAC, because AAC's encoder priming
 puts ~50 ms of silence in front of every tap — and the two music loops
@@ -232,12 +232,35 @@ puts ~50 ms of silence in front of every tap — and the two music loops
 picks from the navigation path and `Feedback.setMusic` crossfades. See
 `docs/app-store.md` §5–6.
 
+**Adding pictures reshuffles the daily puzzle.** `dailyItem(on:)` is
+`day % count`, and a solved record counts as a daily only while it still
+matches, so a bigger library would break every streak retroactively. 1.2's
+28 pictures are `LibraryCatalog.rewardOrder`; days before `newPicturesFrom`
+rotate over the other 120. Adding more later needs the same treatment (a
+second set and cutoff), never a plain file drop.
+
+**Points are derived, like everything in `PlayerStats`.** `PlayerStats.points`
+sums the records (a point a piece, ×1.25 from 150 pieces, ×1.5 from 500; the
+first daily of a day ×2 plus 50 per streak day, at most 350), so it syncs and
+backfills by itself and a statistics reset relocks the reward pictures. Those
+are the 28 in `rewardOrder`, four per threshold in `rewardThresholds`;
+`AppModel.isLocked` gates `openSetup`, and today's daily picture is never
+locked — it is the same worldwide for the daily leaderboard. The
+`points_total` leaderboard must exist in App Store Connect before release.
+
+**Secret pictures open with streaks.** The 22 `secret_` pictures
+(`ArtCategory.secret`, order in `LibraryCatalog.secretOrder`) open one per
+`PlayerStats.giftsEarned` — every seventh consecutive daily day. They are
+never in `dailyPool`, their titles stay hidden in the library and in the
+photo credits until opened, and `PhotoCredits.byTitle` must list every
+bundled picture (a test checks it).
+
 **Bundled picture titles are manual catalog keys.** `bundledItem(at:)` calls
 `String(localized:)` with the file name's title at runtime, so Xcode's string
 extraction never sees them — add them to `Localizable.xcstrings` by hand.
 
-**Ten languages, hand-translated.** `Localizable.xcstrings` carries en, ru,
-de, fr, es, it, pt-BR, ja, ko, zh-Hans; `knownRegions` in the pbxproj lists
+**Eleven languages, hand-translated.** `Localizable.xcstrings` carries en, ru,
+de, fr, es, it, pt-BR, ja, ko, zh-Hans, th; `knownRegions` in the pbxproj lists
 the same set. CJK breaks lines between any two characters, so `PillButton`
 pins its label to one line. The bundled fonts have no CJK either; the same
 cascade that rescues Cyrillic falls through to the system fonts.

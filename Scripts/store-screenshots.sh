@@ -17,12 +17,12 @@ LANGUAGE=${1:-en}
 OUT="docs/store/$LANGUAGE"
 DD="${TMPDIR:-/tmp}/sashas-puzzles-screenshots"
 BUNDLE=com.kirillrychkov.SashasPuzzle
-typeset -A LOCALES=(en en_US ru ru_RU de de_DE fr fr_FR es es_ES it it_IT pt-BR pt_BR ja ja_JP ko ko_KR zh-Hans zh_CN)
+typeset -A LOCALES=(en en_US ru ru_RU de de_DE fr fr_FR es es_ES it it_IT pt-BR pt_BR ja ja_JP ko ko_KR zh-Hans zh_CN th th_TH)
 LOCALE=${LOCALES[$LANGUAGE]:-en_US}
 # Upload order: the first three show in search results, so a board mid-solve
 # leads. Files are numbered so Finder sorts them the way they go in; `board`
 # (an empty table under the faint guide) is left out on purpose.
-STAGES=(hint library completed scattered dark settings)
+STAGES=(hint library completed profile scattered dark settings)
 
 # Cutting a big puzzle on a freshly booted simulator can outlast any fixed
 # sleep, so wait until two thumbnails two seconds apart match (capped for

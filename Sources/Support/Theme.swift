@@ -388,6 +388,84 @@ struct Blob: View {
 
 /// The app mark: a 2×2 of the engine's own lock geometry, so the logo is
 /// literally four pieces rather than a drawing of one.
+/// The weekly gift: a puzzle piece tied up with a ribbon and a bow. Muted
+/// while it is still to be earned, in full colour once it opens.
+struct GiftPiece: View {
+    /// Six days in a row: the gift shines, sparkles and shakes. Before that
+    /// it waits, pale and still.
+    var reached = false
+    var size: CGFloat = 22
+    /// Bright but motionless, for the secret cards' covers.
+    var still = false
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+
+    /// One loop: a light sweeps across, the gift shakes, sparkles twinkle.
+    private static let loop = 2.6
+
+    var body: some View {
+        let image = Image("GiftPiece").resizable().interpolation(.high)
+        Group {
+            if reached && !still && !reduceMotion {
+                image
+                    .overlay { shine.mask(image) }
+                    .keyframeAnimator(initialValue: 0.0, repeating: true) { view, angle in
+                        view.rotationEffect(.degrees(angle), anchor: UnitPoint(x: 0.5, y: 0.92))
+                    } keyframes: { _ in
+                        CubicKeyframe(0, duration: 1.5)
+                        CubicKeyframe(-7, duration: 0.16)
+                        CubicKeyframe(6, duration: 0.16)
+                        CubicKeyframe(-4, duration: 0.16)
+                        CubicKeyframe(2.5, duration: 0.15)
+                        CubicKeyframe(-1, duration: 0.16)
+                        CubicKeyframe(0, duration: 0.31)
+                    }
+                    .overlay {
+                        sparkle(x: 0.97, y: 0.08, scale: 0.3, wait: 0.3)
+                        sparkle(x: 0.04, y: 0.3, scale: 0.22, wait: 1.2)
+                        sparkle(x: 0.96, y: 0.86, scale: 0.24, wait: 1.9)
+                    }
+            } else {
+                image
+            }
+        }
+        .frame(width: size, height: size)
+        .saturation(reached ? 1 : 0.3)
+        .opacity(reached ? 1 : 0.5)
+        .animation(.easeInOut(duration: 0.4), value: reached)
+        .accessibilityLabel(Text("A gift for 7 daily puzzles in a row"))
+    }
+
+    /// A band of light crossing the gift just before it shakes.
+    private var shine: some View {
+        LinearGradient(colors: [.clear, .white.opacity(0.8), .clear], startPoint: .leading, endPoint: .trailing)
+            .frame(width: size * 0.4, height: size * 1.6)
+            .rotationEffect(.degrees(20))
+            .keyframeAnimator(initialValue: -1.0, repeating: true) { band, x in
+                band.offset(x: x * size)
+            } keyframes: { _ in
+                LinearKeyframe(-1, duration: 0.7)
+                CubicKeyframe(1, duration: 0.8)
+                LinearKeyframe(1, duration: Self.loop - 1.5)
+            }
+            .frame(width: size, height: size)
+    }
+
+    private func sparkle(x: CGFloat, y: CGFloat, scale: CGFloat, wait: Double) -> some View {
+        Image(systemName: "sparkle")
+            .font(.system(size: size * scale, weight: .bold))
+            .foregroundStyle(Color(red: 1, green: 0.78, blue: 0.25))
+            .keyframeAnimator(initialValue: 0.0, repeating: true) { view, k in
+                view.scaleEffect(k).opacity(k)
+            } keyframes: { _ in
+                LinearKeyframe(0, duration: wait)
+                CubicKeyframe(1, duration: 0.25)
+                CubicKeyframe(0, duration: 0.45)
+                LinearKeyframe(0, duration: Self.loop - wait - 0.7)
+            }
+            .position(x: size * x, y: size * y)
+    }
+}
+
 struct PuzzleMark: View {
     var size: CGFloat = 128
     var shadow = true

@@ -102,7 +102,7 @@ Store Connect выделите в Finder все файлы папки и пер�
 ```bash
 Scripts/store-screenshots.sh ru              # → docs/store/ru/<iPhone|iPad|Mac>/
 SIMULATORS= Scripts/store-screenshots.sh ru  # только Mac
-for l in en ru de fr es it pt-BR ja ko zh-Hans; do Scripts/store-screenshots.sh $l; done
+for l in en ru de fr es it pt-BR ja ko zh-Hans th; do Scripts/store-screenshots.sh $l; done
 ```
 
 Снимайте после замены картинок, а не до. Скрипт запускает отладочную сборку
@@ -120,9 +120,9 @@ Store принимает. При первом запуске macOS спроси�
 ## 4. Языки интерфейса
 
 В Xcode есть **String Catalog** — `Sources/Resources/Localizable.xcstrings`.
-Он уже содержит все строки приложения на 10 языках: английский, русский,
+Он уже содержит все строки приложения на 11 языках: английский, русский,
 немецкий, французский, испанский, итальянский, португальский (Бразилия),
-японский, корейский, китайский (упрощённый). Автоматического перевода в
+японский, корейский, китайский (упрощённый), тайский. Автоматического перевода в
 Xcode нет; переводы сделаны вручную.
 
 - Посмотреть/поправить: откройте файл в Xcode — таблица «ключ → язык»,
@@ -139,7 +139,7 @@ Xcode нет; переводы сделаны вручную.
 
 ## 5. Замена картинок
 
-Сейчас в библиотеке 120 фотографий с Unsplash в `Sources/Resources/Pictures/`
+Сейчас в библиотеке 170 фотографий с Unsplash в `Sources/Resources/Pictures/`
 (авторы — в `docs/photo-credits.md`). Добавить или заменить фото:
 
 1. Папка `Sources/Resources/Pictures/` (Xcode подхватывает её сам —

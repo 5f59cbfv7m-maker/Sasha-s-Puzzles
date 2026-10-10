@@ -171,9 +171,12 @@ struct SettingsView: View {
                     Text("All built-in pictures are photographs from Unsplash. Thank you to the photographers!")
                         .font(Theme.body(14)).foregroundStyle(Theme.muted)
                         .padding(.horizontal, 12)
-                    ForEach(ArtCategory.allCases.filter { $0 != .mine }) { category in
+                    // A secret picture's title stays hidden until it opens.
+                    let unlocks = model.unlocks
+                    let credited = LibraryCatalog.builtIn().filter { !($0.category == .secret && model.isLocked($0, unlocks)) }
+                    ForEach(ArtCategory.allCases.filter { category in credited.contains { $0.category == category } }) { category in
                         group(LocalizedStringKey(category.title)) {
-                            ForEach(LibraryCatalog.builtIn().filter { $0.category == category }
+                            ForEach(credited.filter { $0.category == category }
                                 .sorted { $0.title.localizedStandardCompare($1.title) == .orderedAscending }) { item in
                                 if let credit = PhotoCredits.credit(for: item) {
                                     Link(destination: credit.url) {
