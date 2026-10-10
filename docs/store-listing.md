@@ -1,4 +1,4 @@
-# Тексты для App Store Connect на 10 языках
+# Тексты для App Store Connect на 11 языках
 
 Те же языки, что и в интерфейсе приложения
 (`Sources/Resources/Localizable.xcstrings`). В App Store Connect каждый язык
@@ -29,27 +29,24 @@
 
 **Description:**
 
-> Sasha's Puzzles is a jigsaw table that feels like the real thing — warm, quiet and yours.
+> Sasha’s Puzzles is a cozy jigsaw game to enjoy and unwind with. No ads, no subscriptions, no internet needed: open it, pick a picture and solve for as long as you like.
 >
-> REAL PIECES
-> Every cut exists once and is shared by its two neighbours, so pieces meet exactly: no gaps, no "close enough". Pieces click into place with a soft sound and a gentle haptic tap.
+> A new puzzle every day
+> Every day a new 150-piece picture is waiting for you. Solve the daily puzzle seven days in a row and a gift opens up — one of 22 secret pictures.
 >
-> YOUR PHOTOS ARE PUZZLES TOO
-> Pick any photo from your library and choose 12 to 800 pieces. Frame it the way you like — nothing is ever stretched.
+> 170 photos — and your own pictures can become puzzles too
+> The library has mountains, seas, cities, animals and space. You can also take any photo from your library — a vacation, your cat, grandma’s garden — and turn it into a one-of-a-kind puzzle of anywhere from 12 to 800 pieces.
 >
-> A NEW PUZZLE EVERY DAY
-> The daily puzzle keeps a streak going. Solve it seven days in a row and earn an achievement.
+> Points and new pictures
+> Every puzzle you solve earns points. The more pieces, the more points, and the daily puzzle earns double. Points unlock new pictures, and you can compare them with friends in Game Center.
 >
-> JUST THE HELP YOU NEED
-> Snap assist pulls a piece home when it is close. A hint highlights the next step. A faint guide of the picture can sit under the board — or not. Everything is a switch in Settings.
+> Hints any time, as many as you like
+> Pieces can pull themselves into place, the light bulb shows what to place next, and you can keep a faint copy of the picture under the board.
 >
-> BUILT FOR THE IPAD
-> Drag pieces from the tray with your finger, pinch to zoom, scatter pieces across the whole table or keep them tidy. Works in portrait and landscape, light and dark.
+> On iPhone, iPad and Mac
+> Play wherever suits you: on your phone on the go, on your iPad on the couch, on your Mac at your desk. Unfinished puzzles move between your devices through iCloud. Apple Pencil works on iPad, and keyboard shortcuts on Mac.
 >
-> NO ACCOUNT, NO ADS
-> No account, no ads, no tracking. The game works without internet and saves the table automatically. With iCloud, your progress, unfinished puzzles and settings follow you from iPad to iPhone and Mac.
->
-> Also on Mac with keyboard shortcuts, undo and redo.
+> No ads, no purchases, no sign-up and no tracking. The table saves itself, so you can leave a puzzle halfway and come back a week later — your favorite puzzles are always there whenever you want them.
 
 **What's New (1.2):** см. [Что нового 1.2.md](Что%20нового%201.2.md).
 
@@ -63,27 +60,24 @@
 
 **Description:**
 
-> Sasha's Puzzles — стол для пазлов, который ощущается как настоящий: тёплый, тихий и ваш.
+> Sasha’s Puzzles — это уютные пазлы для удовольствия и расслабления. Без рекламы и подписок, без интернета: открыли, выбрали картинку и собираете, сколько хочется.
 >
-> НАСТОЯЩИЕ ДЕТАЛИ
-> Каждый разрез существует один раз и общий для двух соседей, поэтому детали сходятся точно — без зазоров и «примерно рядом». Деталь встаёт на место с мягким звуком и лёгким тактильным откликом.
+> Каждый день новый пазл
+> Каждый день вас ждёт новая картинка на 150 деталей. Собирайте пазл дня семь дней подряд, и вам откроется подарок — одна из 22 секретных картинок.
 >
-> ВАШИ ФОТО — ТОЖЕ ПАЗЛЫ
-> Выберите любое фото из галереи и число деталей от 12 до 800. Кадрируйте как нравится — растяжения не бывает никогда.
+> 170 фотографий и ваши снимки можно сделать тоже пазлами
+> В библиотеке горы, моря, города, животные и космос. А ещё можно взять любое фото из галереи — отпуск, кота, бабушкин сад — и сделать из них свои неповторимые пазлы на 12 или 800 деталей.
 >
-> НОВЫЙ ПАЗЛ КАЖДЫЙ ДЕНЬ
-> Пазл дня поддерживает серию. Соберите его семь дней подряд — и получите достижение.
+> Баллы и новые картинки
+> За каждый собранный пазл начисляются баллы. Чем больше деталей, тем больше баллов, а за пазл дня — начисляются двойные баллы. Баллы открывают новые картинки, а ещё ими можно меряться с друзьями в Game Center.
 >
-> ПОМОЩЬ РОВНО ТА, ЧТО НУЖНА
-> Помощь при стыковке притягивает деталь, когда она рядом. Подсказка подсвечивает следующий шаг. Бледная картинка-подсказка может лежать под полем — или нет. Всё это переключатели в настройках.
+> Подсказки в любое время и любом количестве
+> Детали могут сами притягиваться к своему месту, лампочка подскажет, что ставить дальше, а под полем можно оставить бледную картинку.
 >
-> СДЕЛАНО ДЛЯ IPAD
-> Перетаскивайте детали из лотка пальцем, масштабируйте щипком, рассыпайте детали по всему столу или держите их в порядке. Работает в портретной и альбомной ориентации, в светлой и тёмной теме.
+> На iPhone, iPad и Mac
+> Собирайте где удобно: на телефоне в дороге, на iPad на диване, на Mac за столом. Начатые пазлы переезжают между устройствами через iCloud. На iPad работает Apple Pencil, на Mac — сочетания клавиш.
 >
-> БЕЗ АККАУНТА И РЕКЛАМЫ
-> Без аккаунта, рекламы и слежки. Игра работает без интернета, а стол сохраняется сам. С iCloud прогресс, начатые пазлы и настройки переходят с iPad на iPhone и Mac.
->
-> Есть и на Mac — с клавиатурными сокращениями, отменой и повтором.
+> Никакой рекламы, покупок, регистрации и слежки. Стол сохраняется сам, так что пазл можно бросить на середине и вернуться к нему через неделю, и ваши любимые пазлы будут всегда вам доступны в любое время.
 
 **What's New (1.2):** см. [Что нового 1.2.md](Что%20нового%201.2.md).
 
@@ -97,27 +91,24 @@
 
 **Description:**
 
-> Sasha's Puzzles ist ein Puzzletisch, der sich echt anfühlt – warm, leise und ganz deiner.
+> Sasha’s Puzzles ist ein gemütliches Puzzlespiel zum Genießen und Entspannen. Ohne Werbung und Abos, ohne Internet: App öffnen, Bild aussuchen und so lange puzzeln, wie du magst.
 >
-> ECHTE TEILE
-> Jeder Schnitt existiert nur einmal und gehört beiden Nachbarn, deshalb passen die Teile exakt zusammen: keine Lücken, kein „fast richtig“. Teile rasten mit einem weichen Klang und einem sanften Vibrieren ein.
+> Jeden Tag ein neues Puzzle
+> Jeden Tag wartet ein neues Bild mit 150 Teilen auf dich. Löse das Tagespuzzle sieben Tage in Folge, und ein Geschenk öffnet sich – eines von 22 Geheimbildern.
 >
-> DEINE FOTOS WERDEN PUZZLES
-> Wähle ein beliebiges Foto aus deiner Mediathek und 12 bis 800 Teile. Den Bildausschnitt bestimmst du selbst – nichts wird jemals verzerrt.
+> 170 Fotos – und auch deine eigenen Bilder werden zu Puzzles
+> In der Bibliothek findest du Berge, Meere, Städte, Tiere und den Weltraum. Du kannst auch jedes Foto aus deiner Mediathek nehmen – den Urlaub, deine Katze, Omas Garten – und daraus dein ganz eigenes Puzzle mit 12 bis 800 Teilen machen.
 >
-> JEDEN TAG EIN NEUES PUZZLE
-> Das Tagespuzzle hält deine Serie am Laufen. Löse es sieben Tage hintereinander und du bekommst eine Auszeichnung.
+> Punkte und neue Bilder
+> Für jedes fertige Puzzle gibt es Punkte. Je mehr Teile, desto mehr Punkte, und das Tagespuzzle zählt doppelt. Punkte schalten neue Bilder frei, und in Game Center kannst du dich damit mit Freunden messen.
 >
-> GENAU DIE HILFE, DIE DU BRAUCHST
-> Die Einrasthilfe zieht ein Teil an seinen Platz, wenn es nah genug ist. Ein Tipp hebt den nächsten Schritt hervor. Ein blasses Vorschaubild kann unter dem Brett liegen – oder auch nicht. Alles ist ein Schalter in den Einstellungen.
+> Tipps jederzeit und so viele du willst
+> Teile können von selbst an ihren Platz springen, die Glühbirne zeigt, was als Nächstes kommt, und unter dem Spielfeld kann ein blasses Vorschaubild liegen.
 >
-> FÜR DAS IPAD GEMACHT
-> Zieh Teile mit dem Finger aus der Ablage, zoome mit zwei Fingern, verstreue die Teile über den ganzen Tisch oder halte sie ordentlich. Funktioniert im Hoch- und Querformat, hell und dunkel.
+> Auf iPhone, iPad und Mac
+> Puzzle, wo es dir passt: unterwegs auf dem iPhone, auf dem Sofa mit dem iPad, am Schreibtisch auf dem Mac. Angefangene Puzzles wandern über iCloud zwischen deinen Geräten. Auf dem iPad funktioniert der Apple Pencil, auf dem Mac gibt es Tastenkürzel.
 >
-> OHNE KONTO, OHNE WERBUNG
-> Kein Konto, keine Werbung, kein Tracking. Das Spiel läuft ohne Internet und speichert den Tisch automatisch. Mit iCloud wandern Fortschritt, angefangene Puzzles und Einstellungen vom iPad auf iPhone und Mac.
->
-> Auch für den Mac – mit Tastaturkürzeln, Widerrufen und Wiederholen.
+> Keine Werbung, keine Käufe, keine Anmeldung und kein Tracking. Der Tisch speichert sich von selbst, du kannst also ein Puzzle mittendrin liegen lassen und eine Woche später weitermachen – deine Lieblingspuzzles sind jederzeit für dich da.
 
 **What's New (1.2):** см. [Что нового 1.2.md](Что%20нового%201.2.md).
 
@@ -131,27 +122,24 @@
 
 **Description:**
 
-> Sasha's Puzzles est une table de puzzle qui ressemble à la vraie : chaleureuse, silencieuse et bien à vous.
+> Sasha’s Puzzles, ce sont des puzzles douillets, pour le plaisir et la détente. Sans publicité ni abonnement, sans internet : ouvrez l’app, choisissez une image et assemblez aussi longtemps que vous le voulez.
 >
-> DE VRAIES PIÈCES
-> Chaque découpe n'existe qu'une seule fois et appartient à ses deux voisines : les pièces s'emboîtent exactement, sans jeu ni « à peu près ». Une pièce se met en place avec un son doux et une légère vibration.
+> Un nouveau puzzle chaque jour
+> Chaque jour, une nouvelle image de 150 pièces vous attend. Faites le puzzle du jour sept jours d’affilée, et un cadeau s’ouvre : l’une des 22 images secrètes.
 >
-> VOS PHOTOS AUSSI SONT DES PUZZLES
-> Choisissez n'importe quelle photo de votre photothèque et de 12 à 800 pièces. Cadrez comme vous voulez — rien n'est jamais déformé.
+> 170 photos, et vos propres clichés deviennent aussi des puzzles
+> Dans la bibliothèque : des montagnes, des mers, des villes, des animaux et l’espace. Vous pouvez aussi prendre n’importe quelle photo de votre galerie — des vacances, votre chat, le jardin de mamie — et en faire un puzzle unique de 12 à 800 pièces.
 >
-> UN NOUVEAU PUZZLE CHAQUE JOUR
-> Le puzzle du jour entretient votre série. Terminez-le sept jours d'affilée pour obtenir un succès.
+> Des points et de nouvelles images
+> Chaque puzzle terminé rapporte des points. Plus il y a de pièces, plus il y a de points, et le puzzle du jour en rapporte le double. Les points débloquent de nouvelles images, et vous pouvez vous mesurer à vos amis dans Game Center.
 >
-> JUSTE L'AIDE QU'IL FAUT
-> L'aide à l'emboîtement attire la pièce quand elle est proche. Un indice met en évidence l'étape suivante. Une image témoin peut rester sous le plateau — ou non. Tout se règle dans les réglages.
+> Des indices quand vous voulez, autant que vous voulez
+> Les pièces peuvent se placer d’elles-mêmes, l’ampoule indique quoi poser ensuite, et une image pâle peut rester sous le plateau.
 >
-> PENSÉ POUR L'IPAD
-> Faites glisser les pièces du casier du doigt, zoomez à deux doigts, éparpillez les pièces sur toute la table ou gardez-les rangées. Portrait et paysage, clair et sombre.
+> Sur iPhone, iPad et Mac
+> Jouez où vous voulez : sur l’iPhone en déplacement, sur l’iPad dans le canapé, sur le Mac au bureau. Les puzzles en cours passent d’un appareil à l’autre via iCloud. L’Apple Pencil fonctionne sur iPad, et les raccourcis clavier sur Mac.
 >
-> SANS COMPTE NI PUBLICITÉ
-> Pas de compte, pas de publicité, pas de suivi. Le jeu fonctionne sans internet et enregistre la table automatiquement. Avec iCloud, votre progression, vos puzzles en cours et vos réglages vous suivent de l’iPad à l’iPhone et au Mac.
->
-> Également sur Mac, avec raccourcis clavier, annuler et rétablir.
+> Pas de publicité, pas d’achats, pas d’inscription, pas de pistage. La table s’enregistre toute seule : vous pouvez laisser un puzzle en plein milieu et y revenir une semaine plus tard. Vos puzzles préférés vous attendent toujours.
 
 **What's New (1.2):** см. [Что нового 1.2.md](Что%20нового%201.2.md).
 
@@ -165,27 +153,24 @@
 
 **Description:**
 
-> Sasha's Puzzles es una mesa de rompecabezas que se siente real: cálida, silenciosa y tuya.
+> Sasha’s Puzzles son puzles acogedores para disfrutar y relajarte. Sin anuncios ni suscripciones, sin internet: abres la app, eliges una imagen y montas todo el rato que quieras.
 >
-> PIEZAS DE VERDAD
-> Cada corte existe una sola vez y lo comparten las dos piezas vecinas, así que encajan exactamente: sin huecos ni «casi». La pieza entra en su sitio con un sonido suave y una vibración ligera.
+> Un puzle nuevo cada día
+> Cada día te espera una imagen nueva de 150 piezas. Resuelve el puzle del día siete días seguidos y se abrirá un regalo: una de las 22 imágenes secretas.
 >
-> TUS FOTOS TAMBIÉN SON PUZLES
-> Elige cualquier foto de tu fototeca y de 12 a 800 piezas. Encuádrala a tu gusto: nada se deforma nunca.
+> 170 fotos, y tus propias fotos también pueden ser puzles
+> En la biblioteca hay montañas, mares, ciudades, animales y el espacio. También puedes tomar cualquier foto de tu galería —unas vacaciones, tu gato, el jardín de la abuela— y convertirla en un puzle único de 12 a 800 piezas.
 >
-> UN PUZLE NUEVO CADA DÍA
-> El puzle del día mantiene tu racha. Complétalo siete días seguidos y consigue un logro.
+> Puntos y nuevas imágenes
+> Cada puzle resuelto suma puntos. Cuantas más piezas, más puntos, y el puzle del día da el doble. Los puntos desbloquean nuevas imágenes y puedes compararlos con tus amigos en Game Center.
 >
-> LA AYUDA JUSTA
-> El ajuste magnético acerca la pieza cuando está cerca. Una pista señala el siguiente paso. Una imagen tenue puede quedarse bajo el tablero, o no. Todo son interruptores en los ajustes.
+> Pistas cuando quieras y tantas como quieras
+> Las piezas pueden colocarse solas en su sitio, la bombilla te indica qué poner después y bajo el tablero puedes dejar una imagen tenue.
 >
-> HECHO PARA EL IPAD
-> Arrastra piezas de la bandeja con el dedo, haz zoom con dos dedos, esparce las piezas por toda la mesa o mantenlas ordenadas. Vertical y horizontal, claro y oscuro.
+> En iPhone, iPad y Mac
+> Juega donde te venga bien: en el móvil de camino, en el iPad en el sofá, en el Mac en tu escritorio. Los puzles empezados pasan de un dispositivo a otro con iCloud. En el iPad funciona el Apple Pencil, y en el Mac, los atajos de teclado.
 >
-> SIN CUENTA NI ANUNCIOS
-> Sin cuenta, sin anuncios, sin seguimiento. El juego funciona sin internet y la mesa se guarda sola. Con iCloud, tu progreso, los puzles empezados y los ajustes pasan del iPad al iPhone y al Mac.
->
-> También en Mac, con atajos de teclado, deshacer y rehacer.
+> Sin anuncios, compras, registros ni rastreo. La mesa se guarda sola, así que puedes dejar un puzle a medias y volver a él una semana después: tus puzles favoritos siempre estarán ahí cuando quieras.
 
 **What's New (1.2):** см. [Что нового 1.2.md](Что%20нового%201.2.md).
 
@@ -199,27 +184,24 @@
 
 **Description:**
 
-> Sasha's Puzzles è un tavolo da puzzle che sembra vero: caldo, silenzioso e tuo.
+> Sasha’s Puzzles sono puzzle accoglienti per divertirsi e rilassarsi. Niente pubblicità né abbonamenti, niente internet: apri l’app, scegli un’immagine e componi quanto vuoi.
 >
-> PEZZI VERI
-> Ogni taglio esiste una volta sola ed è condiviso dai due pezzi vicini, così si incastrano esattamente: niente spazi, niente «quasi». Il pezzo va a posto con un suono morbido e una vibrazione leggera.
+> Un nuovo puzzle ogni giorno
+> Ogni giorno ti aspetta una nuova immagine da 150 pezzi. Completa il puzzle del giorno per sette giorni di fila e si aprirà un regalo: una delle 22 immagini segrete.
 >
-> ANCHE LE TUE FOTO SONO PUZZLE
-> Scegli una foto qualsiasi dalla libreria e da 12 a 800 pezzi. Inquadrala come vuoi: niente viene mai deformato.
+> 170 foto, e anche i tuoi scatti diventano puzzle
+> Nella libreria trovi montagne, mari, città, animali e lo spazio. Puoi anche prendere qualsiasi foto dalla tua galleria — una vacanza, il tuo gatto, il giardino della nonna — e farne un puzzle unico da 12 a 800 pezzi.
 >
-> UN PUZZLE NUOVO OGNI GIORNO
-> Il puzzle del giorno mantiene la tua serie. Completalo per sette giorni di fila e ottieni un obiettivo.
+> Punti e nuove immagini
+> Ogni puzzle completato ti fa guadagnare punti. Più pezzi ci sono, più punti ottieni, e il puzzle del giorno vale doppio. I punti sbloccano nuove immagini, e puoi sfidare gli amici in Game Center.
 >
-> L'AIUTO CHE SERVE, NIENTE DI PIÙ
-> L'aggancio assistito attira il pezzo quando è vicino. Un suggerimento evidenzia la mossa successiva. Un'immagine sbiadita può restare sotto il tavoliere, oppure no. Tutto si accende e si spegne nelle impostazioni.
+> Suggerimenti quando vuoi, quanti ne vuoi
+> I pezzi possono andare da soli al loro posto, la lampadina ti indica cosa mettere dopo e sotto il tavolo puoi lasciare un’immagine sbiadita.
 >
-> PENSATO PER L'IPAD
-> Trascina i pezzi dal vassoio con il dito, ingrandisci con due dita, sparpaglia i pezzi su tutto il tavolo o tienili in ordine. Verticale e orizzontale, chiaro e scuro.
+> Su iPhone, iPad e Mac
+> Gioca dove ti è comodo: sull’iPhone in viaggio, sull’iPad sul divano, sul Mac alla scrivania. I puzzle iniziati passano da un dispositivo all’altro con iCloud. Su iPad funziona Apple Pencil, su Mac le scorciatoie da tastiera.
 >
-> NESSUN ACCOUNT, NESSUNA PUBBLICITÀ
-> Nessun account, nessuna pubblicità, nessun tracciamento. Il gioco funziona senza internet e il tavolo si salva da solo. Con iCloud progressi, puzzle iniziati e impostazioni passano da iPad a iPhone e Mac.
->
-> C'è anche su Mac, con scorciatoie da tastiera, annulla e ripeti.
+> Niente pubblicità, acquisti, registrazioni o tracciamento. Il tavolo si salva da solo, così puoi lasciare un puzzle a metà e riprenderlo dopo una settimana: i tuoi puzzle preferiti sono sempre lì quando vuoi.
 
 **What's New (1.2):** см. [Что нового 1.2.md](Что%20нового%201.2.md).
 
@@ -233,27 +215,24 @@
 
 **Description:**
 
-> Sasha's Puzzles é uma mesa de quebra-cabeça que parece de verdade: acolhedora, silenciosa e sua.
+> Sasha’s Puzzles são quebra-cabeças aconchegantes para curtir e relaxar. Sem anúncios nem assinaturas, sem internet: abra o app, escolha uma imagem e monte quanto quiser.
 >
-> PEÇAS DE VERDADE
-> Cada corte existe uma única vez e é compartilhado pelas duas peças vizinhas, por isso elas se encaixam com exatidão: sem folgas, sem «quase». A peça entra no lugar com um som suave e uma vibração leve.
+> Um quebra-cabeça novo todo dia
+> Todo dia uma nova imagem de 150 peças espera por você. Monte o quebra-cabeça do dia sete dias seguidos e um presente se abre: uma das 22 imagens secretas.
 >
-> SUAS FOTOS TAMBÉM VIRAM QUEBRA-CABEÇA
-> Escolha qualquer foto da sua galeria e de 12 a 800 peças. Enquadre do jeito que quiser — nada é esticado.
+> 170 fotos, e suas próprias fotos também viram quebra-cabeças
+> Na biblioteca há montanhas, mares, cidades, animais e o espaço. Você também pode pegar qualquer foto da sua galeria — as férias, seu gato, o jardim da vovó — e transformá-la em um quebra-cabeça único de 12 a 800 peças.
 >
-> UM QUEBRA-CABEÇA NOVO TODO DIA
-> O quebra-cabeça do dia mantém sua sequência. Complete sete dias seguidos e ganhe uma conquista.
+> Pontos e novas imagens
+> Cada quebra-cabeça montado vale pontos. Quanto mais peças, mais pontos, e o quebra-cabeça do dia vale o dobro. Os pontos liberam novas imagens, e você pode se comparar com os amigos no Game Center.
 >
-> AJUDA NA MEDIDA CERTA
-> O encaixe assistido puxa a peça quando ela está perto. A dica destaca o próximo passo. Uma imagem suave pode ficar sob o tabuleiro — ou não. Tudo é um botão nos ajustes.
+> Dicas a qualquer hora, quantas quiser
+> As peças podem ir sozinhas para o lugar, a lâmpada mostra o que encaixar em seguida e embaixo da mesa pode ficar uma imagem clarinha.
 >
-> FEITO PARA O IPAD
-> Arraste as peças da bandeja com o dedo, use o zoom com dois dedos, espalhe as peças pela mesa toda ou mantenha tudo em ordem. Retrato e paisagem, claro e escuro.
+> No iPhone, iPad e Mac
+> Monte onde for melhor: no celular em trânsito, no iPad no sofá, no Mac na escrivaninha. Os quebra-cabeças começados passam de um aparelho para outro pelo iCloud. No iPad funciona o Apple Pencil, e no Mac, os atalhos de teclado.
 >
-> SEM CONTA E SEM ANÚNCIOS
-> Sem conta, sem anúncios, sem rastreamento. O jogo funciona sem internet e a mesa é salva sozinha. Com o iCloud, seu progresso, os quebra-cabeças começados e os ajustes vão do iPad para o iPhone e o Mac.
->
-> Também no Mac, com atalhos de teclado, desfazer e refazer.
+> Sem anúncios, compras, cadastro ou rastreamento. A mesa se salva sozinha, então dá para largar um quebra-cabeça no meio e voltar uma semana depois — seus quebra-cabeças favoritos estão sempre à sua disposição.
 
 **What's New (1.2):** см. [Что нового 1.2.md](Что%20нового%201.2.md).
 
@@ -267,27 +246,24 @@
 
 **Description:**
 
-> Sasha's Puzzles は、本物のように感じられるパズルテーブルです。あたたかく、静かで、あなただけのもの。
+> Sasha’s Puzzlesは、のんびり楽しんでリラックスできる、心地よいジグソーパズルです。広告もサブスクリプションもなく、インターネットも不要。開いて、写真を選んで、好きなだけ組み立てられます。
 >
-> 本物のピース
-> 切れ目はひとつだけ存在し、隣り合う2つのピースがそれを共有します。だからピースはぴったり合い、すき間も「だいたい合っている」もありません。ピースがはまると、やわらかな音と軽い振動で知らせます。
+> 毎日新しいパズル
+> 毎日、150ピースの新しい写真があなたを待っています。今日のパズルを7日連続で完成させると、プレゼントが開きます。22枚あるシークレット写真のうちの1枚です。
 >
-> あなたの写真もパズルに
-> ライブラリの好きな写真を選び、12〜800ピースから選択。トリミングは自由で、画像が引き伸ばされることはありません。
+> 170枚の写真に加えて、あなたの写真もパズルに
+> ライブラリには山、海、街、動物、宇宙の写真がそろっています。さらに、写真ライブラリの好きな写真（旅行、愛猫、おばあちゃんの庭など）から、12〜800ピースの世界にひとつだけのパズルを作れます。
 >
-> 毎日、新しいパズル
-> デイリーパズルが連続記録を支えます。7日続けて完成させると実績を獲得できます。
+> ポイントと新しい写真
+> パズルを完成させるたびにポイントがもらえます。ピースが多いほどポイントも多く、今日のパズルは2倍。ポイントで新しい写真が解放され、Game Centerで友だちと競うこともできます。
 >
-> 必要なぶんだけの手助け
-> スナップ補助は、近づいたピースを正しい位置に引き寄せます。ヒントは次の一手を光らせます。薄い下絵をボードの下に敷くこともできます。どれも設定のスイッチひとつです。
+> ヒントはいつでも、何度でも
+> ピースが自然に正しい場所へ吸い寄せられ、電球のボタンで次に置くピースがわかります。盤面の下に写真を薄く表示しておくこともできます。
 >
-> iPad のために
-> トレイからピースを指でドラッグ、ピンチで拡大縮小。ピースをテーブル全体に散らすことも、きちんと並べておくこともできます。縦向きも横向きも、ライトもダークも。
+> iPhone、iPad、Macで
+> 好きな場所で遊べます。移動中はiPhoneで、ソファではiPadで、デスクではMacで。途中のパズルはiCloudでデバイス間を移動します。iPadではApple Pencil、Macではキーボードショートカットが使えます。
 >
-> アカウント不要・広告なし
-> アカウントも広告もトラッキングもありません。インターネットなしで遊べて、テーブルは自動保存。iCloud を使えば、進行状況や途中のパズル、設定が iPad から iPhone や Mac へ引き継がれます。
->
-> Mac 版もあります。キーボードショートカット、取り消しとやり直しに対応。
+> 広告、アプリ内購入、登録、トラッキングは一切ありません。盤面は自動で保存されるので、途中でやめて1週間後に続きから再開できます。お気に入りのパズルはいつでもあなたのそばに。
 
 **What's New (1.2):** см. [Что нового 1.2.md](Что%20нового%201.2.md).
 
@@ -301,27 +277,24 @@
 
 **Description:**
 
-> Sasha's Puzzles는 진짜처럼 느껴지는 퍼즐 테이블입니다. 따뜻하고 조용하며, 온전히 당신의 것입니다.
->
-> 진짜 조각
-> 잘린 선은 하나뿐이고 이웃한 두 조각이 함께 나눠 가집니다. 그래서 조각이 정확히 맞물립니다. 틈도, '대충 비슷함'도 없습니다. 조각이 제자리에 들어가면 부드러운 소리와 가벼운 진동으로 알려 줍니다.
->
-> 내 사진도 퍼즐이 됩니다
-> 사진 보관함에서 원하는 사진을 고르고 12~800조각 중에서 선택하세요. 원하는 대로 자를 수 있고, 사진이 늘어나는 일은 없습니다.
+> Sasha’s Puzzles는 즐겁게 쉬어 가는 아늑한 직소 퍼즐입니다. 광고도 구독도 없고 인터넷도 필요 없어요. 앱을 열고 그림을 골라 마음껏 맞춰 보세요.
 >
 > 매일 새로운 퍼즐
-> 오늘의 퍼즐이 연속 기록을 이어 줍니다. 7일 연속으로 완성하면 업적을 얻습니다.
+> 매일 150조각짜리 새로운 그림이 기다립니다. 오늘의 퍼즐을 7일 연속으로 완성하면 선물이 열려요. 22장의 비밀 사진 중 하나랍니다.
 >
-> 딱 필요한 만큼의 도움
-> 스냅 보조는 조각이 가까워지면 제자리로 끌어당깁니다. 힌트는 다음 단계를 밝혀 줍니다. 흐린 밑그림을 보드 아래에 둘 수도, 두지 않을 수도 있습니다. 모두 설정의 스위치입니다.
+> 170장의 사진, 그리고 내 사진도 퍼즐로
+> 라이브러리에는 산, 바다, 도시, 동물, 우주 사진이 있어요. 갤러리의 어떤 사진이든(여행, 고양이, 할머니의 정원) 12조각부터 800조각까지 나만의 퍼즐로 만들 수 있습니다.
 >
-> iPad를 위해 만들었습니다
-> 트레이에서 조각을 손가락으로 끌어오고, 두 손가락으로 확대·축소하고, 조각을 테이블 전체에 흩뿌리거나 가지런히 둘 수 있습니다. 세로와 가로, 밝은 테마와 어두운 테마를 모두 지원합니다.
+> 포인트와 새로운 그림
+> 퍼즐을 완성할 때마다 포인트가 쌓입니다. 조각이 많을수록 포인트도 많고, 오늘의 퍼즐은 두 배예요. 포인트로 새로운 그림이 열리고, Game Center에서 친구들과 겨뤄 볼 수도 있어요.
 >
-> 계정도 광고도 없이
-> 계정도, 광고도, 추적도 없습니다. 인터넷 없이도 플레이할 수 있고 테이블은 자동으로 저장됩니다. iCloud를 사용하면 진행 상황, 하던 퍼즐, 설정이 iPad에서 iPhone과 Mac으로 이어집니다.
+> 힌트는 언제든, 원하는 만큼
+> 조각이 알아서 제자리로 끌려가고, 전구 버튼이 다음에 놓을 조각을 알려 주며, 보드 아래에 흐린 그림을 깔아 둘 수도 있어요.
 >
-> Mac에서도 사용할 수 있습니다. 단축키, 실행 취소와 다시 실행을 지원합니다.
+> iPhone, iPad, Mac에서
+> 편한 곳에서 즐기세요. 이동 중엔 iPhone, 소파에선 iPad, 책상에선 Mac으로. 하던 퍼즐은 iCloud로 기기 간에 이어집니다. iPad에서는 Apple Pencil, Mac에서는 키보드 단축키를 쓸 수 있어요.
+>
+> 광고, 결제, 가입, 추적이 전혀 없습니다. 보드는 자동으로 저장되니 퍼즐을 하다 말고 일주일 뒤에 다시 이어 가도 돼요. 좋아하는 퍼즐은 언제나 그 자리에 있습니다.
 
 **What's New (1.2):** см. [Что нового 1.2.md](Что%20нового%201.2.md).
 
@@ -335,27 +308,54 @@
 
 **Description:**
 
-> Sasha's Puzzles 是一张像真的一样的拼图桌：温暖、安静，属于你自己。
+> Sasha’s Puzzles 是一款温馨的拼图游戏，让你轻松享受、放松身心。没有广告，没有订阅，也不需要联网：打开 App，选一张图片，想拼多久就拼多久。
 >
-> 真正的拼块
-> 每一条切口只存在一次，由相邻的两块共享，所以拼块严丝合缝——没有缝隙，也没有“差不多”。拼块归位时会有轻柔的声音和细微的震动。
+> 每天一幅新拼图
+> 每天都有一张 150 块的新图片等着你。连续 7 天完成每日拼图，就能打开一份礼物——22 张秘密图片中的一张。
 >
-> 你的照片也是拼图
-> 从相册里挑任意一张照片，选择 12 到 800 片。随你取景，画面永远不会被拉伸。
+> 170 张照片，你的照片也能变成拼图
+> 图库里有高山、大海、城市、动物和星空。你还可以从相册里挑任意一张照片——旅行、猫咪、奶奶的花园——做成独一无二的拼图，从 12 块到 800 块都可以。
 >
-> 每天一张新拼图
-> 每日拼图为你保持连续记录。连续七天完成，即可获得成就。
+> 积分与新图片
+> 每完成一幅拼图都能获得积分。拼块越多，积分越多，每日拼图积分翻倍。积分可以解锁新图片，还能在 Game Center 和好友一较高下。
 >
-> 恰到好处的帮助
-> 吸附辅助会在拼块靠近时把它拉到位。提示会点亮下一步。淡淡的参考图可以垫在拼板下面，也可以关掉。这些都是设置里的开关。
+> 提示随时可用，次数不限
+> 拼块可以自动吸附到正确位置，灯泡按钮会告诉你下一块放哪里，还可以在拼图桌下面垫一张淡淡的原图。
 >
-> 为 iPad 而生
-> 用手指把拼块从托盘拖出来，双指缩放，把拼块撒满整张桌子，或者让它们整整齐齐。竖屏横屏、浅色深色都支持。
+> iPhone、iPad 和 Mac 都能玩
+> 想在哪儿拼就在哪儿拼：路上用 iPhone，沙发上用 iPad，书桌前用 Mac。未完成的拼图通过 iCloud 在设备间同步。iPad 支持 Apple Pencil，Mac 支持键盘快捷键。
 >
-> 无需账号，没有广告
-> 没有账号，没有广告，没有追踪。无需联网即可游玩，拼图桌会自动保存。开启 iCloud 后，进度、未完成的拼图和设置会从 iPad 同步到 iPhone 和 Mac。
->
-> Mac 版同样具备：键盘快捷键、撤销与重做。
+> 没有广告、内购、注册和追踪。拼图桌会自动保存，拼到一半放下，一周后回来也能接着拼——你喜欢的拼图随时都在。
 
 **What's New (1.2):** см. [Что нового 1.2.md](Что%20нового%201.2.md).
 
+## ไทย — Thai
+
+**Subtitle:** จิ๊กซอว์จากรูปของคุณเอง
+
+**Promotional text:** โต๊ะจิ๊กซอว์แสนสงบพร้อมจิ๊กซอว์ใหม่ทุกวัน เปลี่ยนรูปใดก็ได้ให้เป็นจิ๊กซอว์ ตั้งแต่ 12 ถึง 800 ชิ้น เล่นออฟไลน์ได้ทั้งหมด
+
+**Keywords:** `จิ๊กซอว์,ปริศนา,ต่อภาพ,รูปภาพ,ผ่อนคลาย,คลายเครียด,ออฟไลน์,ครอบครัว,เด็ก,ธรรมชาติ,สัตว์,วิว,ฝึกสมอง`
+
+**Description:**
+
+> Sasha’s Puzzles คือจิ๊กซอว์แสนอบอุ่นสำหรับเล่นเพลิน ๆ และผ่อนคลาย ไม่มีโฆษณา ไม่มีการสมัครสมาชิก และไม่ต้องใช้อินเทอร์เน็ต แค่เปิดแอป เลือกภาพ แล้วต่อได้นานเท่าที่อยากต่อ
+>
+> จิ๊กซอว์ใหม่ทุกวัน
+> ทุกวันจะมีภาพใหม่ 150 ชิ้นรอคุณอยู่ ต่อจิ๊กซอว์ประจำวันให้ครบเจ็ดวันติดต่อกัน แล้วของขวัญจะเปิดออก นั่นคือหนึ่งในภาพลับ 22 ภาพ
+>
+> ภาพถ่าย 170 ภาพ และรูปของคุณเองก็กลายเป็นจิ๊กซอว์ได้
+> ในคลังภาพมีทั้งภูเขา ทะเล เมือง สัตว์ และอวกาศ นอกจากนี้คุณยังเลือกรูปใดก็ได้จากคลังรูปภาพ ไม่ว่าจะเป็นทริปเที่ยว แมวของคุณ หรือสวนของคุณยาย มาทำเป็นจิ๊กซอว์ที่ไม่ซ้ำใคร ตั้งแต่ 12 ถึง 800 ชิ้น
+>
+> คะแนนและภาพใหม่
+> ทุกครั้งที่ต่อจิ๊กซอว์เสร็จจะได้รับคะแนน ยิ่งชิ้นเยอะยิ่งได้คะแนนมาก และจิ๊กซอว์ประจำวันได้คะแนนสองเท่า คะแนนช่วยปลดล็อกภาพใหม่ และยังใช้แข่งกับเพื่อน ๆ ใน Game Center ได้ด้วย
+>
+> คำใบ้ได้ทุกเมื่อ ไม่จำกัดจำนวน
+> ชิ้นส่วนดูดเข้าที่ได้เอง ปุ่มหลอดไฟจะบอกว่าควรวางชิ้นไหนต่อ และยังวางภาพจาง ๆ ไว้ใต้กระดานได้ด้วย
+>
+> บน iPhone, iPad และ Mac
+> เล่นได้ทุกที่ที่สะดวก บน iPhone ระหว่างเดินทาง บน iPad บนโซฟา หรือบน Mac ที่โต๊ะทำงาน จิ๊กซอว์ที่ยังต่อไม่เสร็จจะย้ายไปมาระหว่างอุปกรณ์ผ่าน iCloud บน iPad ใช้ Apple Pencil ได้ ส่วนบน Mac มีคีย์ลัด
+>
+> ไม่มีโฆษณา ไม่มีการซื้อในแอป ไม่ต้องลงทะเบียน และไม่มีการติดตาม โต๊ะจะบันทึกให้เอง คุณจึงพักจิ๊กซอว์ไว้กลางทางแล้วกลับมาต่อได้ในอีกสัปดาห์ จิ๊กซอว์โปรดของคุณจะรออยู่เสมอ
+
+**What's New (1.2):** см. [Что нового 1.2.md](Что%20нового%201.2.md).
