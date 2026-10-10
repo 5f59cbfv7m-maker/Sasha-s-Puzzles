@@ -134,10 +134,14 @@ struct PersistenceTests {
     @Test("Days before the new pictures keep the 1.1 daily rotation")
     func dailyRotationKeepsPastDays() {
         let before = LibraryCatalog.newPicturesFrom.addingTimeInterval(-86_400)
-        let day = Calendar.current.ordinality(of: .day, in: .era, for: before)!
+        let gregorian = Calendar(identifier: .gregorian)
+        // The 1.2 cut-off is a Gregorian date whatever the phone's calendar.
+        #expect(gregorian.dateComponents([.year, .month, .day], from: LibraryCatalog.newPicturesFrom)
+                == DateComponents(year: 2026, month: 12, day: 1))
+        let day = gregorian.ordinality(of: .day, in: .era, for: before)!
         #expect(LibraryCatalog.dailyItem(on: before) == LibraryCatalog.legacyItems[day % 120])
         let after = LibraryCatalog.newPicturesFrom.addingTimeInterval(3_600)
-        let later = Calendar.current.ordinality(of: .day, in: .era, for: after)!
+        let later = gregorian.ordinality(of: .day, in: .era, for: after)!
         #expect(LibraryCatalog.dailyItem(on: after) == LibraryCatalog.dailyPool[later % LibraryCatalog.dailyPool.count])
         // A secret picture is never a daily puzzle.
         for offset in 0..<400 {

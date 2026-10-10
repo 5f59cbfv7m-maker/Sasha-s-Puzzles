@@ -5,6 +5,9 @@ struct ProfileView: View {
     @Environment(AppModel.self) private var model
     @Environment(\.dismiss) private var dismiss
     @Environment(\.isCompact) private var isCompact
+    /// A Mac sheet focuses its first field, which opened the profile with the
+    /// name selected; it waits for a click instead.
+    @FocusState private var nameFocused: Bool
 
     private var stats: PlayerStats { model.stats }
     private var gutter: CGFloat { isCompact ? 18 : 30 }
@@ -40,13 +43,26 @@ struct ProfileView: View {
                 .background(Theme.accent, in: Circle())
             VStack(alignment: .leading, spacing: 2) {
                 // Tap the name to change it; empty shows "Player" as the placeholder.
-                HStack(spacing: 8) {
-                    TextField("Player", text: $settings.playerName)
-                        .textFieldStyle(.plain)
+                HStack(spacing: 0) {
+                    // The field takes the name's width plus a margin: sized by
+                    // itself it followed the placeholder, and under a Thai
+                    // locale the field wants more room than the text, so "Sasha"
+                    // came out as "Sas…".
+                    Text(settings.playerName.isEmpty ? String(localized: "Player") : settings.playerName)
                         .font(Theme.display(26))
-                        .textContentType(.givenName)
                         .fixedSize()
-                        .accessibilityLabel(Text("Your name"))
+                        .padding(.trailing, 16)
+                        .hidden()
+                        .overlay {
+                            TextField("Player", text: $settings.playerName)
+                                .textFieldStyle(.plain)
+                                .font(Theme.display(26))
+                                .textContentType(.givenName)
+                                .accessibilityLabel(Text("Your name"))
+                                .focused($nameFocused)
+                                // After the sheet has settled, or AppKit focuses it again.
+                                .task { try? await Task.sleep(for: .milliseconds(400)); nameFocused = false }
+                        }
                     Image(systemName: "pencil").font(.system(size: 15, weight: .semibold))
                         .foregroundStyle(Theme.faint)
                         .accessibilityHidden(true)

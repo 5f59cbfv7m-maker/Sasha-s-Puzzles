@@ -50,20 +50,19 @@ enum DebugStageDriver {
         case "library":
             break
 
-        case "dark":
-            model.settings.appearance = .dark
-
         case "settings":
             model.showSettings = true
 
-        case "profile":
+        case "profile", "streak":
             // Everything earned so far shows as new.
             model.settings.hasSeenOnboarding = true
             model.settings.seenAchievements = []
             // A few weeks of play for the store screenshot: the daily puzzle
             // on each of the last six days and one or two others most days.
+            // `streak` stays on the library: six dots and the gift alive.
             model.settings.playerName = "Sasha"
-            let items = model.library.builtIn
+            // Always-open pictures only: a solved badge on a locked one reads as a bug.
+            let items = LibraryCatalog.legacyItems
             for day in 0..<84 {
                 let date = Date.now.addingTimeInterval(-Double(day) * 86_400 - 3_600)
                 if day < 6 {
@@ -81,12 +80,14 @@ enum DebugStageDriver {
                 }
             }
             await settle(2.5)
-            model.showProfile = true
+            if stage == "profile" { model.showProfile = true }
 
         case "setup":
             model.openSetup(for: picture)
 
-        case "board", "scattered", "snapped", "hint", "completed":
+        case "board", "scattered", "snapped", "hint", "completed", "dark":
+            // `dark` is the half-built board at night.
+            if stage == "dark" { model.settings.appearance = .dark }
             model.start(item: picture, aspect: .landscape32, pieces: 48)
             await waitForBoard(model)
             if stage == "board" { break }
@@ -95,14 +96,22 @@ enum DebugStageDriver {
             await settle(0.5)
             model.boardController.fitTable()
             await settle(0.4)
-            if stage == "scattered" { break }
+            if stage == "scattered" {
+                // A clock that reads like a game, not a launch: 0:02:05.
+                model.session?.debugAddPlayTime(2 * 60 + 5)
+                break
+            }
 
             if let session = model.session { await assembleSome(session, limit: 22) }
             model.boardController.fitBoard()
             await settle(0.4)
-            if stage == "snapped" { break }
+            if stage == "snapped" || stage == "dark" {
+                model.session?.debugAddPlayTime(9 * 60 + 48)
+                break
+            }
 
             if stage == "hint" {
+                model.session?.debugAddPlayTime(8 * 60 + 12)
                 model.session?.requestHint()
                 await settle(0.3)
                 break

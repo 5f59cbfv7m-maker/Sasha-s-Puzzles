@@ -13,14 +13,19 @@ nonisolated enum LibraryCatalog {
     /// so a reshuffled rotation would break every streak. Days before
     /// `newPicturesFrom` therefore rotate over the 1.1 library only.
     static func dailyItem(on date: Date = .now) -> LibraryItem {
-        let day = Calendar.current.ordinality(of: .day, in: .era, for: date) ?? 0
+        let day = gregorian.ordinality(of: .day, in: .era, for: date) ?? 0
         let pool = date < newPicturesFrom ? legacyItems : dailyPool
         return pool[day % pool.count]
     }
 
     /// Set safely after 1.2 reaches the App Store: until then a 1.1 device and
     /// a 1.2 device in the same family show the same daily picture.
-    static let newPicturesFrom = DateComponents(calendar: .current, year: 2026, month: 12, day: 1).date!
+    static let newPicturesFrom = DateComponents(calendar: gregorian, year: 2026, month: 12, day: 1).date!
+
+    /// Not `Calendar.current`: a Thai phone counts Buddhist years, where 2026
+    /// is long past, and its era-day count would pick another daily picture
+    /// than the rest of the family. The time zone is still the player's own.
+    private static var gregorian: Calendar { Calendar(identifier: .gregorian) }
 
     /// The pictures 1.2 added, locked until the player has the points. Four
     /// open at each threshold, one from each of four categories; every other

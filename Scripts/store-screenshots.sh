@@ -5,6 +5,7 @@
 #
 #   Scripts/store-screenshots.sh [language]      # default en → docs/store/en/
 #   SIMULATORS= Scripts/store-screenshots.sh ja  # the Mac only
+#   ONLY=profile Scripts/store-screenshots.sh ja  # reshoot one stage
 #
 # Output is exactly the pixel size App Store Connect expects (1320×2868 and
 # 2064×2752), and 1440×900 for the Mac (2880×1800 on a Retina screen).
@@ -14,7 +15,7 @@ set -euo pipefail
 cd "$(dirname "$0")/.."
 
 LANGUAGE=${1:-en}
-OUT="docs/store/$LANGUAGE"
+OUT="${STORE_OUT:-docs/store}/$LANGUAGE"
 DD="${TMPDIR:-/tmp}/sashas-puzzles-screenshots"
 BUNDLE=com.kirillrychkov.SashasPuzzle
 typeset -A LOCALES=(en en_US ru ru_RU de de_DE fr fr_FR es es_ES it it_IT pt-BR pt_BR ja ja_JP ko ko_KR zh-Hans zh_CN th th_TH)
@@ -22,7 +23,7 @@ LOCALE=${LOCALES[$LANGUAGE]:-en_US}
 # Upload order: the first three show in search results, so a board mid-solve
 # leads. Files are numbered so Finder sorts them the way they go in; `board`
 # (an empty table under the faint guide) is left out on purpose.
-STAGES=(hint library completed profile scattered dark settings)
+STAGES=(hint streak completed profile scattered dark)
 
 # Cutting a big puzzle on a freshly booted simulator can outlast any fixed
 # sleep, so wait until two thumbnails two seconds apart match (capped for
@@ -41,7 +42,7 @@ settle() {
 }
 
 # SIMULATORS= (empty) shoots only the Mac.
-for DEVICE in ${(s:,:)${SIMULATORS-iPhone 17 Pro Max,iPad Pro 13-inch (M5)}}; do
+for DEVICE in ${(s:,:)${SIMULATORS-"iPhone 17 Pro Max,iPad Pro 13-inch (M5)"}}; do
   UDID=$(xcrun simctl list devices available | grep -F "$DEVICE (" | head -1 | sed -E 's/.*\(([0-9A-F-]{36})\).*/\1/')
   [[ -n "$UDID" ]] || { echo "No simulator named '$DEVICE' — add it in Xcode › Settings › Components"; exit 1; }
   # The iPad status bar shows the date in the simulator's own language, so the
@@ -66,10 +67,11 @@ for DEVICE in ${(s:,:)${SIMULATORS-iPhone 17 Pro Max,iPad Pro 13-inch (M5)}}; do
 
   DIR="$OUT/${DEVICE// /-}"
   mkdir -p "$DIR"
-  rm -f "$DIR"/*.png
+  [[ -n ${ONLY:-} ]] || rm -f "$DIR"/*.png(N)
   N=0
   for STAGE in $STAGES; do
     N=$((N + 1))
+    [[ -n ${ONLY:-} && $STAGE != $ONLY ]] && continue
     xcrun simctl terminate "$UDID" $BUNDLE 2>/dev/null || true
     xcrun simctl launch "$UDID" $BUNDLE --stage "$STAGE" --clear-saves \
       -AppleLanguages "($LANGUAGE)" -onboarding YES -appearance light >/dev/null
@@ -94,10 +96,11 @@ xcodebuild -quiet -project JigsawPuzzle.xcodeproj -scheme JigsawPuzzle -configur
   PRODUCT_BUNDLE_IDENTIFIER=$BUNDLE.screenshots CODE_SIGN_IDENTITY=- CODE_SIGN_STYLE=Manual DEVELOPMENT_TEAM= build
 DIR="$OUT/Mac"
 mkdir -p "$DIR"
-rm -f "$DIR"/*.png
+[[ -n ${ONLY:-} ]] || rm -f "$DIR"/*.png(N)
 N=0
 for STAGE in $STAGES; do
   N=$((N + 1))
+  [[ -n ${ONLY:-} && $STAGE != $ONLY ]] && continue
   pkill -f "sashas-puzzles-screenshots/Build/" 2>/dev/null && sleep 1
   # A killed run leaves "no windows" as its saved state; ignore it. The
   # locale gives dates and numbers the screenshot language, like the simulators.
