@@ -35,7 +35,8 @@ struct TrayView: View {
     }
 
     private var cellSize: CGFloat {
-        guard placement == .trailing else { return 63 }
+        // The strip under a phone board: as large as its height allows.
+        guard placement == .trailing else { return clamp(thickness - 58, 63, 96) }
         let columns = CGFloat(Self.trailingColumns)
         return floor((thickness - 2 * Self.gridPadding - (columns - 1) * Self.gridSpacing) / columns)
     }
@@ -43,6 +44,9 @@ struct TrayView: View {
     /// Wide side trays carry labelled buttons at the foot; a bottom strip or a
     /// narrow phone tray puts icons in the header instead.
     private var footerButtons: Bool { placement == .trailing && thickness >= 220 }
+    /// A narrow phone side tray drops the title and keeps its icons and count
+    /// at the foot, so the pieces start at the top.
+    private var narrow: Bool { placement == .trailing && !footerButtons }
 
     /// Side of the square, in board units around a piece's cell centre, that
     /// every tray piece is fitted into: wide enough for the farthest tab of
@@ -58,11 +62,15 @@ struct TrayView: View {
 
     var body: some View {
         VStack(spacing: 0) {
-            header
+            if !narrow { header }
             if session.state.trayOrder.isEmpty {
                 emptyState
             } else {
                 pieceGrid
+            }
+            if narrow {
+                Theme.hairline.frame(height: 1)
+                narrowFooter
             }
             if footerButtons {
                 Theme.hairline.frame(height: 1)
@@ -78,6 +86,33 @@ struct TrayView: View {
             }
         }
         .background(Theme.surface)
+        // The home indicator sits mid-screen, clear of a side tray: its foot
+        // can go lower and leave the pieces more room.
+        .ignoresSafeArea(.container, edges: narrow ? .bottom : [])
+    }
+
+    private var narrowFooter: some View {
+        controls.padding(EdgeInsets(top: 8, leading: 10, bottom: 14, trailing: 10))
+    }
+
+    /// Scatter, gather and the count as three equal capsules.
+    private var controls: some View {
+        HStack(spacing: 6) {
+            RoundIconButton(symbol: "shuffle", style: .card, size: 30, stretch: true) { session.scatterTray() }
+                .disabled(!session.canScatter)
+                .accessibilityLabel(Text("Scatter Pieces"))
+            RoundIconButton(symbol: "tray.and.arrow.down", style: .card, size: 30, stretch: true) { session.gatherLoosePieces() }
+                .disabled(!session.canGather)
+                .accessibilityLabel(Text("Gather Pieces"))
+            count.frame(maxWidth: .infinity, minHeight: 30).background(Theme.card, in: Capsule())
+        }
+    }
+
+    private var count: some View {
+        Text("\(session.state.trayOrder.count)")
+            .font(Theme.body(14, .bold).monospacedDigit())
+            .fixedSize()
+            .foregroundStyle(Theme.muted)
     }
 
     private var header: some View {
@@ -85,20 +120,14 @@ struct TrayView: View {
             Text("Pieces")
                 .font(Theme.display(placement == .trailing ? 19 : 17))
             Spacer()
-            if !footerButtons {
-                // No room for a footer under a horizontal strip or a narrow tray.
-                RoundIconButton(symbol: "shuffle", style: .card, size: 30) { session.scatterTray() }
-                    .disabled(!session.canScatter)
-                    .accessibilityLabel(Text("Scatter Pieces"))
-                RoundIconButton(symbol: "tray.and.arrow.down", style: .card, size: 30) { session.gatherLoosePieces() }
-                    .disabled(!session.canGather)
-                    .accessibilityLabel(Text("Gather Pieces"))
+            if footerButtons {
+                count
+                    .padding(.horizontal, 12).padding(.vertical, 4)
+                    .background(Theme.card, in: Capsule())
+            } else {
+                // No room for a footer under a horizontal strip.
+                controls.frame(width: 192)
             }
-            Text("\(session.state.trayOrder.count)")
-                .font(Theme.body(14, .bold).monospacedDigit())
-                .foregroundStyle(Theme.muted)
-                .padding(.horizontal, 12).padding(.vertical, 4)
-                .background(Theme.card, in: Capsule())
         }
         .padding(.horizontal, placement == .trailing ? 14 : 16)
         .padding(.top, placement == .trailing ? 18 : 8)
@@ -129,7 +158,7 @@ struct TrayView: View {
         if placement == .trailing {
             ScrollView(.vertical) {
                 LazyVGrid(columns: columns, spacing: Self.gridSpacing) { cells }
-                    .padding(EdgeInsets(top: 0, leading: Self.gridPadding, bottom: Self.gridPadding,
+                    .padding(EdgeInsets(top: narrow ? 14 : 0, leading: Self.gridPadding, bottom: Self.gridPadding,
                                         trailing: Self.gridPadding))
             }
         } else {

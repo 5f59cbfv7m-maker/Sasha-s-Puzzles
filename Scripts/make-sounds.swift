@@ -5,7 +5,7 @@
 //
 // Default outdir is ~/Desktop/Sasha's Sounds; naming tracks renders only those.
 // Effects come in variants (snap-A.caf …) to pick by ear; rename the chosen
-// ones to snap / merge / complete and drop them into Sources/Resources/Sounds/.
+// ones to snap / merge / complete / victory and drop them into Sources/Resources/Sounds/.
 // Each music track (board: music and music-piano, library: music-library) is written as MIDI
 // (open it in Logic and pick real instruments) and rendered through the General
 // MIDI bank built into macOS (<track>-draft.m4a), folded so the end flows into
@@ -239,6 +239,18 @@ completeC.pad([41, 53, 60, 65, 69], 0.3, at: 0, length: 2.6, attack: 0.25)
 completeC.bell(84, 0.3, at: 0.05, decay: 1.2); completeC.bell(89, 0.25, at: 0.45, decay: 1.2)
 completeC.reverb(0.35)
 try effect("complete-C (тёплый аккорд)", completeC)
+
+// victory: the completion card and its confetti. A quick climb to a full
+// bell chord over F major, then sparkles falling away with the confetti.
+var victoryA = Sound(seconds: 4.2)
+for (i, note) in [65.0, 69, 72, 77, 81, 84].enumerated() { victoryA.marimba(note, 0.45, at: Double(i) * 0.075) }
+for note in [77.0, 81, 84, 89] { victoryA.bell(note, 0.28, at: 0.5, decay: 1.4) }
+victoryA.pad([41, 53, 60, 65, 69, 72], 0.22, at: 0.45, length: 3.6, attack: 0.2)
+for (i, note) in [96.0, 93, 91, 89, 86, 84, 81].enumerated() {
+    victoryA.bell(note, 0.16 * (1 - Double(i) / 9), at: 1.0 + Double(i) * 0.16, decay: 0.6)
+}
+victoryA.reverb(0.3)
+try effect("victory-A (фанфара и искры)", victoryA)
 
 // MARK: - Music
 

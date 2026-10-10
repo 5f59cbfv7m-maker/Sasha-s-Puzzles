@@ -22,17 +22,17 @@ import UIKit
 final class Feedback {
     static let shared = Feedback()
 
-    enum Tone: String, CaseIterable { case snap, merge, complete, achievement, streak }
+    enum Tone: String, CaseIterable { case snap, merge, complete, achievement, streak, victory }
     enum Music: String, CaseIterable { case library = "music-library", boardPiano = "music-piano", board = "music" }
 
     /// Music relative to the effects; the file's own level does the rest.
     static let musicVolume: Float = 0.35
 
-    /// The old track fades out first; the new one comes in a beat later and
-    /// slower, so going from the library to the table eases in rather than cuts.
-    static let fadeOut: TimeInterval = 3
-    static let fadeInDelay: TimeInterval = 1
-    static let fadeIn: TimeInterval = 5
+    /// The old track is all but gone before the new one starts: two tunes in
+    /// different places of their bars grate when they overlap for long.
+    static let fadeOut: TimeInterval = 1.6
+    static let fadeInDelay: TimeInterval = 1.3
+    static let fadeIn: TimeInterval = 2.5
 
     /// True when a music file ships, so Settings only offers what exists.
     static let hasMusic = Music.allCases.contains { soundURL($0.rawValue) != nil }
@@ -43,6 +43,7 @@ final class Feedback {
     private var filePlayers: [Tone: AVAudioPlayer] = [:]
     private var tracks: [Music: AVAudioPlayer] = [:]
     private var currentMusic: Music?
+    private var ducked = false
     private var audioReady = false
 
     private init() {}
@@ -135,16 +136,27 @@ final class Feedback {
 
     /// Crossfades to `track`, or fades everything out with `nil`. Each loop
     /// keeps its place while silent, so coming back resumes rather than restarts.
-    func setMusic(_ track: Music?, settings: AppSettings) {
+    /// `ducked` holds the music low under the finale; leaving a ducked track is
+    /// a quick cut, so the fanfare that follows starts in silence.
+    func setMusic(_ track: Music?, ducked: Bool = false, settings: AppSettings) {
         let target = settings.musicEnabled ? track : nil
-        guard target != currentMusic else { return }
+        let level = ducked ? Self.musicVolume * 0.2 : Self.musicVolume
+        guard target != currentMusic else {
+            if ducked != self.ducked, let target, let player = tracks[target] {
+                player.setVolume(level, fadeDuration: 1)
+            }
+            self.ducked = ducked
+            return
+        }
+        let fadeOut = self.ducked ? 0.25 : Self.fadeOut
+        self.ducked = ducked
         currentMusic = target
         prepareAudioIfNeeded()
         for (music, player) in tracks where music != target {
-            player.setVolume(0, fadeDuration: Self.fadeOut)
+            player.setVolume(0, fadeDuration: fadeOut)
         }
         Task {
-            try? await Task.sleep(for: .seconds(Self.fadeOut))
+            try? await Task.sleep(for: .seconds(fadeOut))
             for (music, player) in tracks where music != currentMusic { player.pause() }
         }
         guard let target else { return }
@@ -161,7 +173,7 @@ final class Feedback {
             try? await Task.sleep(for: .seconds(delay))
             guard currentMusic == target else { return }
             if !player.isPlaying { player.play() }
-            player.setVolume(Self.musicVolume, fadeDuration: Self.fadeIn)
+            player.setVolume(level, fadeDuration: Self.fadeIn)
         }
     }
 
@@ -223,7 +235,7 @@ final class Feedback {
                         Partial(frequency: 523.25, amplitude: 0.06, start: 0, decay: 12),
                         Partial(frequency: 392, amplitude: 0.15, start: 0.09, decay: 6),
                         Partial(frequency: 784, amplitude: 0.05, start: 0.09, decay: 11)]
-        case .complete:
+        case .complete, .victory:
             // A slow rising C-major arpeggio; the top note is a detuned pair
             // so it shimmers rather than rings.
             duration = 2.4

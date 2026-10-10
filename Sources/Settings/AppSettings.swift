@@ -91,6 +91,15 @@ final class AppSettings {
     @ObservationIgnored private let cloud: NSUbiquitousKeyValueStore?
     @ObservationIgnored private var observer: NSObjectProtocol?
     /// Keys that sync. Onboarding stays per device.
+    /// A phone's small pieces under a fingertip snap more readily.
+    private static var defaultSnap: SnapAssist {
+        #if os(iOS)
+        UIDevice.current.userInterfaceIdiom == .phone ? .generous : .standard
+        #else
+        .standard
+        #endif
+    }
+
     static let syncedKeys = ["appearance", "sound", "music", "boardMusic", "haptics", "ghost", "snapAssist",
                              "difficulty", "aspect", "outlines", "cardboard", "table", "playerName",
                              "seenAchievements"]
@@ -122,7 +131,7 @@ final class AppSettings {
             }
         }
         appearance = .system; soundEnabled = true; musicEnabled = true; boardMusic = .piano
-        hapticsEnabled = true; showGhostImage = true; snapAssist = .standard; defaultDifficulty = .normal
+        hapticsEnabled = true; showGhostImage = true; snapAssist = Self.defaultSnap; defaultDifficulty = .normal
         defaultAspect = .original; showPieceOutlines = true; cardboardPieces = false; table = .plain
         hasSeenOnboarding = false; playerName = ""
         reload()
@@ -157,7 +166,7 @@ final class AppSettings {
         boardMusic = BoardMusic(rawValue: defaults.string(forKey: "boardMusic") ?? "") ?? .piano
         hapticsEnabled = defaults.object(forKey: "haptics") as? Bool ?? true
         showGhostImage = defaults.object(forKey: "ghost") as? Bool ?? true
-        snapAssist = SnapAssist(rawValue: defaults.string(forKey: "snapAssist") ?? "") ?? .standard
+        snapAssist = SnapAssist(rawValue: defaults.string(forKey: "snapAssist") ?? "") ?? Self.defaultSnap
         defaultDifficulty = Difficulty(rawValue: defaults.string(forKey: "difficulty") ?? "") ?? .normal
         defaultAspect = PuzzleAspect(rawValue: defaults.string(forKey: "aspect") ?? "") ?? .original
         showPieceOutlines = defaults.object(forKey: "outlines") as? Bool ?? true

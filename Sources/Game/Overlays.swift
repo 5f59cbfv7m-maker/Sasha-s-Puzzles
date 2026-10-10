@@ -30,6 +30,18 @@ private struct FittedCard<Content: View>: View {
     }
 }
 
+/// Two card buttons side by side when both labels fit, stacked on a narrow phone.
+private struct ButtonPair<Content: View>: View {
+    @ViewBuilder var content: Content
+
+    var body: some View {
+        ViewThatFits(in: .horizontal) {
+            HStack(spacing: 12) { content }
+            VStack(spacing: 10) { content }
+        }
+    }
+}
+
 /// Shown while the picture is decoded and the pieces are cut.
 struct LoadingOverlay: View {
     let session: GameSession
@@ -132,10 +144,10 @@ struct PauseOverlay: View {
                     Text(TimeFormatting.clock(session.elapsed))
                         .font(Theme.display(compact ? 34 : 44).monospacedDigit())
                         .padding(.top, compact ? 8 : 14)
-                    HStack(spacing: 10) {
+                    ButtonPair {
                         PillButton(title: "Resume", symbol: "play.fill", expand: true) { session.resume() }
                             .keyboardShortcut(.space, modifiers: [])
-                        PillButton(title: "Library", style: .secondary, size: 17) { model.showLibrary() }
+                        PillButton(title: "Library", style: .secondary, size: 17, expand: true) { model.showLibrary() }
                     }
                     .padding(.top, compact ? 16 : 24)
                 }
@@ -217,7 +229,7 @@ struct CompletionOverlay: View {
                             .padding(.top, compact ? 12 : 18)
                     }
 
-                    HStack(spacing: 12) {
+                    ButtonPair {
                         PillButton(title: "Play again", expand: true) { model.restartCurrent() }
                         PillButton(title: "Library", style: .ghost, expand: true) { model.showLibrary() }
                     }
@@ -237,6 +249,11 @@ struct CompletionOverlay: View {
         }
         .onAppear {
             withAnimation(.spring(response: 0.7, dampingFraction: 0.6)) { appeared = true }
+            // A beat after the music cuts out, so the fanfare starts in silence.
+            Task {
+                try? await Task.sleep(for: .seconds(0.3))
+                Feedback.shared.play(.victory, settings: model.settings)
+            }
         }
     }
 

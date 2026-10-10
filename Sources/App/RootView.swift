@@ -6,10 +6,22 @@ struct RootView: View {
     @State private var showSplash = true
 
     /// The library tune while a picture is chosen (set-up included), the board
-    /// tune once the game is on screen, silence in the background.
+    /// tune once the game is on screen, silence in the background and under
+    /// the completion card's fanfare until the player moves on.
     private var music: Feedback.Music? {
         guard scenePhase == .active else { return nil }
+        if let session = model.session, session.phase == .completed, session.finaleDone { return nil }
         return model.path.last == .game ? model.settings.boardMusic.track : .library
+    }
+
+    /// Quiet but still there while the finished picture plays its finale.
+    private var ducked: Bool {
+        guard let session = model.session else { return false }
+        return session.phase == .completed && !session.finaleDone
+    }
+
+    private func syncMusic() {
+        Feedback.shared.setMusic(music, ducked: ducked, settings: model.settings)
     }
 
     var body: some View {
@@ -77,12 +89,13 @@ struct RootView: View {
             .environment(model.settings)
         }
         .preferredColorScheme(model.settings.appearance.colorScheme)
-        .onChange(of: music, initial: true) { Feedback.shared.setMusic(music, settings: model.settings) }
+        .onChange(of: music, initial: true) { syncMusic() }
+        .onChange(of: ducked) { syncMusic() }
         // Hands the game in progress to the player's other devices.
         .onChange(of: scenePhase) { _, phase in
             if phase == .background { model.session?.saveNow(); model.refreshSaves() }
         }
-        .onChange(of: model.settings.musicEnabled) { Feedback.shared.setMusic(music, settings: model.settings) }
+        .onChange(of: model.settings.musicEnabled) { syncMusic() }
         .environment(model.settings)
         #if os(iOS)
         // Under memory pressure the derived-image caches are the cheapest thing

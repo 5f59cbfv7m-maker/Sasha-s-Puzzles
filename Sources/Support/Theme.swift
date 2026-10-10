@@ -179,6 +179,8 @@ struct RoundIconButton: View {
     let symbol: String
     var style: Style = .neutral
     var size: CGFloat = 44
+    /// Grows into a capsule as wide as its row allows.
+    var stretch = false
     let action: () -> Void
 
     var body: some View {
@@ -186,9 +188,9 @@ struct RoundIconButton: View {
             Image(systemName: symbol)
                 .font(.system(size: size * 0.42, weight: .bold))
                 .foregroundStyle(foreground)
-                .frame(width: size, height: size)
-                .background(background, in: Circle())
-                .contentShape(Circle())
+                .frame(minWidth: size, maxWidth: stretch ? .infinity : size, minHeight: size, maxHeight: size)
+                .background(background, in: Capsule())
+                .contentShape(Capsule())
         }
         .buttonStyle(PressableStyle())
     }

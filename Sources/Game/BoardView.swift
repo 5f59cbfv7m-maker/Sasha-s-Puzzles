@@ -86,7 +86,16 @@ final class BoardInputController: BoardEventHandling {
         }
     }
 
-    func fitBoard(padding: CGFloat = 40) {
+    /// Margin around the fitted picture; a phone has none to spare.
+    static var fitPadding: CGFloat {
+        #if os(iOS)
+        UIDevice.current.userInterfaceIdiom == .phone ? 14 : 40
+        #else
+        40
+        #endif
+    }
+
+    func fitBoard(padding: CGFloat = fitPadding) {
         guard let session, viewSize.width > 1 else { return }
         session.viewport = .fitting(content: session.boardRect, in: viewSize, padding: padding)
         fittedSize = viewSize
@@ -98,7 +107,7 @@ final class BoardInputController: BoardEventHandling {
     func glideToBoard() -> TimeInterval {
         guard let session, viewSize.width > 1 else { return 0 }
         let from = session.viewport
-        let to = Viewport.fitting(content: session.boardRect, in: viewSize, padding: 40)
+        let to = Viewport.fitting(content: session.boardRect, in: viewSize, padding: Self.fitPadding)
         fittedSize = viewSize
         let ratio = abs(log(to.scale / from.scale))
         let shift = hypot(to.offset.width - from.offset.width, to.offset.height - from.offset.height)
