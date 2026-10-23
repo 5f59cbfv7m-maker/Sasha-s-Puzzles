@@ -33,7 +33,7 @@
 - [x] Sandbox + Hardened Runtime для Mac.
 - [x] Mac: закрытие окна сохраняет игру и завершает приложение, окно есть
       в меню Window (замечание ревью по Guideline 4 к сборке 1.0 (1)).
-- [x] Версия `MARKETING_VERSION = 1.0`, сборка `CURRENT_PROJECT_VERSION = 2`.
+- [x] Версия `MARKETING_VERSION = 1.2`, сборка `CURRENT_PROJECT_VERSION = 5`.
       Каждая новая загрузка в App Store Connect — увеличить сборку (2, 3, …).
 
 **App Store Connect → My Apps → «+»**
@@ -47,7 +47,8 @@
 - [ ] Privacy Policy URL — обязательна для всех приложений:
       `https://github.com/5f59cbfv7m-maker/Sasha-s-Puzzles/blob/main/docs/privacy.md`
       (текст в `docs/privacy.md`; замените контактный e-mail, если хотите другой).
-- [ ] Support URL: `https://github.com/5f59cbfv7m-maker/Sasha-s-Puzzles`.
+- [x] Support URL: `https://keelspan.app/apps/sashas-puzzles/support/`,
+      Marketing URL: `https://keelspan.app/apps/sashas-puzzles/` (с 1.2).
 - [ ] Pricing: Free (или цена) + страны.
 - [ ] Тексты из раздела 2 — готовы на 10 языках, вставить каждый в свою
       локализацию (App Store → Localizations → «+»).

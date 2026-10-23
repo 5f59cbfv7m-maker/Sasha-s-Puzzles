@@ -15,7 +15,7 @@
   <img src="https://img.shields.io/badge/platforms-macOS%2015%20%7C%20iOS%2018%20%7C%20iPadOS%2018-1B7FD1" alt="Platforms">
   <img src="https://img.shields.io/badge/Swift-6.0-F05138" alt="Swift 6.0">
   <img src="https://img.shields.io/badge/Xcode-16%2B-147EFB" alt="Xcode 16+">
-  <img src="https://img.shields.io/badge/tests-66%20passing-3FB950" alt="66 tests passing">
+  <img src="https://img.shields.io/badge/tests-85%20passing-3FB950" alt="85 tests passing">
   <img src="https://img.shields.io/badge/dependencies-none-8B949E" alt="No dependencies">
   <img src="https://img.shields.io/badge/offline-100%25-8B949E" alt="Works offline">
 </p>
@@ -295,11 +295,13 @@ puzzle keeps working after the original leaves your library.
   app container. Entries whose file has vanished are dropped on load.
 * **Statistics** — one JSON array of finished games (picture, category, pieces,
   time, date). Totals, best times, the daily streak, the 12-week chart and all
-  14 achievements are *derived* from it on read, so there is nothing to keep in
+  24 achievements are *derived* from it on read, so there is nothing to keep in
   sync and nothing to migrate. A game counts as the daily puzzle when it is that
   day's picture at the daily piece count.
 
-Nothing leaves the device. There is no account, no server and no analytics.
+There is no account of our own, no server and no analytics. Progress syncs
+through the player's own iCloud, and scores reach Game Center only when the
+player is signed in to it.
 
 ---
 
@@ -318,7 +320,7 @@ Sources/
 ├── Persistence/  GameSnapshot, SaveStore, PlayerStats (achievements, streaks)
 ├── Support/      Theme (tokens, fonts, controls), SplitMix64, Feedback, debug driver
 └── Resources/    Assets.xcassets, Localizable.xcstrings, Fonts/
-Tests/            66 tests across 8 suites
+Tests/            85 tests across 8 suites
 ```
 
 The engine layer (`Engine/`) is `nonisolated` and `Sendable` and knows
@@ -367,9 +369,14 @@ resizing are handled by the same code path as rotation.
 - Autosave and *Continue* from the library
 - A daily puzzle (150 pieces, one picture per day) with a streak counter
 - Profile: puzzles solved, pieces placed, time at the table, a 12-week chart
-  and 14 achievements; best time on every solved card
+  and 24 achievements (two of them secret), with progress bars; best time on
+  every solved card
 - Completion screen with confetti, the delta to your previous record and any
   achievement just unlocked
+- Game Center: friends' leaderboards (puzzles solved, points, points this
+  week, daily-puzzle time, longest streak) and the achievement wall with
+  progress; on iOS/macOS 26 the Games app's *Daily puzzle* and *Quick puzzle*
+  activities and two challenges (the daily-puzzle race, points this week)
 - Three-step onboarding on first launch
 - Settings: theme, sounds, background music, haptics, picture guide, piece
   outlines, snap assist, defaults, reset saves and statistics
@@ -387,7 +394,7 @@ resizing are handled by the same code path as rotation.
 
 ## Tests
 
-`Tests/` contains **66 tests in 8 suites** (Swift Testing), covering the areas the
+`Tests/` contains **85 tests in 8 suites** (Swift Testing), covering the areas the
 engine cannot be allowed to get wrong:
 
 grid selection · edge generation · edge matching between neighbours · flat
@@ -397,7 +404,8 @@ bridging · group movement · completion detection · shuffle · scatter · the 
 clock · undo/redo · save/load and serialisation · image crop, resize and decode ·
 texture rendering and the memory budget ·
 photo import, reload and deletion · viewport mapping, anchored zoom and the
-resize clamp · daily streaks, achievement unlocks and completion summaries.
+resize clamp · daily streaks, achievement unlocks and completion summaries ·
+points, the weekly leaderboard window and tiered achievements.
 
 ```bash
 xcodebuild -project JigsawPuzzle.xcodeproj -scheme JigsawPuzzle \
