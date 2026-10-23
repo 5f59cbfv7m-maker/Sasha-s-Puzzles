@@ -22,6 +22,9 @@ final class GameCenter {
         case dailyStreak = "daily_streak"
         /// Points from every solved puzzle; higher is better.
         case points = "points_total"
+        /// Points earned this week; a recurring board that restarts every
+        /// Monday at 00:00 UTC (`PlayerStats.leaderboardWeekStart`).
+        case pointsWeek = "points_week"
 
         var id: String { rawValue }
 
@@ -31,6 +34,7 @@ final class GameCenter {
             case .dailyTime: String(localized: "Daily puzzle — best time")
             case .dailyStreak: String(localized: "Longest daily streak")
             case .points: String(localized: "Points")
+            case .pointsWeek: String(localized: "Points this week")
             }
         }
 
@@ -40,6 +44,7 @@ final class GameCenter {
             case .dailyTime: "stopwatch.fill"
             case .dailyStreak: "flame.fill"
             case .points: "star.fill"
+            case .pointsWeek: "calendar"
             }
         }
     }
@@ -52,6 +57,16 @@ final class GameCenter {
     private(set) var needsSignIn = false
     @ObservationIgnored private var signIn: PlatformViewController?
     @ObservationIgnored private weak var stats: PlayerStats?
+    /// What to open when the player picks one of the game's activities in
+    /// the Games app or on a challenge notification.
+    @ObservationIgnored var onActivity: (Activity) -> Void = { _ in }
+    @ObservationIgnored private var listener: AnyObject?
+
+    /// Activity identifiers, as set up in App Store Connect → Game Center.
+    enum Activity: String {
+        case dailyPuzzle = "daily_puzzle"
+        case quickPuzzle = "quick_puzzle"
+    }
 
     /// `previewSignedIn` shows the friends section as a signed-in player sees
     /// it, for the profile stage's store screenshot; nothing reaches Game Center.
@@ -74,30 +89,61 @@ final class GameCenter {
         signIn = controller
         needsSignIn = controller != nil
         isSignedIn = GKLocalPlayer.local.isAuthenticated
+        if isSignedIn { listen() }
         report()
+    }
+
+    /// Registers once for activities. Registering a second listener is
+    /// undefined behaviour, so authentication callbacks after the first
+    /// leave it alone.
+    private func listen() {
+        guard listener == nil, #available(iOS 26, macOS 26, *) else { return }
+        let listener = ActivityListener { [weak self] id in
+            guard let activity = Activity(rawValue: id) else { return false }
+            self?.onActivity(activity)
+            return true
+        }
+        GKLocalPlayer.local.register(listener)
+        self.listener = listener
     }
 
     // MARK: - Reporting
 
-    /// Sends the current totals and every unlocked achievement. Game Center
-    /// keeps the best score and ignores achievements already earned, so
-    /// sending everything each time is both simple and idempotent — and it
-    /// backfills whatever was solved before Game Center existed here.
-    func report() {
+    /// Sends the all-time totals and every achievement's progress. Game
+    /// Center keeps the best score and the highest progress, so sending
+    /// everything each time is both simple and idempotent — and it backfills
+    /// whatever was solved before Game Center existed here.
+    ///
+    /// `finished` is the game that just ended, if any. Only then go the
+    /// boards that challenges are built on (`daily_time`, `points_week`):
+    /// every score sent there uses up an attempt of a running challenge, so
+    /// a launch or a sync must never send one.
+    func report(finished: SolvedRecord? = nil) {
         guard isSignedIn, let stats else { return }
         var scores: [(Board, Int)] = [(.puzzlesSolved, stats.puzzlesSolved), (.points, stats.points)]
         if stats.longestStreak > 0 { scores.append((.dailyStreak, stats.longestStreak)) }
-        if let best = stats.dailyBestToday { scores.append((.dailyTime, max(1, Int(best.rounded())))) }
-        let unlocked = Achievement.allCases.filter { $0.isUnlocked(in: stats) }.map(\.gameCenterID)
+        if let finished {
+            scores.append((.pointsWeek, stats.points(since: PlayerStats.leaderboardWeekStart())))
+            // This attempt's own time, not today's best: a challenge counts
+            // every attempt, and Game Center keeps the best one anyway.
+            if stats.isDaily(finished) { scores.append((.dailyTime, max(1, Int(finished.elapsed.rounded())))) }
+        }
+        let progress: [(id: String, percent: Double)] = Achievement.allCases.compactMap { achievement in
+            // Whole percent: Game Center wants an integer value.
+            let percent = (achievement.progress(in: stats).fraction * 100).rounded(.down)
+            // Partial progress would reveal a hidden achievement early.
+            guard percent > 0, percent == 100 || !achievement.isHidden else { return nil }
+            return (achievement.gameCenterID, percent)
+        }
 
         Task {
             for (board, score) in scores where score > 0 {
                 try? await GKLeaderboard.submitScore(score, context: 0, player: GKLocalPlayer.local,
                                                      leaderboardIDs: [board.rawValue])
             }
-            let achievements = unlocked.map { id in
-                let achievement = GKAchievement(identifier: id)
-                achievement.percentComplete = 100
+            let achievements = progress.map { item in
+                let achievement = GKAchievement(identifier: item.id)
+                achievement.percentComplete = item.percent
                 // The completion card already celebrates it.
                 achievement.showsCompletionBanner = false
                 return achievement
@@ -130,6 +176,23 @@ final class GameCenter {
 
     func showDashboard() {
         GKAccessPoint.shared.trigger(state: .dashboard) {}
+    }
+}
+
+/// Hands the activity a player picked in the Games app to `GameCenter`.
+@available(iOS 26, macOS 26, *)
+private final class ActivityListener: NSObject, GKLocalPlayerListener {
+    private let open: @MainActor (String) -> Bool
+
+    init(open: @escaping @MainActor (String) -> Bool) {
+        self.open = open
+    }
+
+    nonisolated func player(_ player: GKPlayer, wantsToPlay activity: GKGameActivity,
+                            completionHandler: @escaping (Bool) -> Void) {
+        let id = activity.activityDefinition.identifier
+        nonisolated(unsafe) let completionHandler = completionHandler
+        Task { @MainActor in completionHandler(open(id)) }
     }
 }
 

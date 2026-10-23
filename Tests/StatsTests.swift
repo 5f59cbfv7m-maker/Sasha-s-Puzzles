@@ -150,6 +150,48 @@ struct StatsTests {
         #expect(stats.dailyBestToday == 380)
     }
 
+    @Test("Streak medals and the first gift stay earned after the streak breaks")
+    func streakMedalsLast() throws {
+        let stats = PlayerStats(directory: try temporaryDirectory())
+        for day in (8...14).reversed() { stats.record(daily(daysAgo: day)) }
+        #expect(stats.streak == 0)
+        #expect(Achievement.weekStreak.isUnlocked(in: stats))
+        #expect(Achievement.firstGift.isUnlocked(in: stats))
+        #expect(Achievement.twoWeekStreak.progress(in: stats).label == "7 / 14")
+        #expect(!Achievement.allSecrets.isUnlocked(in: stats))
+    }
+
+    @Test("The weekly board counts the games since Monday 00:00 UTC")
+    func weeklyPoints() throws {
+        // Friday 23 October 2026 → Monday 19 October, midnight UTC.
+        let friday = Date(timeIntervalSince1970: 1_792_746_000)
+        #expect(PlayerStats.leaderboardWeekStart(for: friday) == Date(timeIntervalSince1970: 1_792_368_000))
+
+        let start = PlayerStats.leaderboardWeekStart()
+        let stats = PlayerStats(directory: try temporaryDirectory())
+        for date in [start.addingTimeInterval(-3600), .now] {
+            stats.record(SolvedRecord(itemID: "bundled.sea_Clownfish", category: .sea, pieces: 48, targetPieces: 48,
+                                      elapsed: 300, date: date, isUserPhoto: false))
+        }
+        #expect(stats.points == 96)
+        #expect(stats.points(since: start) == 48)
+    }
+
+    @Test("Tiered achievements: a thousand pieces as asked, points, and the record in the summary")
+    func tiers() throws {
+        let stats = PlayerStats(directory: try temporaryDirectory())
+        // A 1,000-piece cut that came out a few pieces short still counts.
+        let big = SolvedRecord(itemID: "bundled.sea_Clownfish", category: .sea, pieces: 990, targetPieces: 1000,
+                               elapsed: 9000, date: .now, isUserPhoto: false)
+        let summary = stats.record(big)
+        #expect(summary.solved == big)
+        #expect(summary.newAchievements.contains(.thousand))
+        #expect(summary.newAchievements.contains(.points1k))
+        #expect(Achievement.points5k.progress(in: stats).label == "1485 / 5000")
+        #expect(Achievement.hundredPuzzles.progress(in: stats).label == "1 / 100")
+        #expect(Achievement.allSecrets.isHidden && !Achievement.thousand.isHidden)
+    }
+
     @Test("Two devices end up with the union of their games, and a reset reaches both")
     func cloudMerge() throws {
         let cloud = MemoryMirror()

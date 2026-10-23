@@ -53,7 +53,8 @@ func piecePath() -> CGPath {
     return path
 }
 
-func render(_ name: String, background: CGColor, photo: String? = nil, label: String? = nil, heart: Bool = false) {
+func render(_ name: String, background: CGColor, photo: String? = nil, label: String? = nil, heart: Bool = false,
+            star: Bool = false) {
     let ctx = CGContext(data: nil, width: Int(size), height: Int(size), bitsPerComponent: 8, bytesPerRow: 0,
                         space: CGColorSpace(name: CGColorSpace.sRGB)!, bitmapInfo: CGImageAlphaInfo.noneSkipLast.rawValue)!
     ctx.setFillColor(background)
@@ -107,6 +108,20 @@ func render(_ name: String, background: CGColor, photo: String? = nil, label: St
         ctx.setFillColor(accent)
         ctx.fillPath()
     }
+    if star {
+        // Five points, the outer radius on the solid part of the piece.
+        let p = CGMutablePath(), o = CGPoint(x: c.x + 0.03 * s, y: c.y + 0.02 * s)
+        for i in 0..<10 {
+            let radius: CGFloat = i % 2 == 0 ? 190 : 80
+            let angle = CGFloat.pi / 2 + CGFloat(i) * .pi / 5
+            let point = CGPoint(x: o.x + radius * cos(angle), y: o.y + radius * sin(angle))
+            i == 0 ? p.move(to: point) : p.addLine(to: point)
+        }
+        p.closeSubpath()
+        ctx.addPath(p)
+        ctx.setFillColor(accent)
+        ctx.fillPath()
+    }
     let rep = NSBitmapImageRep(cgImage: ctx.makeImage()!)
     try! rep.representation(using: .png, properties: [:])!.write(to: out.appending(path: "\(name).png"))
 }
@@ -118,6 +133,21 @@ render("sprinter", background: accent, label: "5:00")
 render("nightmare", background: color("4a3b33"), label: "800")
 render("weekStreak", background: accent, label: "7")
 render("ownPhoto", background: accent, heart: true)
+// Added in 1.2: the next tiers, and the medals for points and secrets.
+let night = color("4a3b33")
+render("hundredPuzzles", background: accent, label: "100")
+render("twoFiftyPuzzles", background: accent, label: "250")
+render("thousand", background: night, label: "1000")
+render("twoWeekStreak", background: accent, label: "14")
+render("monthStreak", background: accent, label: "30")
+render("points1k", background: accent, label: "1K")
+render("points5k", background: accent, label: "5K")
+render("allRewards", background: sage, photo: "mountains_Matterhorn at Sunrise")
+render("firstGift", background: night, photo: "secret_Fairytale Castle")
+render("allSecrets", background: night, photo: "secret_Fireflies and Stars")
+// Leaderboard art for the points boards.
+render("leaderboard-points_total", background: accent, star: true)
+render("leaderboard-points_week", background: sage, star: true)
 render("space", background: sage, photo: "space_Aurora over the Pines")
 render("nature", background: sage, photo: "nature_Autumn Forest from Above")
 render("mountains", background: sage, photo: "mountains_Alpine Village")

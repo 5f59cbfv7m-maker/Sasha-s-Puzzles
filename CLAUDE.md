@@ -12,7 +12,7 @@ xcodebuild -project JigsawPuzzle.xcodeproj -scheme JigsawPuzzle \
 ```
 
 Swap the destination for `platform=iOS Simulator,name=iPhone 17 Pro` or
-`name=iPad Pro 13-inch (M5)`. **82 tests in 8 suites must pass** before any change
+`name=iPad Pro 13-inch (M5)`. **85 tests in 8 suites must pass** before any change
 is called done. Grep the output for `^✔ Test run` — xcodebuild buries it in noise.
 
 `./Scripts/install-mac.sh [destination]` builds Release and drops the `.app`
@@ -203,9 +203,25 @@ The 1.0 file (a bare `[SolvedRecord]`) still loads.
 `Achievement.gameCenterID` must match App Store Connect → Game Center, and a
 leaderboard or achievement that has shipped can never be deleted or renamed.
 `daily_time` is a recurring board (1 day, from 00:00 GMT+5) scored in
-seconds, lower first; the other two are classic, higher first. Achievement
-art is `docs/gamecenter/` (made by `Scripts/make-achievement-badges.swift`,
-no SF Symbols — their licence forbids that use).
+seconds, lower first; `points_week` is recurring too (1 week, from Monday
+00:00 UTC — `PlayerStats.leaderboardWeekStart` must agree), higher first;
+`puzzles_solved`, `daily_streak` and `points_total` are classic, higher
+first. Achievement and leaderboard art is `docs/gamecenter/` (made by
+`Scripts/make-achievement-badges.swift`, no SF Symbols — their licence
+forbids that use); activity and challenge art (3840×2160) is
+`docs/gamecenter/activities/`, made by `Scripts/make-game-center-art.swift`.
+24 achievements use the full 1,000 Game Center points but 10; `firstGift` and
+`allSecrets` are hidden, so they never get partial progress (that would
+reveal them).
+
+**Challenges count every score.** The Games app's challenges `daily_race`
+(on `daily_time`) and `weekly_points` (on `points_week`) take each score
+sent to their board as an attempt. `GameCenter.report(finished:)` therefore
+sends those two boards only for the game that just ended — never at launch
+or after an iCloud sync — and sends that attempt's own time, not the best.
+The activities `daily_puzzle` and `quick_puzzle` arrive through
+`GKLocalPlayer.local.register` (iOS/macOS 26 only) and land in
+`AppModel.open(_:)`.
 
 **Measured frames go stale across a rotation.** `onGeometryChange` reading
 `frame(in: .named("game"))` fires once with the final landscape frame and then

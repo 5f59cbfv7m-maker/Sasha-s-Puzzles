@@ -65,6 +65,7 @@ final class AppModel {
         refreshSaves()
         sharedGames?.onExternalChange = { [weak self] in self?.refreshSaves() }
         stats.onExternalChange = { [weak self] in self?.gameCenter.report() }
+        gameCenter.onActivity = { [weak self] activity in self?.open(activity) }
         gameCenter.start(with: stats)
         if settings.seenAchievements == nil { markAchievementsSeen() }
     }
@@ -143,6 +144,28 @@ final class AppModel {
         start(item: LibraryCatalog.dailyItem(), aspect: .original, pieces: LibraryCatalog.dailyPieces)
     }
 
+    /// A short game on a random picture the player has open — the Games
+    /// app's "Quick puzzle" activity, sized for the Sprinter achievement.
+    func startQuick() {
+        let unlocks = unlocks
+        let open = LibraryCatalog.builtIn().filter { !isLocked($0, unlocks) }
+        guard let item = open.randomElement() else { return }
+        start(item: item, aspect: .original, pieces: Self.quickPieces)
+    }
+
+    static let quickPieces = 48
+
+    /// An activity picked in the Games app or from a challenge notification.
+    /// Settings or the profile go away (onboarding stays, the game waits
+    /// under it); a game in progress is saved by `start`.
+    func open(_ activity: GameCenter.Activity) {
+        if sheet != .onboarding { sheet = nil }
+        switch activity {
+        case .dailyPuzzle: startDaily()
+        case .quickPuzzle: startQuick()
+        }
+    }
+
     private func attach(_ session: GameSession?) {
         lastCompletion = nil
         session?.onComplete = { [weak self] finished in
@@ -151,7 +174,7 @@ final class AppModel {
             #if DEBUG
             if let forced = DebugStageDriver.forcedAchievements { lastCompletion?.newAchievements = forced }
             #endif
-            gameCenter.report()
+            gameCenter.report(finished: lastCompletion?.solved)
         }
     }
 

@@ -29,8 +29,27 @@ struct AchievementBadge: View {
         case .firstPuzzle: 1
         case .tenPuzzles: 10
         case .fiftyPuzzles: 50
+        case .hundredPuzzles: 100
+        case .twoFiftyPuzzles: 250
+        case .twoWeekStreak: 14
+        case .monthStreak: 30
+        case .thousand: 1000
         default: nil
         }
+    }
+
+    /// Fixed text instead of a count, where counting up would take too long.
+    private var label: String? {
+        switch achievement {
+        case .points1k: "1K"
+        case .points5k: "5K"
+        default: nil
+        }
+    }
+
+    /// Text size for a number of `digits` characters, so four still fit.
+    private func numberSize(_ digits: Int) -> CGFloat {
+        size * [0.52, 0.42, 0.34, 0.27][min(max(digits, 1), 4) - 1]
     }
 
     private var isArmed: Bool { armed && !reduceMotion }
@@ -45,18 +64,26 @@ struct AchievementBadge: View {
     }
 
     private var fill: Color {
-        if achievement.category != nil { return Theme.sage }
-        return achievement == .nightmare ? Self.night : Theme.accent
+        if achievement.category != nil || achievement == .allRewards { return Theme.sage }
+        switch achievement {
+        case .nightmare, .thousand, .firstGift, .allSecrets: return Self.night
+        default: return Theme.accent
+        }
     }
 
     @ViewBuilder
     private var content: some View {
         if let target {
             let value = count ?? (isArmed ? 0 : target)
-            Text("\(value)")
-                .font(Theme.display(size * (target >= 10 ? 0.42 : 0.52)))
+            Text(verbatim: "\(value)")
+                .font(Theme.display(numberSize(String(target).count)))
                 .foregroundStyle(Theme.onAccent)
                 .contentTransition(.numericText(value: Double(value)))
+                .offset(y: size * 0.02)
+        } else if let label {
+            Text(verbatim: label)
+                .font(Theme.display(numberSize(label.count)))
+                .foregroundStyle(Theme.onAccent)
                 .offset(y: size * 0.02)
         } else if achievement == .sprinter {
             stopwatch
@@ -142,6 +169,9 @@ extension Achievement {
         case .city: "bundled.city_Boats of Vernazza"
         case .animals: "bundled.animals_Bengal Tiger"
         case .abstract: "bundled.abstract_Balloons over Cappadocia"
+        case .allRewards: "bundled.mountains_Matterhorn at Sunrise"
+        case .firstGift: "bundled.secret_Fairytale Castle"
+        case .allSecrets: "bundled.secret_Fireflies and Stars"
         default: nil
         }
     }

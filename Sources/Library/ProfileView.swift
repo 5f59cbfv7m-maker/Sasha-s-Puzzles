@@ -276,6 +276,9 @@ struct AchievementRow: View {
     /// Earned since the player last opened the profile.
     var isNew = false
 
+    /// A hidden achievement not earned yet: no name, no goal, no bar.
+    private var secret: Bool { achievement.isHidden && !unlocked }
+
     var body: some View {
         HStack(spacing: 14) {
             Group {
@@ -292,7 +295,8 @@ struct AchievementRow: View {
             }
             VStack(alignment: .leading, spacing: 2) {
                 HStack(spacing: 8) {
-                    Text(achievement.title).font(Theme.body(16, .bold)).lineLimit(1)
+                    Text(secret ? String(localized: "Secret achievement") : achievement.title)
+                        .font(Theme.body(16, .bold)).lineLimit(1)
                     if isNew {
                         Text("New")
                             .font(Theme.body(11, .bold))
@@ -302,8 +306,9 @@ struct AchievementRow: View {
                             .background(Theme.accent, in: Capsule())
                     }
                 }
-                Text(achievement.detail).font(Theme.body(13)).foregroundStyle(Theme.muted).lineLimit(2)
-                if let progress, !unlocked {
+                Text(secret ? String(localized: "keep your daily streak going") : achievement.detail)
+                    .font(Theme.body(13)).foregroundStyle(Theme.muted).lineLimit(2)
+                if let progress, !unlocked, !secret {
                     HStack(spacing: 8) {
                         ProgressBar(value: progress.fraction, height: 6)
                         Text(verbatim: progress.label)
