@@ -23,12 +23,16 @@ struct TrayView: View {
     }
 
     /// A side tray exactly as wide as its columns, so no spare margin eats
-    /// into the board. The iPad gets two large columns rather than three small ones.
-    static func trailingWidth(viewWidth: CGFloat) -> CGFloat {
+    /// into the board. A tablet-sized window gets two large columns rather
+    /// than three small ones: the iPad, and the inner display of iPhone Duo,
+    /// which is a phone but as tall as an iPad mini held sideways. A phone in
+    /// landscape is far shorter, so the height tells them apart.
+    static func trailingWidth(viewSize: CGSize) -> CGFloat {
         #if os(macOS)
         let cell: CGFloat = 72
         #else
-        let cell: CGFloat = UIDevice.current.userInterfaceIdiom == .pad ? clamp(viewWidth * 0.08, 96, 112) : 72
+        let large = UIDevice.current.userInterfaceIdiom == .pad || viewSize.height >= 500
+        let cell: CGFloat = large ? clamp(viewSize.width * 0.08, 96, 112) : 72
         #endif
         let columns = CGFloat(trailingColumns)
         return columns * cell + (columns - 1) * gridSpacing + 2 * gridPadding

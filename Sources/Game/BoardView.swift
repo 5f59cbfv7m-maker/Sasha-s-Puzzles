@@ -18,6 +18,9 @@ final class BoardInputController: BoardEventHandling {
     @ObservationIgnored private var refit: Task<Void, Never>?
     /// The view size the board was last fitted to; a flip of its aspect is a rotation.
     @ObservationIgnored private var fittedSize: CGSize = .zero
+    /// The viewport the last fit produced; still equal means the player has
+    /// not moved the board since.
+    @ObservationIgnored private var fittedViewport: Viewport?
 
     func boardPointerDown(at point: CGPoint, isSecondary: Bool) -> Bool {
         guard let session, session.phase == .playing else { return false }
@@ -70,13 +73,21 @@ final class BoardInputController: BoardEventHandling {
     /// here would rescale the board under the player's hands.
     func handleResize() {
         guard let session, viewSize.width > 1, viewSize.height > 1 else { return }
-        let adjusted = session.viewport.clamped(content: session.tableRect, viewSize: viewSize)
-        // `Viewport` is `Equatable`; skipping the no-op write keeps a resize
-        // drag from invalidating the board on every frame.
-        if adjusted != session.viewport { session.viewport = adjusted }
+        // A board the player has not panned or zoomed since it was fitted
+        // follows the window: on iPhone Duo the status bar's column is carved
+        // out of the window just after the first layout, which left the right
+        // of the picture under the tray.
+        let untouched = fittedViewport == session.viewport && fittedSize != viewSize
+        if !untouched {
+            let adjusted = session.viewport.clamped(content: session.tableRect, viewSize: viewSize)
+            // `Viewport` is `Equatable`; skipping the no-op write keeps a resize
+            // drag from invalidating the board on every frame.
+            if adjusted != session.viewport { session.viewport = adjusted }
+        }
         // Turning the device swaps the axes, which leaves the picture mostly
         // off screen. Rotation arrives as several sizes, so fit once it settles.
-        if (fittedSize.width > fittedSize.height) != (viewSize.width > viewSize.height) {
+        let rotated = (fittedSize.width > fittedSize.height) != (viewSize.width > viewSize.height)
+        if rotated || untouched {
             refit?.cancel()
             refit = Task { [weak self] in
                 try? await Task.sleep(for: .milliseconds(150))
@@ -99,6 +110,7 @@ final class BoardInputController: BoardEventHandling {
         guard let session, viewSize.width > 1 else { return }
         session.viewport = .fitting(content: session.boardRect, in: viewSize, padding: padding)
         fittedSize = viewSize
+        fittedViewport = session.viewport
         scheduleTextureRefresh()
     }
 

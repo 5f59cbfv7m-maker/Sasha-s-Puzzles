@@ -357,7 +357,7 @@ struct GameView: View {
 
     private func trayThickness(for size: CGSize) -> CGFloat {
         trayPlacement(for: size) == .trailing
-            ? TrayView.trailingWidth(viewWidth: size.width) : clamp(size.height * 0.2, 130, 220)
+            ? TrayView.trailingWidth(viewSize: size) : clamp(size.height * 0.2, 130, 220)
     }
 
 }

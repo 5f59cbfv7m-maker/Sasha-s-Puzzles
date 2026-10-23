@@ -309,6 +309,17 @@ not rediscovering:
   declared interface orientations. Every frame of a resize drag reaches
   `BoardView.onGeometryChange`, which is why `BoardInputController.handleResize`
   only re-clamps the offset: re-fitting there would rescale the board mid-drag.
+- **iPhone Duo (27.1 SDK) is a phone with an iPad-sized inner display**:
+  951 × 669 pt open, regular in both size classes, `userInterfaceIdiom`
+  still `.phone`. Two things bit: the status bar's column on the trailing
+  edge is carved out of the window *after* the first layout, so a board
+  fitted once was left under the tray — `handleResize` now refits a board
+  the player has not touched since it was fitted; and the tray chose its
+  cell size by idiom, giving 72 pt phone cells — `TrayView.trailingWidth`
+  now takes the large cells for any game area at least 500 pt tall. Poses
+  (Closed, Book, Open) are switched in Xcode's DeviceHub app; there is no
+  `simctl` command for them, and powering a display off with
+  `simctl io … screenConfig` crashes the simulator's SpringBoard.
 - **Not applicable, but easy to misread as urgent:** the `ImageCreator`,
   `FileDocument`/`ReferenceFileDocument` and On Demand Resources deprecations —
   this app uses none of them. `controlSize` is now reset inside sheets and
