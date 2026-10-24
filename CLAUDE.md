@@ -175,7 +175,9 @@ friends section when it is false.
 **One iCloud key-value store, 1 MB in all, three tenants.** `stats.v1`
 (≤ 400 KB), `games.v1` (unfinished games on bundled pictures, lzfse JSON,
 ≤ 560 KB, oldest dropped first) and `settings.*` (name, preferences and seen achievements as a union;
-onboarding stays per device). Shared games merge by
+onboarding stays per device, but `AppModel.greetIfNew` skips it for anyone
+with a name, a record or a save, so a reinstall does not greet a returning
+player). Shared games merge by
 newest `updatedAt`; a game finished or deleted anywhere becomes a dated
 tombstone in `SharedGames.gone`, so deleting must go through
 `AppModel.delete` / `deleteAllSaves`, never `SaveStore` directly. Settings

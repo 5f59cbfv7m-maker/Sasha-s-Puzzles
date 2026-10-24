@@ -60,7 +60,7 @@ struct RootView: View {
             if showSplash {
                 SplashView {
                     withAnimation(.easeOut(duration: 0.35)) { showSplash = false }
-                    if !model.settings.hasSeenOnboarding { model.sheet = .onboarding }
+                    model.greetIfNew()
                 }
                 .transition(.opacity)
             }
@@ -87,6 +87,13 @@ struct RootView: View {
             // there on the first onboarding frame ("No Observable object").
             .environment(model)
             .environment(model.settings)
+        }
+        // After a reinstall iCloud can bring the history back a few seconds
+        // after the greeting went up; a returning player skips the rest.
+        .onChange(of: model.hasPlayed) { _, played in
+            guard played, model.sheet == .onboarding else { return }
+            model.settings.hasSeenOnboarding = true
+            model.sheet = nil
         }
         .preferredColorScheme(model.settings.appearance.colorScheme)
         .onChange(of: music, initial: true) { syncMusic() }

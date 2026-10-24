@@ -155,6 +155,21 @@ final class AppModel {
 
     static let quickPieces = 48
 
+    /// Solved or started a puzzle here or, through iCloud, on another device.
+    var hasPlayed: Bool { !stats.records.isEmpty || !savedGames.isEmpty }
+
+    /// Onboarding greets a new player only. Its flag is per device and gone
+    /// after a reinstall, so a name, a record or a save also mark someone
+    /// who has played before.
+    func greetIfNew() {
+        guard !settings.hasSeenOnboarding else { return }
+        if hasPlayed || !settings.playerName.isEmpty {
+            settings.hasSeenOnboarding = true
+        } else {
+            sheet = .onboarding
+        }
+    }
+
     /// An activity picked in the Games app or from a challenge notification.
     /// Settings or the profile go away (onboarding stays, the game waits
     /// under it); a game in progress is saved by `start`.
