@@ -15,6 +15,11 @@ Swap the destination for `platform=iOS Simulator,name=iPhone 17 Pro` or
 `name=iPad Pro 13-inch (M5)`. **95 tests in 9 suites must pass** before any change
 is called done. Grep the output for `^✔ Test run` — xcodebuild buries it in noise.
 
+**Every fix and feature goes into the release notes as it is made:**
+`docs/Что нового в версии 1.3.md`, one line in each of the 11 languages. The
+user pastes those blocks into App Store Connect, so a change missing there is
+a change nobody hears about.
+
 `./Scripts/install-mac.sh [destination]` builds Release and drops the `.app`
 onto the Desktop (or wherever) so it can be launched without Xcode.
 
