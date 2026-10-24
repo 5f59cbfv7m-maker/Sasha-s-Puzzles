@@ -17,14 +17,17 @@ struct GameView: View {
     @Environment(\.preferredPencilDoubleTapAction) private var doubleTapAction
     #endif
 
-    #if os(macOS)
-    @State private var headerWidth: CGFloat = 0
-    #endif
+    @State private var headerWidth: CGFloat = .infinity
+    /// A Duo standing as a laptop is 669 pt across: the full row would
+    /// squeeze the title down to an ellipsis, so the bar and the side actions go.
+    private var isTightHeader: Bool { isCompact || headerWidth < 780 }
 
     private var controller: BoardInputController { model.boardController }
     @State private var trayDrag = TrayDragState()
     @State private var showOriginal = false
     @State private var didLoad = false
+    /// iPhone Duo standing half open, like a book or a laptop.
+    @State private var isHalfOpen = Self.forcedHalfOpen
 
     /// The piece on its way out of the tray. Its own observable so each move
     /// re-renders the ghost alone rather than the whole screen — an 800-cell
@@ -37,8 +40,11 @@ struct GameView: View {
 
     var body: some View {
         VStack(spacing: 0) {
-            header
-            Theme.hairline.frame(height: 1)
+            // The photo frame has the screen to itself.
+            if !isFramed {
+                header
+                Theme.hairline.frame(height: 1)
+            }
             content
         }
         .background(Theme.bg.ignoresSafeArea())
@@ -53,6 +59,9 @@ struct GameView: View {
         }
         .onDisappear { session.saveNow() }
         .task(id: session.completedAt) { await reassemblyClicks() }
+        #if os(iOS)
+        .modifier(HingeReader(isHalfOpen: $isHalfOpen, isForced: Self.forcedHalfOpen))
+        #endif
         .sheet(isPresented: $showOriginal) { OriginalImageSheet(session: session) }
         #if os(iOS)
         // Apple Pencil Pro: squeeze for a hint, double tap to undo — unless
@@ -68,28 +77,32 @@ struct GameView: View {
 
     private var content: some View {
         GeometryReader { proxy in
-            let placement: TrayPlacement = trayPlacement(for: proxy.size)
+            let page = foldPage(for: proxy.size, at: proxy.frame(in: .global).origin)
+            let placement: TrayPlacement = page == nil ? trayPlacement(for: proxy.size)
+                : proxy.size.width > proxy.size.height ? .trailing : .bottom
+            let thickness = page ?? trayThickness(for: proxy.size)
+            let framed = isFramed && page != nil
 
             ZStack {
-                Group {
-                    if placement == .trailing {
-                        HStack(spacing: 0) {
-                            board
-                            Theme.hairline.frame(width: 1)
-                            tray(placement: placement, in: proxy.size)
-                                .frame(width: trayThickness(for: proxy.size))
-                        }
-                    } else {
-                        VStack(spacing: 0) {
-                            board
-                            Theme.hairline.frame(height: 1)
-                            tray(placement: placement, in: proxy.size)
-                                .frame(height: trayThickness(for: proxy.size))
-                        }
+                if framed {
+                    framedLayout(placement: placement, page: thickness, in: proxy.size)
+                } else if placement == .trailing {
+                    HStack(spacing: 0) {
+                        board
+                        Theme.hairline.frame(width: 1)
+                        tray(placement: placement, thickness: thickness, in: proxy.size)
+                            .frame(width: thickness)
+                    }
+                } else {
+                    VStack(spacing: 0) {
+                        board
+                        Theme.hairline.frame(height: 1)
+                        tray(placement: placement, thickness: thickness, in: proxy.size)
+                            .frame(height: thickness)
                     }
                 }
 
-                overlays
+                overlays(framed: framed)
                 TrayGhost(session: session, drag: trayDrag)
             }
             .coordinateSpace(.named("game"))
@@ -108,8 +121,7 @@ struct GameView: View {
     /// The board fills the game space up to the tray, so its frame is derived
     /// from the layout numbers rather than measured: a measured frame goes
     /// stale during the rotation animation and rejects drops on half the board.
-    private func tray(placement: TrayPlacement, in size: CGSize) -> some View {
-        let thickness = trayThickness(for: size)
+    private func tray(placement: TrayPlacement, thickness: CGFloat, in size: CGSize) -> some View {
         let boardFrame = CGRect(origin: .zero, size: placement == .trailing
                                 ? CGSize(width: size.width - thickness, height: size.height)
                                 : CGSize(width: size.width, height: size.height - thickness))
@@ -146,7 +158,7 @@ struct GameView: View {
                 ViewThatFits(in: .horizontal) {
                     HStack(spacing: 10) {
                         progressLabel
-                        solveProgress
+                        if !isTightHeader { solveProgress }
                         Theme.track.frame(width: 1, height: 16)
                         clockLabel
                     }
@@ -245,7 +257,7 @@ struct GameView: View {
                 RoundIconButton(symbol: "lightbulb", style: .sage, size: 42) { session.requestHint() }
                     .disabled(session.phase != .playing)
                     .accessibilityLabel(Text("Hint"))
-                if isCompact {
+                if isTightHeader {
                     Menu {
                         Button { showOriginal = true } label: { Label("Show Original", systemImage: "photo") }
                         Button { model.sheet = .together } label: { Label("Play Together", systemImage: "person.2") }
@@ -278,9 +290,7 @@ struct GameView: View {
         }
         .padding(.horizontal, isCompact ? 12 : 22)
         .frame(height: isCompact ? 56 : 70)
-        #if os(macOS)
         .onGeometryChange(for: CGFloat.self) { $0.size.width } action: { headerWidth = $0 }
-        #endif
         .background(Theme.card.ignoresSafeArea())
     }
 
@@ -333,7 +343,7 @@ struct GameView: View {
     // MARK: - Overlays
 
     @ViewBuilder
-    private var overlays: some View {
+    private func overlays(framed: Bool) -> some View {
         if !session.isLoaded || session.textures.progress < 1 {
             LoadingOverlay(session: session)
         }
@@ -343,13 +353,72 @@ struct GameView: View {
         if session.phase == .paused, session.loadFailure == nil {
             PauseOverlay(session: session)
         }
-        if session.phase == .completed, session.finaleDone {
+        if session.phase == .completed, session.finaleDone, !framed {
             CompletionOverlay(session: session)
                 .transition(.opacity)
         }
     }
 
+    /// The puzzle is done and iPhone Duo stands half folded: the picture
+    /// hangs in a frame on the board's page, the card waits on the other.
+    private var isFramed: Bool { isHalfOpen && session.phase == .completed && session.finaleDone }
+
+    @ViewBuilder
+    private func framedLayout(placement: TrayPlacement, page: CGFloat, in size: CGSize) -> some View {
+        #if os(iOS)
+        let card = CompletionOverlay(session: session)
+            // A page is short: the card takes its landscape-phone layout.
+            .environment(\.verticalSizeClass, .compact)
+        if placement == .trailing {
+            HStack(spacing: 0) {
+                PhotoFrame(session: session).frame(width: size.width - page)
+                card.frame(width: page)
+            }
+        } else {
+            VStack(spacing: 0) {
+                PhotoFrame(session: session).frame(height: size.height - page)
+                card.frame(height: page)
+            }
+        }
+        #endif
+    }
+
     // MARK: - Layout policy
+
+    private static var forcedHalfOpen: Bool {
+        #if DEBUG
+        // Lets the stage driver photograph the half-open layout without DeviceHub.
+        CommandLine.arguments.contains("--half-open")
+        #else
+        false
+        #endif
+    }
+
+    /// iPhone Duo standing half open: the fold runs across the middle of the
+    /// screen's long side, so the board gets one page and the tray the other,
+    /// and nothing lies in the crease. `nil` keeps the usual layout.
+    private func foldPage(for size: CGSize, at origin: CGPoint) -> CGFloat? {
+        #if os(iOS)
+        guard isHalfOpen, let fold = Self.foldCentre() else { return nil }
+        let wide = size.width > size.height
+        let page = wide ? origin.x + size.width - fold.x : origin.y + size.height - fold.y
+        let span = wide ? size.width : size.height
+        return page > span * 0.3 && page < span * 0.7 ? page : nil
+        #else
+        return nil
+        #endif
+    }
+
+    #if os(iOS)
+    /// The screen's centre in window coordinates: the window may not start
+    /// at the screen's edge, since the status bar takes a column of it.
+    private static func foldCentre() -> CGPoint? {
+        let windows = UIApplication.shared.connectedScenes.compactMap { $0 as? UIWindowScene }.flatMap(\.windows)
+        guard let window = windows.first(where: \.isKeyWindow) ?? windows.first,
+              let screen = window.windowScene?.screen else { return nil }
+        return window.convert(CGPoint(x: screen.bounds.midX, y: screen.bounds.midY), from: screen.coordinateSpace)
+    }
+    #endif
 
     private func trayPlacement(for size: CGSize) -> TrayPlacement {
         #if DEBUG
@@ -369,6 +438,60 @@ struct GameView: View {
     }
 
 }
+
+#if os(iOS)
+/// The finished picture in a frame on the wall, for iPhone Duo standing half
+/// folded on the table. On the charger the screen stays on, like StandBy.
+private struct PhotoFrame: View {
+    let session: GameSession
+
+    var body: some View {
+        GeometryReader { proxy in
+            let mat = min(proxy.size.width, proxy.size.height) * 0.06
+            ZStack {
+                Theme.bg.ignoresSafeArea()
+                if let picture = session.ghostImage {
+                    picture.resizable().aspectRatio(contentMode: .fit)
+                        .overlay(Rectangle().strokeBorder(.black.opacity(0.18), lineWidth: 1))
+                        .padding(mat)
+                        .background(Theme.card)
+                        .padding(7)
+                        .background(Color(red: 0.36, green: 0.25, blue: 0.17))
+                        .shadow(color: .black.opacity(0.32), radius: 16, y: 10)
+                        .padding(mat * 1.4)
+                        .accessibilityLabel(Text(session.item.title))
+                }
+            }
+        }
+        // The frame stays clear of the status bar; on a laptop-standing Duo
+        // it sits right above the top page.
+        .onAppear(perform: keepAwakeOnCharger)
+        .onReceive(NotificationCenter.default.publisher(for: UIDevice.batteryStateDidChangeNotification)) { _ in
+            keepAwakeOnCharger()
+        }
+        .onDisappear { UIApplication.shared.isIdleTimerDisabled = false }
+    }
+
+    private func keepAwakeOnCharger() {
+        UIDevice.current.isBatteryMonitoringEnabled = true
+        UIApplication.shared.isIdleTimerDisabled = [.charging, .full].contains(UIDevice.current.batteryState)
+    }
+}
+
+/// Follows iPhone Duo's hinge (iOS 27.1); every other device has none.
+private struct HingeReader: ViewModifier {
+    @Binding var isHalfOpen: Bool
+    let isForced: Bool
+
+    func body(content: Content) -> some View {
+        if #available(iOS 27.1, *), !isForced {
+            content.onHingeChange { _, context in isHalfOpen = context.hinge?.status == .partiallyOpen }
+        } else {
+            content
+        }
+    }
+}
+#endif
 
 private struct TrayGhost: View {
     let session: GameSession

@@ -349,11 +349,35 @@ not rediscovering:
   (Closed, Book, Open) are switched in Xcode's DeviceHub app; there is no
   `simctl` command for them, and powering a display off with
   `simctl io … screenConfig` crashes the simulator's SpringBoard.
+- **iPhone Duo half open** (`DeviceHinge.Status.partiallyOpen`, read with
+  `onHingeChange`, iOS 27.1) lays the game out across the fold: the fold runs
+  across the middle of the screen's long side, so held like a book the tray
+  takes the right page and held like a laptop the bottom one. Once the puzzle
+  is done the board's page becomes `PhotoFrame` (the picture framed, no
+  header; the screen stays on while charging) and the completion card takes
+  the other page in its compact layout. `GameView.foldPage` finds the fold from the
+  screen's centre in window coordinates, because the status bar's column
+  shifts the window. Neither the iOS 27.1 runtime nor DeviceHub is needed to
+  look at it: `--half-open` forces the layout on any simulator. Checked
+  against the real hinge on the 27.1 simulator in every pose; `onHingeChange`
+  also reports the pose at launch. Two traps from that run: as a laptop the
+  top safe area is ~60 pt, and a `.background(Color)` touching it extends to
+  the screen edge, so `PhotoFrame` keeps only `Theme.bg` out of the safe area;
+  and the 669 pt-wide laptop header squeezed the title to "…", so below
+  780 pt (`isTightHeader`, iPad mini upright too) the side actions fold into
+  the ⋯ menu and the progress bar goes.
 - **Not applicable, but easy to misread as urgent:** the `ImageCreator`,
   `FileDocument`/`ReferenceFileDocument` and On Demand Resources deprecations —
   this app uses none of them. `controlSize` is now reset inside sheets and
   popovers, but the two `controlSize` call sites live in `SetupView`, which is
   pushed, not presented.
+
+**Home screen quick actions** are dynamic `UIApplication.shortcutItems`,
+rebuilt by `AppModel.refreshQuickActions` each time the app goes to the
+background (so "Continue" names the game just left). SwiftUI has no hook for
+them: `PhoneAppDelegate` hands a cold launch's item over from the connection
+options, `QuickActionSceneDelegate` a running app's, and `QuickAction.pending`
+holds one until `RootView` is up.
 
 ## Verifying visually
 

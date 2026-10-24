@@ -38,19 +38,26 @@ struct TrayView: View {
         return columns * cell + (columns - 1) * gridSpacing + 2 * gridPadding
     }
 
+    /// Two columns (three on the Mac), more once the tray is a whole page of
+    /// a half-open iPhone Duo.
+    private var columnCount: Int {
+        max(Self.trailingColumns, Int((thickness - 2 * Self.gridPadding + Self.gridSpacing) / (100 + Self.gridSpacing)))
+    }
+
     private var cellSize: CGFloat {
         // The strip under a phone board: as large as its height allows.
         guard placement == .trailing else { return clamp(thickness - 58, 63, 96) }
-        let columns = CGFloat(Self.trailingColumns)
+        let columns = CGFloat(columnCount)
         return floor((thickness - 2 * Self.gridPadding - (columns - 1) * Self.gridSpacing) / columns)
     }
 
-    /// Wide side trays carry labelled buttons at the foot; a bottom strip or a
-    /// narrow phone tray puts icons in the header instead.
-    private var footerButtons: Bool { placement == .trailing && thickness >= 220 }
+    /// Side trays carry labelled buttons at the foot; a bottom strip, a narrow
+    /// phone tray and a whole page of a half-open iPhone Duo put icons in the
+    /// header instead, and leave the room to the pieces.
+    private var footerButtons: Bool { placement == .trailing && thickness >= 220 && thickness < 320 }
     /// A narrow phone side tray drops the title and keeps its icons and count
     /// at the foot, so the pieces start at the top.
-    private var narrow: Bool { placement == .trailing && !footerButtons }
+    private var narrow: Bool { placement == .trailing && thickness < 220 }
 
     /// Side of the square, in board units around a piece's cell centre, that
     /// every tray piece is fitted into: wide enough for the farthest tab of
@@ -123,6 +130,8 @@ struct TrayView: View {
         HStack {
             Text("Pieces")
                 .font(Theme.display(placement == .trailing ? 19 : 17))
+                .lineLimit(1)
+                .minimumScaleFactor(0.7)
             Spacer()
             if footerButtons {
                 count
@@ -156,7 +165,7 @@ struct TrayView: View {
 
     @ViewBuilder
     private var pieceGrid: some View {
-        let columns = Array(repeating: GridItem(.fixed(cellSize), spacing: Self.gridSpacing), count: Self.trailingColumns)
+        let columns = Array(repeating: GridItem(.fixed(cellSize), spacing: Self.gridSpacing), count: columnCount)
         let rows = [GridItem(.adaptive(minimum: cellSize, maximum: cellSize), spacing: 10)]
 
         if placement == .trailing {
