@@ -5,6 +5,9 @@ struct JigsawPuzzleApp: App {
     @State private var model = AppModel()
     #if os(macOS)
     @NSApplicationDelegateAdaptor(AppDelegate.self) private var appDelegate
+    #else
+    /// Home screen quick actions.
+    @UIApplicationDelegateAdaptor(PhoneAppDelegate.self) private var phoneDelegate
     #endif
 
     init() { Fonts.register() }

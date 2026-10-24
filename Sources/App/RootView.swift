@@ -101,7 +101,13 @@ struct RootView: View {
         .onChange(of: ducked) { syncMusic() }
         // Hands the game in progress to the player's other devices.
         .onChange(of: scenePhase) { _, phase in
-            if phase == .background { model.session?.saveNow(); model.refreshSaves() }
+            if phase == .background {
+                model.session?.saveNow()
+                model.refreshSaves()
+                #if os(iOS)
+                model.refreshQuickActions()
+                #endif
+            }
         }
         .onChange(of: model.settings.musicEnabled) { syncMusic() }
         .environment(model.settings)
@@ -112,6 +118,7 @@ struct RootView: View {
             for: UIApplication.didReceiveMemoryWarningNotification)) { _ in
             Task { await ImageStore.shared.purgeMemory() }
         }
+        .onAppear { QuickAction.perform = { [model] action in model.perform(action) } }
         #endif
         #if DEBUG
         .task { await DebugStageDriver.run(model: model) }
