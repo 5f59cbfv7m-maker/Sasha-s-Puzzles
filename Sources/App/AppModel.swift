@@ -26,7 +26,7 @@ final class AppModel {
     let boardController = BoardInputController()
 
     enum Sheet: String, Identifiable {
-        case onboarding, settings, profile
+        case onboarding, settings, profile, together
         var id: String { rawValue }
     }
 
@@ -46,6 +46,10 @@ final class AppModel {
     private(set) var lastCompletion: CompletionSummary?
     private(set) var session: GameSession?
     private(set) var savedGames: [GameSnapshot] = []
+    /// The board shared with other players, while there is one.
+    private(set) var table: SharedTable?
+    /// Looks for tables nearby while the library's "Play together" is open.
+    private(set) var nearby: NearbyLink?
 
     @ObservationIgnored private let saveStore = SaveStore()
     /// Unfinished games shared with the player's other devices.
@@ -66,6 +70,7 @@ final class AppModel {
         sharedGames?.onExternalChange = { [weak self] in self?.refreshSaves() }
         stats.onExternalChange = { [weak self] in self?.gameCenter.report() }
         gameCenter.onActivity = { [weak self] activity in self?.open(activity) }
+        gameCenter.onMatch = { [weak self] match in self?.join(MatchLink(match)) }
         gameCenter.start(with: stats)
         if settings.seenAchievements == nil { markAchievementsSeen() }
     }
@@ -125,6 +130,7 @@ final class AppModel {
     }
 
     func showLibrary() {
+        leaveTable()
         session?.saveNow()
         session?.textures.cancel()
         session = nil
@@ -135,8 +141,12 @@ final class AppModel {
     func start(item: LibraryItem, aspect: PuzzleAspect, pieces: Int) {
         session?.saveNow()
         session?.textures.cancel()
-        session = GameSession(item: item, aspect: aspect, targetPieces: pieces)
-        attach(session)
+        let next = GameSession(item: item, aspect: aspect, targetPieces: pieces)
+        session = next
+        attach(next)
+        // The host's "Play again" takes everyone at the table along; a guest
+        // starting a game of their own leaves it.
+        if let table, table.isHost, !item.isUserPhoto { table.attach(next) } else { leaveTable() }
         path = [.game]
     }
 
@@ -185,7 +195,7 @@ final class AppModel {
         lastCompletion = nil
         session?.onComplete = { [weak self] finished in
             guard let self else { return }
-            lastCompletion = stats.record(finished)
+            lastCompletion = stats.record(finished, sharedPieces: table?.ownPieces(in: finished))
             #if DEBUG
             if let forced = DebugStageDriver.forcedAchievements { lastCompletion?.newAchievements = forced }
             #endif
@@ -200,6 +210,7 @@ final class AppModel {
             delete(snapshot)
             return
         }
+        leaveTable()
         session?.saveNow()
         session?.textures.cancel()
         session = GameSession(snapshot: snapshot)
@@ -210,6 +221,94 @@ final class AppModel {
     func restartCurrent() {
         guard let current = session else { return }
         start(item: current.item, aspect: current.puzzleAspect, pieces: current.targetPieces)
+    }
+
+    // MARK: - Playing together
+
+    /// Bundled pictures only: a partner's device has those, not this one's photos.
+    var canShareTable: Bool { session.map { !$0.item.isUserPhoto } ?? false }
+
+    private func hostTable() -> SharedTable? {
+        if let table, table.isHost { return table }
+        guard let session, canShareTable else { return nil }
+        let table = SharedTable(hosting: session, name: settings.displayName, settings: settings)
+        self.table = table
+        return table
+    }
+
+    /// Lets players in the same room sit down at this game.
+    func openTableNearby() {
+        guard let table = hostTable(), let session, nearbyHost == nil else { return }
+        let link = NearbyLink(name: settings.displayName)
+        link.advertise(title: session.item.title, pieces: session.pieceCount)
+        table.add(link)
+        nearbyHost = link
+    }
+
+    /// The table this device has opened to players nearby.
+    private(set) var nearbyHost: NearbyLink?
+
+    /// Game Center's friend picker; the friends who accept sit down at this game.
+    func inviteFriends() {
+        guard canShareTable else { return }
+        sheet = nil
+        // Game Center presents from the main window, once the sheet is gone.
+        Task {
+            try? await Task.sleep(for: .milliseconds(450))
+            gameCenter.inviteFriends { [weak self] match in
+                self?.hostTable()?.add(MatchLink(match))
+            }
+        }
+    }
+
+    func browseNearby() {
+        guard nearby == nil else { return }
+        let link = NearbyLink(name: settings.displayName)
+        link.browse()
+        nearby = link
+    }
+
+    func stopBrowsing() {
+        // A table that never answered (full, or gone) is given up with the sheet.
+        if let table, !table.isHost, table.session == nil { leaveTable() }
+        guard table == nil else { return }
+        nearby?.close()
+        nearby = nil
+    }
+
+    func join(_ found: NearbyLink.Table) {
+        guard let nearby else { return }
+        nearby.join(found)
+        self.nearby = nil
+        join(nearby)
+    }
+
+    /// Sits down at someone else's table; their game opens once it arrives.
+    func join(_ link: TableLink) {
+        leaveTable()
+        let table = SharedTable(joining: link, name: settings.displayName, settings: settings)
+        table.onGame = { [weak self] game in self?.play(game) }
+        self.table = table
+    }
+
+    /// The host's game, on a guest's device.
+    private func play(_ game: GameSession) {
+        if session !== game {
+            session?.saveNow()
+            session?.textures.cancel()
+        }
+        session = game
+        attach(game)
+        if sheet == .together { sheet = nil }
+        path = [.game]
+    }
+
+    func leaveTable() {
+        table?.close()
+        table = nil
+        nearbyHost = nil
+        nearby?.close()
+        nearby = nil
     }
 
     // MARK: - Saves

@@ -13,6 +13,13 @@ nonisolated struct SolvedRecord: Codable, Sendable, Identifiable, Equatable {
     var elapsed: TimeInterval
     var date: Date
     var isUserPhoto: Bool
+    /// The pieces this player joined in a puzzle solved together; `nil` alone.
+    /// Points go by these, and a shared game never counts for times or the daily.
+    var sharedPieces: Int?
+
+    var isShared: Bool { sharedPieces != nil }
+    /// The pieces this player put in.
+    var ownPieces: Int { sharedPieces ?? pieces }
 }
 
 /// The history as it is stored, locally and in iCloud.
@@ -120,11 +127,11 @@ final class PlayerStats {
     }
 
     @discardableResult
-    func record(_ session: GameSession) -> CompletionSummary {
+    func record(_ session: GameSession, sharedPieces: Int? = nil) -> CompletionSummary {
         record(SolvedRecord(itemID: session.item.id, category: session.item.category,
                             pieces: session.pieceCount, targetPieces: session.targetPieces,
                             elapsed: session.elapsed, date: .now,
-                            isUserPhoto: session.item.isUserPhoto))
+                            isUserPhoto: session.item.isUserPhoto, sharedPieces: sharedPieces))
     }
 
     @discardableResult
@@ -157,12 +164,12 @@ final class PlayerStats {
     // MARK: - Derived
 
     var puzzlesSolved: Int { records.count }
-    var piecesPlaced: Int { records.reduce(0) { $0 + $1.pieces } }
+    var piecesPlaced: Int { records.reduce(0) { $0 + $1.ownPieces } }
     var timePlayed: TimeInterval { records.reduce(0) { $0 + $1.elapsed } }
     var firstPlayed: Date? { records.map(\.date).min() }
 
     func bestTime(for itemID: String) -> TimeInterval? {
-        records.filter { $0.itemID == itemID }.map(\.elapsed).min()
+        records.filter { $0.itemID == itemID && !$0.isShared }.map(\.elapsed).min()
     }
 
     func isSolved(_ itemID: String) -> Bool { records.contains { $0.itemID == itemID } }
@@ -172,7 +179,7 @@ final class PlayerStats {
     /// A game counts as that day's daily puzzle when it is the day's picture at
     /// the daily piece count — no flag to persist, nothing to migrate.
     func isDaily(_ record: SolvedRecord) -> Bool {
-        record.targetPieces == LibraryCatalog.dailyPieces
+        !record.isShared && record.targetPieces == LibraryCatalog.dailyPieces
             && record.itemID == LibraryCatalog.dailyItem(on: record.date).id
     }
 
@@ -224,9 +231,11 @@ final class PlayerStats {
 
     /// A point a piece, and more a piece for big puzzles: they take far longer
     /// per piece, and small ones would otherwise be the way to farm points.
-    nonisolated static func points(pieces: Int) -> Int {
+    /// `own` is the pieces this player put into a shared puzzle; the bonus
+    /// still goes by the size of the whole puzzle.
+    nonisolated static func points(pieces: Int, own: Int? = nil) -> Int {
         let multiplier = pieces < 150 ? 1.0 : pieces < 500 ? 1.25 : 1.5
-        return Int((Double(pieces) * multiplier).rounded())
+        return Int((Double(own ?? pieces) * multiplier).rounded())
     }
 
     /// Every solved puzzle's points. The first daily puzzle of each day counts
@@ -253,7 +262,7 @@ final class PlayerStats {
         }
         var rewarded = Set<Date>()
         return records.map { record in
-            let base = Self.points(pieces: record.pieces)
+            let base = Self.points(pieces: record.pieces, own: record.sharedPieces)
             guard isDaily(record) else { return (record.date, base) }
             let day = calendar.startOfDay(for: record.date)
             guard rewarded.insert(day).inserted else { return (record.date, base) }
@@ -291,7 +300,7 @@ final class PlayerStats {
         return (0..<12).reversed().map { back in
             let start = calendar.date(byAdding: .weekOfYear, value: -back, to: thisWeek)!
             let end = calendar.date(byAdding: .weekOfYear, value: 1, to: start)!
-            return records.filter { $0.date >= start && $0.date < end }.reduce(0) { $0 + $1.pieces }
+            return records.filter { $0.date >= start && $0.date < end }.reduce(0) { $0 + $1.ownPieces }
         }
     }
 }
@@ -398,7 +407,7 @@ nonisolated enum Achievement: String, CaseIterable, Identifiable, Sendable {
 extension Achievement {
     func isUnlocked(in stats: PlayerStats) -> Bool {
         switch self {
-        case .sprinter: return stats.records.contains { $0.pieces >= 48 && $0.elapsed <= 300 }
+        case .sprinter: return stats.records.contains { $0.pieces >= 48 && $0.elapsed <= 300 && !$0.isShared }
         case .ownPhoto: return stats.records.contains(where: \.isUserPhoto)
         default: return progress(in: stats).fraction >= 1
         }
@@ -419,7 +428,7 @@ extension Achievement {
         case .twoFiftyPuzzles: return count(stats.puzzlesSolved, 250)
         case .sprinter:
             // The best 48-piece-or-more time against the five minutes.
-            guard let best = stats.records.filter({ $0.pieces >= 48 }).map(\.elapsed).min() else {
+            guard let best = stats.records.filter({ $0.pieces >= 48 && !$0.isShared }).map(\.elapsed).min() else {
                 return (0, "– / 5:00")
             }
             return (min(1, 300 / max(best, 1)), "\(TimeFormatting.short(best)) / 5:00")

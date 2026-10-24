@@ -31,6 +31,18 @@ nonisolated struct SettleOutcome: Sendable, Equatable {
     var didMerge: Bool { !absorbedGroups.isEmpty }
 }
 
+/// One change a player makes to the board. A shared board sends these, and
+/// every device applies them through `PuzzleState.apply`.
+nonisolated enum BoardMove: Codable, Sendable, Equatable {
+    /// The group holding `piece` let go at `translation`.
+    case drop(piece: Int32, translation: CGPoint, tolerance: CGFloat)
+    /// `piece` taken out of the tray and put down at `translation`.
+    case place(piece: Int32, translation: CGPoint, tolerance: CGFloat)
+    case toTray(piece: Int32)
+    case scatter(seed: UInt64)
+    case gather
+}
+
 /// Placement state of every piece: the pure, testable core of the game.
 ///
 /// Two pieces are correctly joined **iff their groups share the same
@@ -209,10 +221,12 @@ nonisolated struct PuzzleState: Sendable, Codable, Equatable {
 
     /// Candidate resting translations for a group: its home position plus the
     /// translation of every group it touches.
-    func snapCandidates(for id: Int32) -> [CGPoint] {
+    /// `held` are groups another player is holding on a shared board: they are
+    /// in mid-air there, so nothing snaps to them.
+    func snapCandidates(for id: Int32, ignoring held: Set<Int32> = []) -> [CGPoint] {
         guard let group = groups[id] else { return [] }
         var candidates: [CGPoint] = [.zero]
-        var seen = Set<Int32>([id])
+        var seen = held.union([id])
         for piece in group.members {
             for neighbor in neighbors(of: piece) {
                 let other = pieceGroup[Int(neighbor)]
@@ -227,14 +241,14 @@ nonisolated struct PuzzleState: Sendable, Codable, Equatable {
     /// Releases a group: snaps it if it is close enough to a valid position, then
     /// absorbs every neighbouring group that now lines up — transitively, so a
     /// piece dropped into a gap can join four clusters at once.
-    mutating func settle(group id: Int32, tolerance: CGFloat) -> SettleOutcome {
+    mutating func settle(group id: Int32, tolerance: CGFloat, ignoring held: Set<Int32> = []) -> SettleOutcome {
         var outcome = SettleOutcome()
         outcome.group = id
         guard let group = groups[id] else { return outcome }
 
         var best: CGPoint?
         var bestDistance = CGFloat.greatestFiniteMagnitude
-        for candidate in snapCandidates(for: id) {
+        for candidate in snapCandidates(for: id, ignoring: held) {
             let distance = candidate.distance(to: group.translation)
             if distance <= tolerance, distance < bestDistance {
                 bestDistance = distance
@@ -245,14 +259,15 @@ nonisolated struct PuzzleState: Sendable, Codable, Equatable {
 
         outcome.didSnap = true
         setTranslation(target, forGroup: id)
-        outcome.connectedPieces = mergeNeighbours(into: id, at: target, absorbed: &outcome.absorbedGroups)
+        outcome.connectedPieces = mergeNeighbours(into: id, at: target, absorbed: &outcome.absorbedGroups,
+                                                  ignoring: held)
         outcome.didComplete = isComplete
         return outcome
     }
 
     /// Breadth-first absorption of every touching group sharing our translation.
     private mutating func mergeNeighbours(into id: Int32, at translation: CGPoint,
-                                          absorbed: inout [Int32]) -> [Int32] {
+                                          absorbed: inout [Int32], ignoring held: Set<Int32> = []) -> [Int32] {
         var frontier = groups[id]?.members ?? []
         var connected: [Int32] = []
         var visited = Set(frontier)
@@ -260,7 +275,7 @@ nonisolated struct PuzzleState: Sendable, Codable, Equatable {
         while let piece = frontier.popLast() {
             for neighbor in neighbors(of: piece) {
                 let otherID = pieceGroup[Int(neighbor)]
-                guard otherID >= 0, otherID != id, let other = groups[otherID],
+                guard otherID >= 0, otherID != id, !held.contains(otherID), let other = groups[otherID],
                       other.translation.isApproximatelyEqual(to: translation, tolerance: 0.01)
                 else { continue }
 
@@ -278,6 +293,44 @@ nonisolated struct PuzzleState: Sendable, Codable, Equatable {
             }
         }
         return Array(Set(connected))
+    }
+
+    // MARK: - Moves
+
+    /// Applies one player's move. Every change to the board goes through
+    /// here, so a shared board replays a partner's move exactly as it was
+    /// made. Returns the snap result for drops, `nil` for the rest.
+    @discardableResult
+    mutating func apply(_ move: BoardMove, table: CGRect, board: CGRect,
+                        ignoring held: Set<Int32> = []) -> SettleOutcome? {
+        switch move {
+        case let .drop(piece, translation, tolerance):
+            // A locked cluster stays put. One the drag itself left exactly
+            // home counts as locked already, but still has to settle to join
+            // its neighbours.
+            guard let group = group(of: piece),
+                  !group.isLocked || translation.isApproximatelyEqual(to: .zero, tolerance: 0.001) else { return nil }
+            bringToFront(group: group.id)
+            setTranslation(translation, forGroup: group.id)
+            return settle(group: group.id, tolerance: tolerance, ignoring: held)
+        case let .place(piece, translation, tolerance):
+            // A partner took the same piece out of their tray first: the
+            // later drop moves it.
+            if pieceGroup[Int(piece)] >= 0 {
+                return apply(.drop(piece: piece, translation: translation, tolerance: tolerance),
+                             table: table, board: board, ignoring: held)
+            }
+            let id = placeFromTray(piece, translation: translation)
+            return settle(group: id, tolerance: tolerance, ignoring: held)
+        case let .toTray(piece):
+            returnToTray(piece)
+        case let .scatter(seed):
+            var rng = SplitMix64(seed: seed)
+            scatterTray(in: table, avoiding: board, using: &rng)
+        case .gather:
+            gatherLooseSingles()
+        }
+        return nil
     }
 
     /// Instantly solves the puzzle. Used by tests and the developer shortcut only.

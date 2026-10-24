@@ -242,8 +242,23 @@ struct BoardView: View {
             let u = now.timeIntervalSince(landing.at) / GameSession.landingDuration
             return u < 1 ? (landing, u) : nil
         }
+        // Groups a partner is holding, by group id.
+        var partners: [Int32: GameSession.RemoteHold] = [:]
+        for hold in session.remoteHolds.values {
+            if let id = session.state.group(of: hold.piece)?.id { partners[id] = hold }
+        }
         for groupID in session.drawOrder {
             guard let group = session.state.groups[groupID] else { continue }
+
+            if let hold = partners[groupID] {
+                // In a partner's hand: lifted, with a glow of their colour.
+                context.drawLayer { layer in
+                    layer.addFilter(.shadow(color: Theme.player(hold.slot), radius: 5))
+                    drawPieces(of: group, in: &layer, viewport: viewport, size: size, now: now,
+                               visible: visible, textures: textures)
+                }
+                continue
+            }
 
             if let drag = session.drag, drag.group == groupID {
                 // Held: a touch larger around the finger, over one soft, wide
@@ -266,6 +281,7 @@ struct BoardView: View {
             drawLanding(landing.pieces, progress: u, in: &context, viewport: viewport, textures: textures)
         }
 
+        drawPartners(in: &context, viewport: viewport, textures: textures)
         drawFlashes(in: &context, viewport: viewport, visible: visible, textures: textures, now: now)
         drawHint(in: &context, viewport: viewport, now: now)
         drawFinale(in: &context, plate: plate, plateRect: plateRect, viewport: viewport, now: now)
@@ -401,6 +417,31 @@ struct BoardView: View {
         return away * CGFloat(out * (1 - back))
     }
 
+    /// Partners' pieces still on the way from their tray, and a name tag over
+    /// every piece a partner holds.
+    private func drawPartners(in context: inout GraphicsContext, viewport: Viewport, textures: PieceTextureStore) {
+        let cell = session.geometry.cellSize
+        for hold in session.remoteHolds.values.sorted(by: { $0.slot < $1.slot }) {
+            let index = Int(hold.piece)
+            guard index < textures.images.count, let image = textures.images[index] else { continue }
+            let origin = session.state.solvedOrigin(of: hold.piece) + hold.translation
+            let color = Theme.player(hold.slot)
+            if session.state.group(of: hold.piece) == nil {
+                context.drawLayer { layer in
+                    layer.addFilter(.shadow(color: color, radius: 5))
+                    layer.draw(image, in: viewport.screen(textures.localBounds[index].offsetBy(origin)))
+                }
+            }
+            let top = viewport.screen(origin + CGPoint(x: cell.width / 2, y: 0))
+            let name = context.resolve(Text(hold.name).font(Theme.body(12, .bold)).foregroundStyle(Theme.onAccent))
+            let size = name.measure(in: CGSize(width: 180, height: 40))
+            let tag = CGRect(x: top.x - size.width / 2 - 9, y: top.y - size.height - 14,
+                             width: size.width + 18, height: size.height + 6)
+            context.fill(Path(roundedRect: tag, cornerRadius: tag.height / 2), with: .color(color))
+            context.draw(name, in: tag.insetBy(dx: 9, dy: 3))
+        }
+    }
+
     private func drawFlashes(in context: inout GraphicsContext, viewport: Viewport,
                              visible: CGRect, textures: PieceTextureStore, now: Date) {
         guard !session.flashes.isEmpty else { return }
@@ -413,15 +454,17 @@ struct BoardView: View {
             let rect = viewport.screen(
                 textures.localBounds[index].offsetBy(session.state.solvedOrigin(of: piece) + group.translation))
             guard rect.intersects(visible) else { continue }
+            // This player's snaps flash sage; a partner's, in their colour.
+            let tint = session.flashTint[piece].map(Theme.player) ?? Theme.sage
             var glow = context
             glow.blendMode = .plusLighter
             glow.opacity = (1 - progress) * 0.7
-            glow.addFilter(.colorMultiply(Theme.sage))
+            glow.addFilter(.colorMultiply(tint))
             glow.draw(image, in: rect)
-            // The snap ring: a sage stroke that swells and fades.
+            // The snap ring: a stroke that swells and fades.
             let ring = Path(roundedRect: rect.insetBy(dx: -4 - 10 * progress, dy: -4 - 10 * progress),
                             cornerRadius: 16)
-            context.stroke(ring, with: .color(Theme.sage.opacity((1 - progress) * 0.9)), lineWidth: 5)
+            context.stroke(ring, with: .color(tint.opacity((1 - progress) * 0.9)), lineWidth: 5)
         }
     }
 

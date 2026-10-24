@@ -100,6 +100,9 @@ struct GameView: View {
 
     private var board: some View {
         BoardView(session: session, settings: settings, controller: controller)
+            .overlay(alignment: .top) {
+                if let table = model.table, table.session === session { TableRoster(table: table).padding(.top, 10) }
+            }
     }
 
     /// The board fills the game space up to the tray, so its frame is derived
@@ -114,9 +117,11 @@ struct GameView: View {
         return TrayView(session: session, placement: placement, thickness: thickness) { piece, location in
             drag.piece = piece
             drag.location = location
+            // Partners see it once it is over the board.
+            if boardFrame.contains(location) { session.trayDragMoved(piece, to: session.viewport.board(location)) }
         } onEnded: { piece, location in
             drag.piece = nil
-            guard boardFrame.contains(location) else { return }
+            guard boardFrame.contains(location) else { return session.trayDragCancelled(piece) }
             let boardPoint = session.viewport.board(location)
             let outcome = session.placePieceFromTray(piece, at: boardPoint,
                                                      viewScale: session.viewport.scale,
@@ -243,6 +248,7 @@ struct GameView: View {
                 if isCompact {
                     Menu {
                         Button { showOriginal = true } label: { Label("Show Original", systemImage: "photo") }
+                        Button { model.sheet = .together } label: { Label("Play Together", systemImage: "person.2") }
                         Divider()
                         undoRedoButtons
                     } label: {
@@ -256,6 +262,8 @@ struct GameView: View {
                     .buttonStyle(PressableStyle())
                     .accessibilityLabel(Text("Actions"))
                 } else {
+                    RoundIconButton(symbol: "person.2.fill", size: 42) { model.sheet = .together }
+                        .accessibilityLabel(Text("Play Together"))
                     RoundIconButton(symbol: "photo", size: 42) { showOriginal = true }
                         .accessibilityLabel(Text("Show Original"))
                     RoundIconButton(symbol: "arrow.uturn.backward", size: 42) { session.undo() }

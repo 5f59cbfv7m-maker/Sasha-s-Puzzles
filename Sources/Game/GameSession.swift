@@ -16,6 +16,9 @@ final class GameSession {
 
     struct DragState: Equatable {
         var group: Int32
+        /// The piece under the finger. A shared board renumbers groups when
+        /// it catches up with the host; the piece finds the group again.
+        var piece: Int32
         var grab: CGPoint
         var startTranslation: CGPoint
         var moved = false
@@ -98,6 +101,32 @@ final class GameSession {
     private(set) var canUndo = false
     private(set) var canRedo = false
 
+    // MARK: Playing together
+
+    /// Set while other players share this board (`SharedTable`). Undo is off
+    /// then — it would take back a partner's move — and pausing keeps the
+    /// clock running for everyone else.
+    var isShared = false { didSet { refreshUndoFlags() } }
+    /// A partner's device keeps the board; this one shows its own moves at
+    /// once but finishes only when the host says the picture is complete.
+    @ObservationIgnored var waitsForHost = false
+    /// Every move made here, after it is applied, for the shared table to send.
+    @ObservationIgnored var onMove: ((BoardMove, SettleOutcome?) -> Void)?
+    /// Where the piece in this player's hand is (a group translation), and `nil` when it is let go.
+    @ObservationIgnored var onHold: ((Int32, CGPoint?) -> Void)?
+
+    /// A piece a partner is holding, where their finger has it.
+    struct RemoteHold: Equatable {
+        var piece: Int32
+        var translation: CGPoint
+        var slot: Int
+        var name: String
+    }
+    /// By player id.
+    private(set) var remoteHolds: [String: RemoteHold] = [:]
+    /// Pieces that flashed for a partner's move, by their colour slot.
+    private(set) var flashTint: [Int32: Int] = [:]
+
     // MARK: Private
 
     @ObservationIgnored private var accumulated: TimeInterval = 0
@@ -139,8 +168,8 @@ final class GameSession {
 
     /// Rebuilds a session from a save. Geometry is regenerated from the seed, so
     /// the restored puzzle is bit-for-bit the one that was put down.
-    convenience init(snapshot: GameSnapshot, saveStore: SaveStore = SaveStore()) {
-        self.init(item: snapshot.libraryItem, aspect: snapshot.puzzleAspect,
+    convenience init(snapshot: GameSnapshot, item: LibraryItem? = nil, saveStore: SaveStore = SaveStore()) {
+        self.init(item: item ?? snapshot.libraryItem, aspect: snapshot.puzzleAspect,
                   targetPieces: snapshot.targetPieces, seed: snapshot.seed, id: snapshot.id,
                   saveStore: saveStore)
         state = snapshot.state
@@ -180,7 +209,7 @@ final class GameSession {
         source = image
         ghostImage = Image(decorative: image.cgImage, scale: 1)
 
-        if isNewGame {
+        if isNewGame, !waitsForHost {
             var rng = SplitMix64(seed: shuffleSeed)
             state.shuffleTray(using: &rng)
         }
@@ -245,8 +274,10 @@ final class GameSession {
     func pause() {
         guard phase == .playing else { return }
         phase = .paused
+        if let drag { onHold?(drag.piece, nil) }
         drag = nil
-        stopClock()
+        // A shared board's clock is everyone's.
+        if !isShared { stopClock() }
         saveNow()
     }
 
@@ -330,11 +361,12 @@ final class GameSession {
     @discardableResult
     func beginDrag(at point: CGPoint) -> Bool {
         guard phase == .playing, let piece = piece(at: point),
-              let group = state.group(of: piece), !group.isLocked else { return false }
+              let group = state.group(of: piece), !group.isLocked,
+              !heldElsewhere.contains(group.id) else { return false }
         pushUndo()
         state.bringToFront(group: group.id)
         selectedPiece = piece
-        drag = DragState(group: group.id, grab: point, startTranslation: group.translation)
+        drag = DragState(group: group.id, piece: piece, grab: point, startTranslation: group.translation)
         return true
     }
 
@@ -344,6 +376,7 @@ final class GameSession {
         if abs(delta.x) + abs(delta.y) > 0.5 { drag.moved = true }
         self.drag = drag
         state.setTranslation(drag.startTranslation + delta, forGroup: drag.group)
+        onHold?(drag.piece, drag.startTranslation + delta)
     }
 
     /// Releases the dragged group and runs the snap/merge pass.
@@ -351,27 +384,19 @@ final class GameSession {
     func endDrag(viewScale: CGFloat, assist: SnapAssist) -> SettleOutcome? {
         guard let drag else { return nil }
         self.drag = nil
+        // The move goes out first; letting go after it means a partner never
+        // sees the piece jump back to where it was picked up.
+        defer { onHold?(drag.piece, nil) }
         guard drag.moved else {
             undoStack.removeLast()
             refreshUndoFlags()
             return nil
         }
         landing = Landing(pieces: Set(state.groups[drag.group]?.members ?? []), at: .now)
-        let tolerance = state.snapTolerance(viewScale: viewScale, assist: assist.multiplier)
-        let outcome = state.settle(group: drag.group, tolerance: tolerance)
-        lastOutcome = outcome
         scheduleEffectsExpiry()
-        if outcome.didSnap {
-            let now = Date.now
-            let pieces = outcome.connectedPieces.isEmpty
-                ? (state.groups[outcome.group]?.members ?? [])
-                : outcome.connectedPieces
-            for piece in pieces { flashes[piece] = now }
-            scheduleEffectsExpiry()
-        }
-        if outcome.didComplete { finish() }
-        scheduleAutosave()
-        return outcome
+        let translation = state.groups[drag.group]?.translation ?? drag.startTranslation
+        let tolerance = state.snapTolerance(viewScale: viewScale, assist: assist.multiplier)
+        return perform(.drop(piece: drag.piece, translation: translation, tolerance: tolerance))
     }
 
     func cancelDrag() {
@@ -380,6 +405,7 @@ final class GameSession {
         self.drag = nil
         if !undoStack.isEmpty { undoStack.removeLast() }
         refreshUndoFlags()
+        onHold?(drag.piece, nil)
     }
 
     /// Drops a tray piece onto the table at a board point.
@@ -387,54 +413,156 @@ final class GameSession {
     func placePieceFromTray(_ piece: Int32, at point: CGPoint,
                             viewScale: CGFloat, assist: SnapAssist) -> SettleOutcome? {
         guard phase == .playing else { return nil }
+        defer { onHold?(piece, nil) }
         pushUndo()
-        let centre = state.solvedOrigin(of: piece) + CGPoint(x: geometry.cellSize.width / 2,
-                                                             y: geometry.cellSize.height / 2)
-        let translation = point - centre
-        let group = state.placeFromTray(piece, translation: translation)
         selectedPiece = piece
         landing = Landing(pieces: [piece], at: .now)
         scheduleEffectsExpiry()
         let tolerance = state.snapTolerance(viewScale: viewScale, assist: assist.multiplier)
-        let outcome = state.settle(group: group, tolerance: tolerance)
-        lastOutcome = outcome
-        if outcome.didSnap {
-            let now = Date.now
-            for connected in outcome.connectedPieces { flashes[connected] = now }
-            flashes[piece] = now
-            scheduleEffectsExpiry()
-        }
-        if outcome.didComplete { finish() }
-        scheduleAutosave()
-        return outcome
+        return perform(.place(piece: piece, translation: trayTranslation(piece, at: point), tolerance: tolerance))
     }
+
+    /// The translation that puts a tray piece's cell centre on `point`.
+    private func trayTranslation(_ piece: Int32, at point: CGPoint) -> CGPoint {
+        point - state.solvedOrigin(of: piece) - CGPoint(x: geometry.cellSize.width / 2,
+                                                        y: geometry.cellSize.height / 2)
+    }
+
+    /// A tray piece on its way to the board, for partners to watch.
+    func trayDragMoved(_ piece: Int32, to point: CGPoint) {
+        onHold?(piece, trayTranslation(piece, at: point))
+    }
+
+    /// The tray piece was let go off the board.
+    func trayDragCancelled(_ piece: Int32) { onHold?(piece, nil) }
 
     /// Sends a placed piece back to the tray (secondary click / long press).
     /// Locked pieces ignore the request.
     func returnPieceToTray(_ piece: Int32) {
-        guard phase == .playing, let group = state.group(of: piece), !group.isLocked else { return }
+        guard phase == .playing, let group = state.group(of: piece), !group.isLocked,
+              !heldElsewhere.contains(group.id) else { return }
         pushUndo()
-        state.returnToTray(piece)
+        perform(.toTray(piece: piece))
         if selectedPiece == piece { selectedPiece = nil }
-        scheduleAutosave()
     }
 
     /// Empties the tray onto the table — the practical way to play 500+ pieces.
     func scatterTray() {
         guard phase == .playing, !state.trayOrder.isEmpty else { return }
         pushUndo()
-        var rng = SplitMix64(seed: shuffleSeed &+ UInt64(state.trayOrder.count))
-        state.scatterTray(in: tableRect, avoiding: boardRect, using: &rng)
-        scheduleAutosave()
+        perform(.scatter(seed: shuffleSeed &+ UInt64(state.trayOrder.count)))
     }
 
     /// Sends every loose single piece on the table back to the tray.
     func gatherLoosePieces() {
         guard phase == .playing, state.hasLooseSingles else { return }
         pushUndo()
-        state.gatherLooseSingles()
+        perform(.gather)
         if let selectedPiece, state.group(of: selectedPiece) == nil { self.selectedPiece = nil }
+    }
+
+    /// A move made on this device: applied, flashed, shared and saved.
+    @discardableResult
+    private func perform(_ move: BoardMove) -> SettleOutcome? {
+        let outcome = state.apply(move, table: tableRect, board: boardRect, ignoring: heldElsewhere)
+        if let outcome {
+            lastOutcome = outcome
+            if outcome.didSnap { flash(flashedPieces(outcome), tint: nil) }
+        }
+        onMove?(move, outcome)
+        if outcome?.didComplete == true, !waitsForHost { finish() }
         scheduleAutosave()
+        return outcome
+    }
+
+    // MARK: - Shared board
+
+    /// Groups partners are holding: they cannot be picked up here, and
+    /// nothing snaps to them while they are in the air.
+    var heldElsewhere: Set<Int32> {
+        guard !remoteHolds.isEmpty else { return [] }
+        return Set(remoteHolds.values.compactMap { state.group(of: $0.piece)?.id })
+    }
+
+    /// The pieces a snap lights up: the new seams, or a lone piece that went home.
+    func flashedPieces(_ outcome: SettleOutcome) -> [Int32] {
+        outcome.connectedPieces.isEmpty ? (state.groups[outcome.group]?.members ?? []) : outcome.connectedPieces
+    }
+
+    /// `tint` is a partner's colour slot; `nil` is this player's own green.
+    func flash(_ pieces: [Int32], tint: Int?) {
+        guard !pieces.isEmpty else { return }
+        let now = Date.now
+        for piece in pieces {
+            flashes[piece] = now
+            flashTint[piece] = tint
+        }
+        scheduleEffectsExpiry()
+    }
+
+    /// A partner's move, on the device that keeps the shared board. The
+    /// table credits the move before `finishIfComplete` runs the finale.
+    @discardableResult
+    func performRemote(_ move: BoardMove, slot: Int) -> SettleOutcome? {
+        guard phase != .completed else { return nil }
+        // Nor to the piece in this player's own hand.
+        let held = heldElsewhere.union(drag.map { [$0.group] } ?? [])
+        let outcome = state.apply(move, table: tableRect, board: boardRect, ignoring: held)
+        if let outcome, outcome.didSnap { flash(flashedPieces(outcome), tint: slot) }
+        reattachDrag()
+        scheduleAutosave()
+        return outcome
+    }
+
+    /// The board as the host has it, with the moves made here that it has
+    /// not seen yet laid on top again, partners' pieces where their fingers
+    /// are, and whatever this player is holding still in hand.
+    func adopt(_ board: PuzzleState, replaying pending: [BoardMove], elapsed: TimeInterval) {
+        guard phase != .completed else { return }
+        let held = drag.flatMap { drag in state.groups[drag.group]?.translation }
+        state = board
+        drawOrderCache = nil
+        for hold in remoteHolds.values { place(hold) }
+        for move in pending {
+            state.apply(move, table: tableRect, board: boardRect, ignoring: heldElsewhere)
+        }
+        reattachDrag(at: held)
+        accumulated = elapsed
+        self.elapsed = elapsed
+        if runningSince != nil { runningSince = .now }
+        scheduleAutosave()
+    }
+
+    /// After the board changed under a drag: the held piece's group may have
+    /// a new id, or a partner's move may have locked it home.
+    private func reattachDrag(at translation: CGPoint? = nil) {
+        guard let current = drag else { return }
+        guard let group = state.group(of: current.piece), !group.isLocked else {
+            drag = nil
+            return
+        }
+        drag?.group = group.id
+        if let translation { state.setTranslation(translation, forGroup: group.id) }
+    }
+
+    func setRemoteHold(_ hold: RemoteHold?, for player: String) {
+        let raise = hold != nil && remoteHolds[player]?.piece != hold?.piece
+        remoteHolds[player] = hold
+        guard let hold else { return }
+        if raise, let group = state.group(of: hold.piece), !group.isLocked { state.bringToFront(group: group.id) }
+        place(hold)
+    }
+
+    private func place(_ hold: RemoteHold) {
+        guard let group = state.group(of: hold.piece), !group.isLocked, group.id != drag?.group else { return }
+        // Held is in the air, never home: there it would lock without joining anything.
+        var translation = hold.translation
+        if translation.isApproximatelyEqual(to: .zero, tolerance: 0.01) { translation.x += 0.02 }
+        state.setTranslation(translation, forGroup: group.id)
+    }
+
+    func finishIfComplete() {
+        if state.isComplete, phase != .completed { finish() }
     }
 
     /// The tray's two buttons: empty the tray onto the table, and send the
@@ -469,6 +597,7 @@ final class GameSession {
         if let hint, hint.expires < now { self.hint = nil }
         if let landing, now.timeIntervalSince(landing.at) >= Self.landingDuration { self.landing = nil }
         flashes = flashes.filter { now.timeIntervalSince($0.value) < Self.flashDuration }
+        if !flashTint.isEmpty { flashTint = flashTint.filter { flashes[$0.key] != nil } }
         scheduleEffectsExpiry()
     }
 
@@ -507,7 +636,7 @@ final class GameSession {
     }
 
     func undo() {
-        guard let previous = undoStack.popLast() else { return }
+        guard !isShared, let previous = undoStack.popLast() else { return }
         redoStack.append(state)
         state = previous
         drag = nil
@@ -516,7 +645,7 @@ final class GameSession {
     }
 
     func redo() {
-        guard let next = redoStack.popLast() else { return }
+        guard !isShared, let next = redoStack.popLast() else { return }
         undoStack.append(state)
         state = next
         drag = nil
@@ -525,8 +654,8 @@ final class GameSession {
     }
 
     private func refreshUndoFlags() {
-        canUndo = !undoStack.isEmpty
-        canRedo = !redoStack.isEmpty
+        canUndo = !isShared && !undoStack.isEmpty
+        canRedo = !isShared && !redoStack.isEmpty
     }
 
     // MARK: - Completion

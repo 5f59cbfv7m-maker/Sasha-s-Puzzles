@@ -42,6 +42,11 @@ nonisolated enum Theme {
     static let sageTint = dynamic("e1eecc", "3d472b")
     static let onSageTint = dynamic("56633f", "f0fae1")
 
+    /// Players at a shared table, by seat: the host is terracotta. Sage stays
+    /// this player's own snap flash.
+    static let players = [accent, dynamic("3f7fb5", "8cc0ec"), dynamic("9a4f8c", "dba3d1"), dynamic("a8841c", "e6c565")]
+    static func player(_ slot: Int) -> Color { players[((slot % players.count) + players.count) % players.count] }
+
     static let radiusCard: CGFloat = 24
     static let radiusPanel: CGFloat = 28
 

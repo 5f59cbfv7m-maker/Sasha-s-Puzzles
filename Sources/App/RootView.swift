@@ -76,6 +76,7 @@ struct RootView: View {
                     .interactiveDismissDisabled()
                 case .settings: SettingsView()
                 case .profile: ProfileView()
+                case .together: TogetherSheet()
                 }
             }
             // A fixed page, not a content-sized sheet: content that adapts to

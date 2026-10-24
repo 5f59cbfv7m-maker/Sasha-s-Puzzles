@@ -231,8 +231,15 @@ struct CompletionOverlay: View {
                             .padding(.top, compact ? 12 : 18)
                     }
 
+                    if let table = model.table, table.session === session, table.isTogether {
+                        TableTally(table: table).padding(.top, compact ? 12 : 18)
+                    }
+
                     ButtonPair {
-                        PillButton(title: "Play again", expand: true) { model.restartCurrent() }
+                        // At someone else's table the next game is the host's to start.
+                        if model.table?.isHost != false {
+                            PillButton(title: "Play again", expand: true) { model.restartCurrent() }
+                        }
                         PillButton(title: "Library", style: .ghost, expand: true) { model.showLibrary() }
                     }
                     .padding(.top, compact ? 18 : 26)

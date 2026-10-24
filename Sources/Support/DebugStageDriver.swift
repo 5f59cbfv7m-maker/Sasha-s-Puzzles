@@ -178,6 +178,29 @@ enum DebugStageDriver {
             break
         }
         await rotateIfAsked()
+        await playTogetherIfAsked(model)
+    }
+
+    /// `--host-nearby` opens the staged game's table to devices nearby and
+    /// `--join-nearby` sits down at the first table found: two simulators on
+    /// one Mac find each other. `--carry` then carries every loose piece
+    /// home through the drag path, for the other device to watch.
+    private static func playTogetherIfAsked(_ model: AppModel) async {
+        let arguments = CommandLine.arguments
+        if arguments.contains("--host-nearby") { model.openTableNearby() }
+        if arguments.contains("--join-nearby") {
+            model.browseNearby()
+            let deadline = Date.now.addingTimeInterval(30)
+            while Date.now < deadline, model.table == nil {
+                if let first = model.nearby?.tables.first { model.join(first) }
+                await settle(0.3)
+            }
+            while Date.now < deadline, model.session == nil { await settle(0.3) }
+        }
+        if arguments.contains("--carry") {
+            await waitForBoard(model)
+            if let session = model.session { await carryHome(session) }
+        }
     }
 
     /// `simctl` cannot rotate a simulator; `--landscape` rotates the scene

@@ -60,6 +60,9 @@ final class GameCenter {
     /// What to open when the player picks one of the game's activities in
     /// the Games app or on a challenge notification.
     @ObservationIgnored var onActivity: (Activity) -> Void = { _ in }
+    /// A friend's invitation to their table, accepted in Game Center or on its notification.
+    @ObservationIgnored var onMatch: (GKMatch) -> Void = { _ in }
+    @ObservationIgnored private var matchmaker: Matchmaker?
     @ObservationIgnored private var listener: AnyObject?
 
     /// Activity identifiers, as set up in App Store Connect → Game Center.
@@ -97,14 +100,53 @@ final class GameCenter {
     /// undefined behaviour, so authentication callbacks after the first
     /// leave it alone.
     private func listen() {
-        guard listener == nil, #available(iOS 26, macOS 26, *) else { return }
-        let listener = ActivityListener { [weak self] id in
+        guard listener == nil else { return }
+        let open: @MainActor (String) -> Bool = { [weak self] id in
             guard let activity = Activity(rawValue: id) else { return false }
             self?.onActivity(activity)
             return true
         }
+        let accept: @MainActor (GKInvite) -> Void = { [weak self] invite in self?.accept(invite) }
+        let listener = if #available(iOS 26, macOS 26, *) {
+            ActivityListener(open: open, accept: accept)
+        } else {
+            PlayerListener(open: open, accept: accept)
+        }
         GKLocalPlayer.local.register(listener)
         self.listener = listener
+    }
+
+    // MARK: - Playing together
+
+    /// Game Center's own friend picker; `found` gets the match once the
+    /// friends have accepted and the host starts.
+    func inviteFriends(found: @escaping (GKMatch) -> Void) {
+        let request = GKMatchRequest()
+        request.minPlayers = 2
+        request.maxPlayers = SharedTable.maxPlayers
+        request.inviteMessage = String(localized: "Let's put a puzzle together!")
+        guard let picker = GKMatchmakerViewController(matchRequest: request) else { return }
+        picker.matchmakingMode = .inviteOnly
+        let matchmaker = Matchmaker { [weak self] match in
+            self?.matchmaker = nil
+            if let match { found(match) }
+        }
+        picker.matchmakerDelegate = matchmaker
+        self.matchmaker = matchmaker
+        #if os(iOS)
+        topController()?.present(picker, animated: true)
+        #else
+        GKDialogController.shared().parentWindow = NSApp.keyWindow
+        GKDialogController.shared().present(picker)
+        #endif
+    }
+
+    private func accept(_ invite: GKInvite) {
+        nonisolated(unsafe) let invite = invite
+        GKMatchmaker.shared().match(for: invite) { [weak self] match, _ in
+            nonisolated(unsafe) let match = match
+            Task { @MainActor in if let match { self?.onMatch(match) } }
+        }
     }
 
     // MARK: - Reporting
@@ -158,14 +200,20 @@ final class GameCenter {
     func presentSignIn() {
         guard let signIn else { return }
         #if os(iOS)
-        let scenes = UIApplication.shared.connectedScenes.compactMap { $0 as? UIWindowScene }
-        var top = scenes.flatMap(\.windows).first(where: \.isKeyWindow)?.rootViewController
-        while let presented = top?.presentedViewController { top = presented }
-        top?.present(signIn, animated: true)
+        topController()?.present(signIn, animated: true)
         #else
         NSApp.keyWindow?.contentViewController?.presentAsSheet(signIn)
         #endif
     }
+
+    #if os(iOS)
+    private func topController() -> UIViewController? {
+        let scenes = UIApplication.shared.connectedScenes.compactMap { $0 as? UIWindowScene }
+        var top = scenes.flatMap(\.windows).first(where: \.isKeyWindow)?.rootViewController
+        while let presented = top?.presentedViewController { top = presented }
+        return top
+    }
+    #endif
 
     /// Opens a leaderboard filtered to friends. Game Center presents from the
     /// main window, so the caller dismisses its own sheet first.
@@ -179,20 +227,65 @@ final class GameCenter {
     }
 }
 
-/// Hands the activity a player picked in the Games app to `GameCenter`.
-@available(iOS 26, macOS 26, *)
-private final class ActivityListener: NSObject, GKLocalPlayerListener {
-    private let open: @MainActor (String) -> Bool
+/// Hands `GameCenter` a friend's invitation the player accepted.
+private class PlayerListener: NSObject, GKLocalPlayerListener {
+    let open: @MainActor (String) -> Bool
+    private let accept: @MainActor (GKInvite) -> Void
 
-    init(open: @escaping @MainActor (String) -> Bool) {
+    init(open: @escaping @MainActor (String) -> Bool, accept: @escaping @MainActor (GKInvite) -> Void) {
         self.open = open
+        self.accept = accept
     }
 
+    nonisolated func player(_ player: GKPlayer, didAccept invite: GKInvite) {
+        nonisolated(unsafe) let invite = invite
+        Task { @MainActor in accept(invite) }
+    }
+}
+
+/// …and the activity a player picked in the Games app.
+@available(iOS 26, macOS 26, *)
+private final class ActivityListener: PlayerListener {
     nonisolated func player(_ player: GKPlayer, wantsToPlay activity: GKGameActivity,
                             completionHandler: @escaping (Bool) -> Void) {
         let id = activity.activityDefinition.identifier
         nonisolated(unsafe) let completionHandler = completionHandler
         Task { @MainActor in completionHandler(open(id)) }
+    }
+}
+
+/// Closes Game Center's friend picker and hands over the match, if any.
+private final class Matchmaker: NSObject, GKMatchmakerViewControllerDelegate {
+    private let done: @MainActor (GKMatch?) -> Void
+
+    init(done: @escaping @MainActor (GKMatch?) -> Void) {
+        self.done = done
+    }
+
+    nonisolated func matchmakerViewControllerWasCancelled(_ viewController: GKMatchmakerViewController) {
+        finish(viewController, nil)
+    }
+
+    nonisolated func matchmakerViewController(_ viewController: GKMatchmakerViewController,
+                                              didFailWithError error: any Error) {
+        finish(viewController, nil)
+    }
+
+    nonisolated func matchmakerViewController(_ viewController: GKMatchmakerViewController, didFind match: GKMatch) {
+        finish(viewController, match)
+    }
+
+    nonisolated private func finish(_ viewController: GKMatchmakerViewController, _ match: GKMatch?) {
+        nonisolated(unsafe) let viewController = viewController
+        nonisolated(unsafe) let match = match
+        Task { @MainActor in
+            #if os(iOS)
+            viewController.dismiss(animated: true)
+            #else
+            GKDialogController.shared().dismiss(viewController)
+            #endif
+            done(match)
+        }
     }
 }
 

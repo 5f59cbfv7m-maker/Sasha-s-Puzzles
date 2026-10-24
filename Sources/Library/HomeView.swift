@@ -176,6 +176,8 @@ struct HomeView: View {
             .accessibilityLabel(Text("Add Photo"))
             RoundIconButton(symbol: "folder.badge.plus", size: chip) { isImportingFiles = true }
                 .accessibilityLabel(Text("Import from Files"))
+            RoundIconButton(symbol: "person.2.fill", size: chip) { model.sheet = .together }
+                .accessibilityLabel(Text("Play Together"))
             RoundIconButton(symbol: "person.fill", size: chip) { model.showProfile = true }
                 .overlay(alignment: .topTrailing) {
                     // An achievement not yet looked at in the profile.

@@ -12,7 +12,7 @@ xcodebuild -project JigsawPuzzle.xcodeproj -scheme JigsawPuzzle \
 ```
 
 Swap the destination for `platform=iOS Simulator,name=iPhone 17 Pro` or
-`name=iPad Pro 13-inch (M5)`. **85 tests in 8 suites must pass** before any change
+`name=iPad Pro 13-inch (M5)`. **95 tests in 9 suites must pass** before any change
 is called done. Grep the output for `^✔ Test run` — xcodebuild buries it in noise.
 
 `./Scripts/install-mac.sh [destination]` builds Release and drops the `.app`
@@ -34,7 +34,9 @@ mismatch — it is deliberate.
 | `Sources/Persistence/PlayerStats.swift` | Solved-game records; streak, best times, achievements and the weekly chart are all derived from them |
 | `Sources/Persistence/CloudRecordMirror.swift` | The same records in iCloud key-value storage, merged across the player's devices |
 | `Sources/Game/AchievementCelebration.swift` | Achievement medals (number, stopwatch, motif or category photo) and the completion card's reveal: drop, piece burst, chime, per-medal flourish; the profile's "New" glow |
-| `Sources/App/GameCenter.swift` | Friends' leaderboards and the achievement wall in Game Center, reported from `PlayerStats` |
+| `Sources/App/GameCenter.swift` | Friends' leaderboards and the achievement wall in Game Center, reported from `PlayerStats`; friend invitations for playing together |
+| `Sources/Game/SharedTable.swift` | Playing together: one board on up to four devices, the host's device keeps it |
+| `Sources/App/TableLinks.swift` | The table's two connections: `NearbyLink` (Multipeer, same room) and `MatchLink` (Game Center match) |
 | `Sources/Support/Theme.swift` | Design tokens (colours, type), shared controls (`PillButton`, `RoundIconButton`, `PillSegments`), the `PuzzleMark` logo |
 
 `Engine/` knows nothing about SwiftUI. Keep it that way — that is what
@@ -282,6 +284,26 @@ de, fr, es, it, pt-BR, ja, ko, zh-Hans, th; `knownRegions` in the pbxproj lists
 the same set. CJK breaks lines between any two characters, so `PillButton`
 pins its label to one line. The bundled fonts have no CJK either; the same
 cascade that rescues Cyrillic falls through to the system fonts.
+
+**Playing together: the host keeps the board.** `SharedTable` is on every
+device at the table; the one that opened it is the host. Every change to the
+board is a `BoardMove` applied through `PuzzleState.apply` — local moves via
+`GameSession.perform`, a partner's via `performRemote` — so never change the
+board's placement any other way, or a shared game drifts. Guests apply their
+own moves at once and send them; the host applies moves in arrival order and
+sends the whole `PuzzleState` back (lzfse JSON; an 800-piece board stays
+under Game Center's 87 KB, a test checks). A guest `adopt`s that board and
+replays its unacknowledged moves on top. Held pieces stream ~20 Hz,
+unreliable, numbered by drag so a late sample cannot bring a dropped piece
+back; a partner's held group is never "home" (it would lock unsettled) and
+nothing snaps to it. Undo is off while shared. Points go by
+`SolvedRecord.sharedPieces` (the pieces whose first join was this player's);
+a shared game never counts for times, Sprinter or the daily. Bundled pictures
+only. Nearby needs `NSBonjourServices` (`Config/Info.plist`, merged into the
+generated one) and the Mac's network client/server entitlements. Two
+simulators on one Mac find each other: `--stage scattered --host-nearby` on
+one, `--stage library --join-nearby --carry` on the other. Game Center
+invitations only work in team-signed builds with two Apple Accounts.
 
 ## Building against the 27 SDKs
 
