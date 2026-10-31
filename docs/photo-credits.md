@@ -4,6 +4,21 @@ The built-in pictures in `Sources/Resources/Pictures/` are photographs from
 [Unsplash](https://unsplash.com), used under the [Unsplash License](https://unsplash.com/license)
 (free for commercial use, attribution not required but appreciated).
 
+## Holidays
+
+Open from 24 December 2026 (`LibraryCatalog.christmasOpens`).
+
+| Picture | Photographer | Source |
+|---|---|---|
+| Christmas Baubles | Eric Prouzet | [unsplash.com/photos/Y5k4nhyHluo](https://unsplash.com/photos/Y5k4nhyHluo) |
+| Christmas Carousel | cmophoto.net | [unsplash.com/photos/_BI9XSA-BvQ](https://unsplash.com/photos/_BI9XSA-BvQ) |
+| Gingerbread House | Isabela Kronemberger | [unsplash.com/photos/hxOg4o5oNFA](https://unsplash.com/photos/hxOg4o5oNFA) |
+| Riga Christmas Market | Daniels Joffe | [unsplash.com/photos/pkDKjsPAAi4](https://unsplash.com/photos/pkDKjsPAAi4) |
+| Sleigh Ride | Mahesh Gupta | [unsplash.com/photos/yIva-ZNiKGY](https://unsplash.com/photos/yIva-ZNiKGY) |
+| Snowy Toy Village | Dragon White Munthe | [unsplash.com/photos/7lNCAdh159U](https://unsplash.com/photos/7lNCAdh159U) |
+| Tree by the Fireplace | Mike Cox | [unsplash.com/photos/3UQybRpwpso](https://unsplash.com/photos/3UQybRpwpso) |
+| Winter Square in Warsaw | Elijah G | [unsplash.com/photos/oOHHxQ65dFE](https://unsplash.com/photos/oOHHxQ65dFE) |
+
 ## Space
 
 | Picture | Photographer | Source |
