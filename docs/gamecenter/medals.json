@@ -38,7 +38,7 @@
         "afterEarnedDescription": "Completa 25 puzzle."
       },
       "pt-BR": {
-        "name": "Quebra-cabeças montados · Bronze",
+        "name": "Quebra-cabeças · Bronze",
         "beforeEarnedDescription": "Monte 25 quebra-cabeças.",
         "afterEarnedDescription": "Monte 25 quebra-cabeças."
       },
@@ -103,7 +103,7 @@
         "afterEarnedDescription": "Completa 75 puzzle."
       },
       "pt-BR": {
-        "name": "Quebra-cabeças montados · Prata",
+        "name": "Quebra-cabeças · Prata",
         "beforeEarnedDescription": "Monte 75 quebra-cabeças.",
         "afterEarnedDescription": "Monte 75 quebra-cabeças."
       },
@@ -168,7 +168,7 @@
         "afterEarnedDescription": "Completa 150 puzzle."
       },
       "pt-BR": {
-        "name": "Quebra-cabeças montados · Ouro",
+        "name": "Quebra-cabeças · Ouro",
         "beforeEarnedDescription": "Monte 150 quebra-cabeças.",
         "afterEarnedDescription": "Monte 150 quebra-cabeças."
       },
@@ -233,7 +233,7 @@
         "afterEarnedDescription": "Completa 300 puzzle."
       },
       "pt-BR": {
-        "name": "Quebra-cabeças montados · Platina",
+        "name": "Quebra-cabeças · Platina",
         "beforeEarnedDescription": "Monte 300 quebra-cabeças.",
         "afterEarnedDescription": "Monte 300 quebra-cabeças."
       },
@@ -298,7 +298,7 @@
         "afterEarnedDescription": "Completa 600 puzzle."
       },
       "pt-BR": {
-        "name": "Quebra-cabeças montados · Diamante",
+        "name": "Quebra-cabeças · Diamante",
         "beforeEarnedDescription": "Monte 600 quebra-cabeças.",
         "afterEarnedDescription": "Monte 600 quebra-cabeças."
       },
@@ -1013,7 +1013,7 @@
         "afterEarnedDescription": "Completa 10 puzzle del giorno, di fila o no."
       },
       "pt-BR": {
-        "name": "Quebra-cabeças do dia · Bronze",
+        "name": "Desafio diário · Bronze",
         "beforeEarnedDescription": "Monte 10 quebra-cabeças do dia, seguidos ou não.",
         "afterEarnedDescription": "Monte 10 quebra-cabeças do dia, seguidos ou não."
       },
@@ -1078,7 +1078,7 @@
         "afterEarnedDescription": "Completa 30 puzzle del giorno, di fila o no."
       },
       "pt-BR": {
-        "name": "Quebra-cabeças do dia · Prata",
+        "name": "Desafio diário · Prata",
         "beforeEarnedDescription": "Monte 30 quebra-cabeças do dia, seguidos ou não.",
         "afterEarnedDescription": "Monte 30 quebra-cabeças do dia, seguidos ou não."
       },
@@ -1143,7 +1143,7 @@
         "afterEarnedDescription": "Completa 75 puzzle del giorno, di fila o no."
       },
       "pt-BR": {
-        "name": "Quebra-cabeças do dia · Ouro",
+        "name": "Desafio diário · Ouro",
         "beforeEarnedDescription": "Monte 75 quebra-cabeças do dia, seguidos ou não.",
         "afterEarnedDescription": "Monte 75 quebra-cabeças do dia, seguidos ou não."
       },
@@ -1208,7 +1208,7 @@
         "afterEarnedDescription": "Completa 150 puzzle del giorno, di fila o no."
       },
       "pt-BR": {
-        "name": "Quebra-cabeças do dia · Platina",
+        "name": "Desafio diário · Platina",
         "beforeEarnedDescription": "Monte 150 quebra-cabeças do dia, seguidos ou não.",
         "afterEarnedDescription": "Monte 150 quebra-cabeças do dia, seguidos ou não."
       },
@@ -1273,7 +1273,7 @@
         "afterEarnedDescription": "Completa 365 puzzle del giorno, di fila o no."
       },
       "pt-BR": {
-        "name": "Quebra-cabeças do dia · Diamante",
+        "name": "Desafio diário · Diamante",
         "beforeEarnedDescription": "Monte 365 quebra-cabeças do dia, seguidos ou não.",
         "afterEarnedDescription": "Monte 365 quebra-cabeças do dia, seguidos ou não."
       },
@@ -1338,7 +1338,7 @@
         "afterEarnedDescription": "Completa un puzzle da 500 pezzi o più."
       },
       "pt-BR": {
-        "name": "Quebra-cabeças grandes · Bronze",
+        "name": "Grandes montagens · Bronze",
         "beforeEarnedDescription": "Monte um quebra-cabeça de 500 peças ou mais.",
         "afterEarnedDescription": "Monte um quebra-cabeça de 500 peças ou mais."
       },
@@ -1403,7 +1403,7 @@
         "afterEarnedDescription": "Completa 5 puzzle da 500 pezzi o più."
       },
       "pt-BR": {
-        "name": "Quebra-cabeças grandes · Prata",
+        "name": "Grandes montagens · Prata",
         "beforeEarnedDescription": "Monte 5 quebra-cabeças de 500 peças ou mais.",
         "afterEarnedDescription": "Monte 5 quebra-cabeças de 500 peças ou mais."
       },
@@ -1468,7 +1468,7 @@
         "afterEarnedDescription": "Completa 15 puzzle da 500 pezzi o più."
       },
       "pt-BR": {
-        "name": "Quebra-cabeças grandes · Ouro",
+        "name": "Grandes montagens · Ouro",
         "beforeEarnedDescription": "Monte 15 quebra-cabeças de 500 peças ou mais.",
         "afterEarnedDescription": "Monte 15 quebra-cabeças de 500 peças ou mais."
       },
@@ -1533,7 +1533,7 @@
         "afterEarnedDescription": "Completa 40 puzzle da 500 pezzi o più."
       },
       "pt-BR": {
-        "name": "Quebra-cabeças grandes · Platina",
+        "name": "Grandes montagens · Platina",
         "beforeEarnedDescription": "Monte 40 quebra-cabeças de 500 peças ou mais.",
         "afterEarnedDescription": "Monte 40 quebra-cabeças de 500 peças ou mais."
       },
@@ -1598,7 +1598,7 @@
         "afterEarnedDescription": "Completa 100 puzzle da 500 pezzi o più."
       },
       "pt-BR": {
-        "name": "Quebra-cabeças grandes · Diamante",
+        "name": "Grandes montagens · Diamante",
         "beforeEarnedDescription": "Monte 100 quebra-cabeças de 500 peças ou mais.",
         "afterEarnedDescription": "Monte 100 quebra-cabeças de 500 peças ou mais."
       },
