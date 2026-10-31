@@ -177,6 +177,59 @@ struct StatsTests {
         #expect(stats.points(since: start) == 48)
     }
 
+    @Test("A game with hints stays off the weekly board that challenges use, and the history explains every point")
+    func hintsAndHistory() throws {
+        let stats = PlayerStats(directory: try temporaryDirectory())
+        var hinted = SolvedRecord(itemID: "bundled.sea_Clownfish", category: .sea, pieces: 48, targetPieces: 48,
+                                  elapsed: 300, date: .now, isUserPhoto: false)
+        hinted.hints = 2
+        stats.record(hinted)
+        stats.record(daily(daysAgo: 0))
+        let daily = PlayerStats.points(pieces: 150) * 2 + 50
+        #expect(stats.points == 48 + daily)
+        #expect(stats.points(since: PlayerStats.leaderboardWeekStart()) == daily)
+        let history = stats.pointsHistory
+        #expect(history.map(\.points) == [daily, 48])
+        #expect(history[0].daily && history[0].streakBonus == 50)
+        #expect(!history[1].daily && history[1].record.usedHints)
+        // A game synced late from another device still lands in date order.
+        let old = SolvedRecord(itemID: "bundled.sea_Clownfish", category: .sea, pieces: 12, targetPieces: 12,
+                               elapsed: 60, date: .now.addingTimeInterval(-5 * 86_400), isUserPhoto: false)
+        stats.record(old)
+        #expect(stats.pointsHistory.last?.record == old)
+    }
+
+    @Test("Medals climb bronze to diamond, report each new level once, and show the way to the next")
+    func medals() throws {
+        #expect(Medal.puzzles.tier(at: 24) == nil)
+        #expect(Medal.puzzles.tier(at: 25) == .bronze)
+        #expect(Medal.puzzles.tier(at: 599) == .platinum)
+        #expect(Medal.puzzles.tier(at: 10_000) == .diamond)
+        #expect(Medal.allCases.allSatisfy { $0.goals.count == 5 && $0.goals == $0.goals.sorted() })
+
+        let stats = PlayerStats(directory: try temporaryDirectory())
+        let big = SolvedRecord(itemID: "bundled.sea_Clownfish", category: .sea, pieces: 500, targetPieces: 500,
+                               elapsed: 9000, date: .now, isUserPhoto: false)
+        let first = stats.record(big)
+        #expect(first.newMedals == [MedalAward(medal: .bigPuzzles, tier: .bronze)])
+        #expect(Medal.bigPuzzles.progress(in: stats).label == "1 / 5")
+        #expect(stats.record(big).newMedals.isEmpty)
+        for _ in 0..<2 { stats.record(big) }
+        #expect(stats.record(big).newMedals.contains(MedalAward(medal: .bigPuzzles, tier: .silver)))
+    }
+
+    @Test("A mix moves through the tunes of one style and comes back round")
+    func mix() {
+        for style in AppSettings.Melody.Style.allCases {
+            let tracks = style.melodies.map(\.track)
+            var track = tracks[0]
+            var heard: [Feedback.Music] = []
+            for _ in tracks { heard.append(track); track = track.next }
+            #expect(heard == tracks)
+            #expect(track == tracks[0])
+        }
+    }
+
     @Test("Tiered achievements: a thousand pieces as asked, points, and the record in the summary")
     func tiers() throws {
         let stats = PlayerStats(directory: try temporaryDirectory())

@@ -24,6 +24,8 @@ nonisolated struct GameSnapshot: Codable, Sendable, Identifiable {
     var state: PuzzleState
     var updatedAt: Date
     var isComplete: Bool
+    /// Hints shown so far; missing in saves from before 1.4.
+    var hints: Int?
 
     var pieceCount: Int { columns * rows }
 

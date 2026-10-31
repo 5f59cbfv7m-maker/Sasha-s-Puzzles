@@ -54,6 +54,11 @@ final class GameSession {
     /// Pieces flashing green after a successful connection.
     private(set) var flashes: [Int32: Date] = [:]
     private(set) var hint: Hint?
+    /// The host of a shared table switched hints off for everyone at it.
+    var hintsOff = false
+    /// Hints shown in this game. Saved with it, so a resumed game cannot
+    /// count as hint-free for a Game Center challenge.
+    private(set) var hintsUsed = 0
     /// Pieces just put down: they sink from the lifted size with a small bounce.
     struct Landing: Equatable {
         var pieces: Set<Int32>
@@ -175,6 +180,7 @@ final class GameSession {
         state = snapshot.state
         accumulated = snapshot.elapsed
         elapsed = snapshot.elapsed
+        hintsUsed = snapshot.hints ?? 0
         if snapshot.isComplete { phase = .completed }
     }
 
@@ -575,7 +581,7 @@ final class GameSession {
     /// Highlights where the selected (or a random unplaced) piece belongs.
     /// It never moves a piece — solving stays the player's job.
     func requestHint() {
-        guard phase == .playing else { return }
+        guard phase == .playing, !hintsOff else { return }
         let candidate: Int32?
         if let selected = selectedPiece, state.group(of: selected)?.isHome != true {
             candidate = selected
@@ -590,6 +596,7 @@ final class GameSession {
         guard let piece = candidate else { return }
         selectedPiece = piece
         hint = Hint(piece: piece, expires: .now.addingTimeInterval(3))
+        hintsUsed += 1
         scheduleEffectsExpiry()
     }
 
@@ -717,7 +724,7 @@ final class GameSession {
                      imageAspect: item.aspect, puzzleAspect: puzzleAspect,
                      targetPieces: targetPieces, columns: geometry.columns, rows: geometry.rows,
                      seed: geometry.seed, elapsed: elapsed, state: state,
-                     updatedAt: .now, isComplete: phase == .completed)
+                     updatedAt: .now, isComplete: phase == .completed, hints: hintsUsed)
     }
 
     private func scheduleAutosave() {

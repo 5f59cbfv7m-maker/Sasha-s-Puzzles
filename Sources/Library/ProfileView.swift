@@ -21,6 +21,7 @@ struct ProfileView: View {
                 friends
                 chart
                 achievements
+                medals
             }
             .padding(EdgeInsets(top: 26, leading: gutter, bottom: 30, trailing: gutter))
         }
@@ -263,6 +264,24 @@ struct ProfileView: View {
                                    progress: achievement.progress(in: stats),
                                    isNew: unseen.contains(achievement))
                 }
+            }
+        }
+    }
+}
+
+extension ProfileView {
+    /// Five levels each, bronze to diamond: something to keep collecting
+    /// once the achievements are done.
+    var medals: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            HStack(alignment: .firstTextBaseline, spacing: 10) {
+                Text("Medals").font(Theme.display(19))
+                Text("Five levels each, from bronze to diamond.")
+                    .font(Theme.body(13)).foregroundStyle(Theme.faint)
+            }
+            LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 12), count: isCompact ? 1 : 2),
+                      spacing: 12) {
+                ForEach(Medal.allCases) { MedalRow(medal: $0, stats: stats) }
             }
         }
     }

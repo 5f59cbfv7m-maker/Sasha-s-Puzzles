@@ -12,11 +12,11 @@ xcodebuild -project JigsawPuzzle.xcodeproj -scheme JigsawPuzzle \
 ```
 
 Swap the destination for `platform=iOS Simulator,name=iPhone 17 Pro` or
-`name=iPad Pro 13-inch (M5)`. **95 tests in 9 suites must pass** before any change
+`name=iPad Pro 13-inch (M5)`. **100 tests in 9 suites must pass** before any change
 is called done. Grep the output for `^✔ Test run` — xcodebuild buries it in noise.
 
 **Every fix and feature goes into the release notes as it is made:**
-`docs/Что нового в версии 1.3.md`, one line in each of the 11 languages. The
+`docs/Что нового в версии 1.4.md`, one line in each of the 11 languages. The
 user pastes those blocks into App Store Connect, so a change missing there is
 a change nobody hears about.
 
@@ -42,6 +42,9 @@ mismatch — it is deliberate.
 | `Sources/App/GameCenter.swift` | Friends' leaderboards and the achievement wall in Game Center, reported from `PlayerStats`; friend invitations for playing together |
 | `Sources/Game/SharedTable.swift` | Playing together: one board on up to four devices, the host's device keeps it |
 | `Sources/App/TableLinks.swift` | The table's two connections: `NearbyLink` (Multipeer, same room) and `MatchLink` (Game Center match) |
+| `Sources/Persistence/Medals.swift` | Medals: eight tracks of five levels, bronze to diamond, derived from the records; in-game only (Game Center would need each level in App Store Connect) |
+| `Sources/Settings/CreditsRoll.swift` | Photo credits rolling up like a film's; static under VoiceOver or Reduce Motion |
+| `Scripts/music/compose.py` | The six tunes of 1.4 (`music-calm-*`, `music-tune-*`), written note by note and rendered with FluidSynth |
 | `Sources/Support/Theme.swift` | Design tokens (colours, type), shared controls (`PillButton`, `RoundIconButton`, `PillSegments`), the `PuzzleMark` logo |
 
 `Engine/` knows nothing about SwiftUI. Keep it that way — that is what
@@ -67,6 +70,29 @@ makes them unit-testable and safe to run off the main thread.
   control points.
 
 ## Traps already paid for
+
+**A tab picked far down the library left the screen empty** (1.4): the
+category's grid is shorter than where the player had scrolled.
+`ScrollViewReader.scrollTo` an id does nothing here — the lazy stack has let
+go of the title by then — so `HomeView` measures the grid's top in a named
+coordinate space, scrolls there with `ScrollPosition.scrollTo(y:)` while the
+long list is still in place, and changes the category a moment later.
+
+**Holiday pictures wait for their date.** `LibraryCatalog.opensAt` /
+`christmasOpens` (local midnight, 24 December 2026) lock them with a countdown
+on the card; they are never in `dailyPool`, which must keep 1.2's rotation.
+
+**Hints are counted per game** (`GameSession.hintsUsed`, saved in
+`GameSnapshot.hints` and `SolvedRecord.hints`, both optional for older
+data). A game with hints sends nothing to the challenge boards
+(`daily_time`, `points_week`) and its points stay off the weekly total. The
+host of a shared table can switch hints off for everyone
+(`SharedTable.noHints`, carried in every `TableUpdate`).
+
+**Play Together has no button in the game** (the user asked, 1.4): a table
+opens from the library ("Open a Table" sets `AppModel.hostsNextGame`, and the
+next game started opens it nearby and shows the sheet); in the game the
+roster pill over the board opens the sheet.
 
 **macOS window.** With `GENERATE_INFOPLIST_FILE`, the app needs
 `INFOPLIST_KEY_NSPrincipalClass[sdk=macosx*] = NSApplication` or **no window is
@@ -248,14 +274,20 @@ becomes `sea_X.jpg`, which is why `LibraryCatalog.bundled()` and
 `Feedback.soundURL` look up with `subdirectory: nil`. Consequences: no two
 resources may share a name, and a `.gitkeep`/README inside those folders is
 copied too (two of them collide with "multiple commands produce"). The
-`Pictures/` folder holds the 170 bundled photographs (credits in
+`Pictures/` folder holds the 178 bundled photographs (credits in
 `docs/photo-credits.md`). `Sounds/` holds the effects made by
 `Scripts/make-sounds.swift` — CAF, not AAC, because AAC's encoder priming
-puts ~50 ms of silence in front of every tap — and the two music loops
-(`music-library` for the library; `music-piano` or `music` on the board, per
-`AppSettings.boardMusic`), which `RootView`
-picks from the navigation path and `Feedback.setMusic` crossfades. See
-`docs/app-store.md` §5–6.
+puts ~50 ms of silence in front of every tap — and the music loops: the
+three of 1.0 (`music-library`, `music-piano`, `music`) and the six of 1.4
+from `Scripts/music/compose.py` (run it with the promo project's venv:
+`~/Desktop/XCode/SashasPuzzles-Promo/.venv/bin/python`, which has mido,
+soundfile, pedalboard; it levels every loop to about −18 dB RMS like the old
+ones). `AppSettings.Melody` names them and groups them in three styles;
+`boardMusic` and `libraryMusic` pick one for each place (the raw values
+`piano`/`vibraphone` are 1.2's, keep them). `RootView` picks from the
+navigation path and `Feedback.setMusic` crossfades; with `musicMix` on,
+`Feedback` moves to `Music.next` (same style) after two passes, but never
+under the finale. See `docs/app-store.md` §5–6.
 
 **Adding pictures reshuffles the daily puzzle.** `dailyItem(on:)` is
 `day % count`, and a solved record counts as a daily only while it still
@@ -388,7 +420,11 @@ There is no way to read back a live SwiftUI window — `cacheDisplay` and
   launch: `open -n "<app>" --args --stage huge --clear-saves`. Stages: `library`,
   `dark`, `settings`, `profile`, `setup`, `board`, `scattered`, `snapped`, `hint`,
   `completed`, `huge`, `hugeSolved`. `--achievements sprinter,space` makes the
-  completion announce those, to look at the reveal without earning them. `--tray-trailing` forces the landscape
+  completion announce those, to look at the reveal without earning them;
+  `--medals bigPuzzles:gold,gallery:silver` does the same for medal levels.
+  In the 27.2 simulator a tap shorter than ~0.15 s does not flip a SwiftUI
+  `Toggle` (the switch now drags), and the first tap after a fling only
+  stops it: give the tool's tap a `duration`, and tap twice after scrolling. `--tray-trailing` forces the landscape
   layout on a portrait simulator (there is no `simctl` rotate); add
   `-AppleLanguages "(en)" -onboarding YES -appearance light` to pin the rest.
   On the Mac a stage run sizes the window to 1440×900 pt. Any stage run also

@@ -25,6 +25,8 @@ nonisolated struct TableUpdate: Codable, Sendable {
     /// The mover's drag that made the move: their held piece is down now.
     var moverDrag = 0
     var flashed: [Int32] = []
+    /// The host switched hints off for everyone.
+    var noHints = false
 }
 
 nonisolated enum TableMessage: Codable, Sendable {
@@ -89,6 +91,14 @@ final class SharedTable {
     private(set) var endReason: EndReason?
     /// A guest's game arrived from the host: the first one, or the next after "Play again".
     @ObservationIgnored var onGame: ((GameSession) -> Void)?
+    /// No hints for anyone at the table, the host included: the host sets it,
+    /// guests take it from every update.
+    var noHints = false {
+        didSet {
+            session?.hintsOff = noHints
+            if isHost, noHints != oldValue { broadcast() }
+        }
+    }
 
     @ObservationIgnored private let settings: AppSettings?
     @ObservationIgnored private let saveStore: SaveStore
@@ -301,7 +311,7 @@ final class SharedTable {
         guard isHost, let session, !routes.isEmpty else { return }
         sendToGuests(.update(TableUpdate(gameID: session.id, state: session.state, elapsed: session.elapsed,
                                          credit: credit, players: players, acked: acked,
-                                         mover: mover, moverDrag: drag, flashed: flashed)))
+                                         mover: mover, moverDrag: drag, flashed: flashed, noHints: noHints)))
     }
 
     // MARK: - Guest
@@ -323,6 +333,7 @@ final class SharedTable {
         guard let session, update.gameID == session.id else { return }
         players = update.players
         credit = update.credit
+        if noHints != update.noHints { noHints = update.noHints }
         if let mover = update.mover, mover != me {
             endedDrags[mover] = max(endedDrags[mover] ?? 0, update.moverDrag)
             session.setRemoteHold(nil, for: mover)
@@ -352,6 +363,7 @@ final class SharedTable {
     private func hook(_ session: GameSession) {
         session.onMove = { [weak self] move, outcome in self?.moved(move, outcome) }
         session.onHold = { [weak self] piece, translation in self?.held(piece, at: translation) }
+        session.hintsOff = noHints
     }
 
     /// The game goes back to being one player's own.
@@ -361,6 +373,7 @@ final class SharedTable {
         session.onHold = nil
         session.waitsForHost = false
         session.isShared = false
+        session.hintsOff = false
         for player in players { session.setRemoteHold(nil, for: player.id) }
     }
 

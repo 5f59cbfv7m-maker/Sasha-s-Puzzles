@@ -323,7 +323,10 @@ struct PillSegments<Option: Hashable>: View {
                 Button {
                     withAnimation(.easeOut(duration: 0.15)) { selection = option }
                 } label: {
+                    // One line: "Как в системе" broke mid-word on an iPhone.
                     Text(title(option))
+                        .lineLimit(1)
+                        .minimumScaleFactor(0.7)
                         .font(Theme.body(13, selected ? .bold : .semibold))
                         .foregroundStyle(selected ? Theme.onAccent : Theme.muted)
                         .padding(.horizontal, 13).padding(.vertical, 7)

@@ -143,11 +143,30 @@ struct PersistenceTests {
         let after = LibraryCatalog.newPicturesFrom.addingTimeInterval(3_600)
         let later = gregorian.ordinality(of: .day, in: .era, for: after)!
         #expect(LibraryCatalog.dailyItem(on: after) == LibraryCatalog.dailyPool[later % LibraryCatalog.dailyPool.count])
-        // A secret picture is never a daily puzzle.
+        // A secret or holiday picture is never a daily puzzle.
         for offset in 0..<400 {
             let day = after.addingTimeInterval(Double(offset) * 86_400)
-            #expect(LibraryCatalog.dailyItem(on: day).category != .secret)
+            #expect(![.secret, .holidays].contains(LibraryCatalog.dailyItem(on: day).category))
         }
+    }
+
+    @Test("Holiday pictures wait for Christmas Eve, then stay open; solved pictures sink in their category")
+    func holidaysAndOrder() {
+        let christmas = LibraryCatalog.builtIn().filter { $0.category == .holidays }
+        #expect(christmas.count == 8)
+        let gregorian = Calendar(identifier: .gregorian)
+        #expect(gregorian.dateComponents([.year, .month, .day], from: LibraryCatalog.christmasOpens)
+                == DateComponents(year: 2026, month: 12, day: 24))
+        #expect(christmas.allSatisfy { LibraryCatalog.opensAt($0) == LibraryCatalog.christmasOpens })
+        #expect(LibraryCatalog.builtIn().filter { LibraryCatalog.opensAt($0) != nil }.count == 8)
+
+        let sea = LibraryCatalog.builtIn().filter { $0.category == .sea }
+        let space = LibraryCatalog.builtIn().filter { $0.category == .space }
+        let sorted = LibraryCatalog.solvedLast(sea + space, solved: [sea[0].id, space[1].id])
+        #expect(sorted.prefix(sea.count).last == sea[0])
+        #expect(sorted[1] == sea[2])
+        #expect(sorted.last == space[1])
+        #expect(Set(sorted) == Set(sea + space))
     }
 
     @Test("Every secret is bundled, and every bundled picture is credited")

@@ -22,7 +22,12 @@ struct TogetherSheet: View {
                         .font(Theme.body(15)).foregroundStyle(Theme.muted)
                         .fixedSize(horizontal: false, vertical: true)
                     if let table = model.table, table.isTogether || !table.isHost { players(table) }
-                    if model.session != nil, model.table?.isHost != false { hosting } else if model.table == nil { joining }
+                    if model.session != nil, model.table?.isHost != false {
+                        hosting
+                    } else if model.table == nil {
+                        opening
+                        joining
+                    }
                 }
                 .padding(EdgeInsets(top: 0, leading: 26, bottom: 26, trailing: 26))
             }
@@ -35,6 +40,29 @@ struct TogetherSheet: View {
 
     // MARK: - Host
 
+    /// In the library: the table opens over the next puzzle the player starts.
+    private var opening: some View {
+        section("Open a Table", "Choose a picture, and the table opens as soon as the puzzle starts.") {
+            noHintsToggle
+            PillButton(title: "Choose a Picture", symbol: "photo.on.rectangle", size: 16) {
+                model.hostsNextGame = true
+                dismiss()
+            }
+        }
+    }
+
+    /// For playing against each other: nobody at the table gets a hint.
+    private var noHintsToggle: some View {
+        Toggle(isOn: Binding(get: { model.settings.tableNoHints }, set: { model.setTableNoHints($0) })) {
+            VStack(alignment: .leading, spacing: 2) {
+                Text("No hints").font(Theme.body(16, .semibold))
+                Text("For everyone at the table, you too.").font(Theme.body(13)).foregroundStyle(Theme.muted)
+            }
+        }
+        .toggleStyle(.switch)
+        .tint(Theme.accent)
+    }
+
     @ViewBuilder
     private var hosting: some View {
         if !model.canShareTable {
@@ -44,6 +72,7 @@ struct TogetherSheet: View {
                     .font(Theme.body(15))
             }
         } else {
+            card { noHintsToggle }
             section("Nearby", "Family and friends in the same room, over Wi-Fi or Bluetooth. No account needed.") {
                 if model.nearbyHost != nil {
                     Label("The table is open. On the other device, tap the two figures in the library.",
@@ -76,7 +105,7 @@ struct TogetherSheet: View {
     // MARK: - Guest
 
     private var joining: some View {
-        section("Tables nearby", "Ask the other player to open the table in their game.") {
+        section("Tables nearby", "Ask the other player to open a table from their library.") {
             let tables = model.nearby?.tables ?? []
             if tables.isEmpty {
                 HStack(spacing: 10) {
@@ -109,6 +138,10 @@ struct TogetherSheet: View {
                     ProgressView().controlSize(.small)
                     Text("Sitting down…").font(Theme.body(15)).foregroundStyle(Theme.muted)
                 }
+            }
+            if table.noHints, !table.isHost {
+                Label("The host switched hints off for everyone.", systemImage: "lightbulb.slash")
+                    .font(Theme.body(14, .semibold)).foregroundStyle(Theme.muted)
             }
             ForEach(table.players.filter(\.isHere)) { player in
                 HStack(spacing: 10) {
@@ -146,10 +179,35 @@ struct TogetherSheet: View {
 }
 
 /// Who is at the table and how many pieces each has joined, over the board.
+/// The game has no "Play together" button of its own: a tap here opens the
+/// table's sheet, to invite more players or change the hints.
 struct TableRoster: View {
     let table: SharedTable
+    var open: (() -> Void)?
+
+    private var isShown: Bool { table.endReason != nil || table.isTogether || table.isHost }
 
     var body: some View {
+        HStack(spacing: 10) {
+            if table.noHints, table.endReason == nil {
+                Image(systemName: "lightbulb.slash.fill").foregroundStyle(Theme.muted)
+                    .accessibilityLabel(Text("No hints"))
+            }
+            content
+        }
+        .font(Theme.body(13, .bold))
+        .padding(.horizontal, 14).padding(.vertical, 8)
+        .background(Theme.card.opacity(0.94), in: Capsule())
+        .shadow(color: .black.opacity(0.14), radius: 8, y: 4)
+        .opacity(isShown ? 1 : 0)
+        .contentShape(Capsule())
+        .onTapGesture { open?() }
+        .allowsHitTesting(isShown && table.endReason == nil && open != nil)
+        .accessibilityAddTraits(open != nil ? .isButton : [])
+    }
+
+    @ViewBuilder
+    private var content: some View {
         Group {
             if let reason = table.endReason {
                 Label(reason == .hostLeft ? LocalizedStringKey("The host left. The puzzle is yours to finish.")
@@ -165,14 +223,10 @@ struct TableRoster: View {
                         }
                     }
                 }
+            } else if table.isHost {
+                Label("The table is open", systemImage: "dot.radiowaves.left.and.right")
             }
         }
-        .font(Theme.body(13, .bold))
-        .padding(.horizontal, 14).padding(.vertical, 8)
-        .background(Theme.card.opacity(0.94), in: Capsule())
-        .shadow(color: .black.opacity(0.14), radius: 8, y: 4)
-        .opacity(table.endReason != nil || table.isTogether ? 1 : 0)
-        .allowsHitTesting(false)
     }
 }
 

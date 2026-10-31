@@ -26,6 +26,18 @@ enum DebugStageDriver {
         return list.split(separator: ",").compactMap { Achievement(rawValue: String($0)) }
     }
 
+    /// `--medals bigPuzzles:gold,gallery:silver`: the same for medal levels.
+    static var forcedMedals: [MedalAward]? {
+        guard let index = CommandLine.arguments.firstIndex(of: "--medals"),
+              let list = CommandLine.arguments[safe: index + 1] else { return nil }
+        return list.split(separator: ",").compactMap { pair in
+            let parts = pair.split(separator: ":").map(String.init)
+            guard parts.count == 2, let medal = Medal(rawValue: parts[0]),
+                  let tier = Medal.Tier.allCases.first(where: { "\($0)" == parts[1] }) else { return nil }
+            return MedalAward(medal: medal, tier: tier)
+        }
+    }
+
     static func run(model: AppModel) async {
         guard let stage = requestedStage else { return }
         // Stats too: otherwise every staged solve adds one, and the tenth

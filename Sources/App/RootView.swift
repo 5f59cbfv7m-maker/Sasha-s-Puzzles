@@ -5,13 +5,13 @@ struct RootView: View {
     @Environment(\.scenePhase) private var scenePhase
     @State private var showSplash = true
 
-    /// The library tune while a picture is chosen (set-up included), the board
-    /// tune once the game is on screen, silence in the background and under
+    /// The library's tune while a picture is chosen (set-up included), the
+    /// board's once the game is on screen; both are the player's choice, silence in the background and under
     /// the completion card's fanfare until the player moves on.
     private var music: Feedback.Music? {
         guard scenePhase == .active else { return nil }
         if let session = model.session, session.phase == .completed, session.finaleDone { return nil }
-        return model.path.last == .game ? model.settings.boardMusic.track : .library
+        return (model.path.last == .game ? model.settings.boardMusic : model.settings.libraryMusic).track
     }
 
     /// Quiet but still there while the finished picture plays its finale.
@@ -110,6 +110,7 @@ struct RootView: View {
             }
         }
         .onChange(of: model.settings.musicEnabled) { syncMusic() }
+        .onChange(of: model.settings.musicMix) { syncMusic() }
         .environment(model.settings)
         #if os(iOS)
         // Under memory pressure the derived-image caches are the cheapest thing

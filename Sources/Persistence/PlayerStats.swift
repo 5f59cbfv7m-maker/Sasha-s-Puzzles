@@ -16,8 +16,12 @@ nonisolated struct SolvedRecord: Codable, Sendable, Identifiable, Equatable {
     /// The pieces this player joined in a puzzle solved together; `nil` alone.
     /// Points go by these, and a shared game never counts for times or the daily.
     var sharedPieces: Int?
+    /// Hints shown during the game; `nil` in records from before 1.4. Only
+    /// games without one count for Game Center challenges.
+    var hints: Int?
 
     var isShared: Bool { sharedPieces != nil }
+    var usedHints: Bool { (hints ?? 0) > 0 }
     /// The pieces this player put in.
     var ownPieces: Int { sharedPieces ?? pieces }
 }
@@ -58,6 +62,8 @@ struct CompletionSummary: Equatable {
     var previousBest: TimeInterval?
     var newAchievements: [Achievement]
     var pointsEarned = 0
+    /// Medal levels this game reached.
+    var newMedals: [MedalAward] = []
     /// Reward pictures this game's points opened, in unlock order.
     var unlockedPictures: [String] = []
     /// The game itself, for Game Center.
@@ -131,12 +137,14 @@ final class PlayerStats {
         record(SolvedRecord(itemID: session.item.id, category: session.item.category,
                             pieces: session.pieceCount, targetPieces: session.targetPieces,
                             elapsed: session.elapsed, date: .now,
-                            isUserPhoto: session.item.isUserPhoto, sharedPieces: sharedPieces))
+                            isUserPhoto: session.item.isUserPhoto, sharedPieces: sharedPieces,
+                            hints: session.hintsUsed))
     }
 
     @discardableResult
     func record(_ solved: SolvedRecord) -> CompletionSummary {
         let before = Achievement.allCases.filter { $0.isUnlocked(in: self) }
+        let tiersBefore = Medal.allCases.map { $0.tier(in: self) }
         let previousBest = bestTime(for: solved.itemID)
         let pointsBefore = points, giftsBefore = giftsEarned
         records.append(solved)
@@ -149,9 +157,13 @@ final class PlayerStats {
                 let need = LibraryCatalog.requiredPoints(for: id) ?? 0
                 return need > pointsBefore && need <= pointsAfter
             }
+        let medals = zip(Medal.allCases, tiersBefore).compactMap { medal, was -> MedalAward? in
+            guard let now = medal.tier(in: self), was.map({ now > $0 }) ?? true else { return nil }
+            return MedalAward(medal: medal, tier: now)
+        }
         return CompletionSummary(previousBest: previousBest, newAchievements: new,
-                                 pointsEarned: pointsAfter - pointsBefore, unlockedPictures: opened,
-                                 solved: solved)
+                                 pointsEarned: pointsAfter - pointsBefore, newMedals: medals,
+                                 unlockedPictures: opened, solved: solved)
     }
 
     /// Clears the history here and on every other device.
@@ -187,6 +199,9 @@ final class PlayerStats {
         let calendar = Calendar.current
         return Set(records.filter(isDaily).map { calendar.startOfDay(for: $0.date) })
     }
+
+    /// Days with a daily puzzle solved, in a row or not.
+    var dailyCount: Int { dailyDays.count }
 
     var dailySolvedToday: Bool { dailyDays.contains(Calendar.current.startOfDay(for: .now)) }
 
@@ -245,13 +260,22 @@ final class PlayerStats {
     /// like everything else here, so it syncs and backfills by itself.
     var points: Int { pointsByRecord.reduce(0) { $0 + $1.points } }
 
-    /// Points from the games finished since `start` — the weekly leaderboard.
+    /// Points from the games finished since `start` — the weekly leaderboard,
+    /// which challenges are built on, so a game with hints does not count there.
     func points(since start: Date) -> Int {
-        pointsByRecord.reduce(0) { $0 + ($1.date >= start ? $1.points : 0) }
+        pointsByRecord.reduce(0) { $0 + ($1.record.date >= start && !$1.record.usedHints ? $1.points : 0) }
+    }
+
+    /// What each record added to `points`, newest first, for the history in
+    /// Settings. `daily` is the doubled first daily puzzle of a day, with
+    /// the streak bonus that came with it.
+    var pointsHistory: [(record: SolvedRecord, points: Int, daily: Bool, streakBonus: Int)] {
+        // By date: records sit in the order they arrived, and a sync can bring old ones late.
+        pointsByRecord.sorted { $0.record.date > $1.record.date }
     }
 
     /// What each record added to `points`, so the total and the week agree.
-    private var pointsByRecord: [(date: Date, points: Int)] {
+    private var pointsByRecord: [(record: SolvedRecord, points: Int, daily: Bool, streakBonus: Int)] {
         let calendar = Calendar.current
         var run: [Date: Int] = [:]
         var previous: Date?
@@ -263,10 +287,11 @@ final class PlayerStats {
         var rewarded = Set<Date>()
         return records.map { record in
             let base = Self.points(pieces: record.pieces, own: record.sharedPieces)
-            guard isDaily(record) else { return (record.date, base) }
+            guard isDaily(record) else { return (record, base, false, 0) }
             let day = calendar.startOfDay(for: record.date)
-            guard rewarded.insert(day).inserted else { return (record.date, base) }
-            return (record.date, base * 2 + min(run[day] ?? 1, 7) * 50)
+            guard rewarded.insert(day).inserted else { return (record, base, false, 0) }
+            let bonus = min(run[day] ?? 1, 7) * 50
+            return (record, base * 2 + bonus, true, bonus)
         }
     }
 

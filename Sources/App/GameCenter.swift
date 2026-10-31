@@ -164,7 +164,9 @@ final class GameCenter {
         guard isSignedIn, let stats else { return }
         var scores: [(Board, Int)] = [(.puzzlesSolved, stats.puzzlesSolved), (.points, stats.points)]
         if stats.longestStreak > 0 { scores.append((.dailyStreak, stats.longestStreak)) }
-        if let finished {
+        // A game with hints is left out of the challenge boards altogether:
+        // sending would use up an attempt, and the score must be earned unaided.
+        if let finished, !finished.usedHints {
             scores.append((.pointsWeek, stats.points(since: PlayerStats.leaderboardWeekStart())))
             // This attempt's own time, not today's best: a challenge counts
             // every attempt, and Game Center keeps the best one anyway.

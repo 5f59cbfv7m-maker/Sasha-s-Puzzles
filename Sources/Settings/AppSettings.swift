@@ -25,17 +25,64 @@ final class AppSettings {
         }
     }
 
-    /// The tune under the board; the library always plays its own.
-    enum BoardMusic: String, CaseIterable, Identifiable, Sendable {
-        case piano, vibraphone
+    /// A tune for the library or the board. The raw values of the first
+    /// three are the 1.2 settings' (`boardMusic` was piano or vibraphone).
+    enum Melody: String, CaseIterable, Identifiable, Sendable {
+        case library, piano, vibraphone
+        case stillLake, morningMist, starlight
+        case gardenWalk, sunnyWindow, littleWaltz
+
         var id: String { rawValue }
+
         var title: String {
             switch self {
+            case .library: String(localized: "Library tune")
             case .piano: String(localized: "Piano")
             case .vibraphone: String(localized: "Vibraphone")
+            case .stillLake: String(localized: "Still Lake")
+            case .morningMist: String(localized: "Morning Mist")
+            case .starlight: String(localized: "Starlight")
+            case .gardenWalk: String(localized: "Garden Walk")
+            case .sunnyWindow: String(localized: "Sunny Window")
+            case .littleWaltz: String(localized: "Little Waltz")
             }
         }
-        var track: Feedback.Music { self == .piano ? .boardPiano : .board }
+
+        var style: Style {
+            switch self {
+            case .library, .piano, .vibraphone: .classic
+            case .stillLake, .morningMist, .starlight: .meditative
+            case .gardenWalk, .sunnyWindow, .littleWaltz: .melodic
+            }
+        }
+
+        var track: Feedback.Music {
+            switch self {
+            case .library: .library
+            case .piano: .boardPiano
+            case .vibraphone: .board
+            case .stillLake: .calm1
+            case .morningMist: .calm2
+            case .starlight: .calm3
+            case .gardenWalk: .tune1
+            case .sunnyWindow: .tune2
+            case .littleWaltz: .tune3
+            }
+        }
+
+        /// Tunes of one style: a mix moves from one to the next without a change of mood.
+        enum Style: CaseIterable, Identifiable {
+            case classic, meditative, melodic
+            var id: Self { self }
+            var title: String {
+                switch self {
+                case .classic: String(localized: "Classic")
+                case .meditative: String(localized: "Meditative")
+                case .melodic: String(localized: "Melodic")
+                }
+            }
+            var melodies: [Melody] { Melody.allCases.filter { $0.style == self } }
+        }
     }
 
     /// What the board lies on. A trial: the user wants to see each live.
@@ -55,7 +102,12 @@ final class AppSettings {
     var appearance: Appearance { didSet { write(appearance.rawValue, "appearance") } }
     var soundEnabled: Bool { didSet { write(soundEnabled, "sound") } }
     var musicEnabled: Bool { didSet { write(musicEnabled, "music") } }
-    var boardMusic: BoardMusic { didSet { write(boardMusic.rawValue, "boardMusic") } }
+    var boardMusic: Melody { didSet { write(boardMusic.rawValue, "boardMusic") } }
+    var libraryMusic: Melody { didSet { write(libraryMusic.rawValue, "libraryMusic") } }
+    /// The tunes take turns, staying in the chosen tune's style.
+    var musicMix: Bool { didSet { write(musicMix, "musicMix") } }
+    /// The host's choice for a shared table: no hints for anyone at it.
+    var tableNoHints: Bool { didSet { write(tableNoHints, "tableNoHints") } }
     var hapticsEnabled: Bool { didSet { write(hapticsEnabled, "haptics") } }
     /// Faint copy of the picture under the board — a guide, not a solution.
     var showGhostImage: Bool { didSet { write(showGhostImage, "ghost") } }
@@ -100,7 +152,8 @@ final class AppSettings {
         #endif
     }
 
-    static let syncedKeys = ["appearance", "sound", "music", "boardMusic", "haptics", "ghost", "snapAssist",
+    static let syncedKeys = ["appearance", "sound", "music", "boardMusic", "libraryMusic", "musicMix", "tableNoHints",
+                             "haptics", "ghost", "snapAssist",
                              "difficulty", "aspect", "outlines", "cardboard", "table", "playerName",
                              "seenAchievements"]
     private static func cloudKey(_ key: String) -> String { "settings." + key }
@@ -131,6 +184,7 @@ final class AppSettings {
             }
         }
         appearance = .system; soundEnabled = true; musicEnabled = true; boardMusic = .piano
+        libraryMusic = .library; musicMix = false; tableNoHints = false
         hapticsEnabled = true; showGhostImage = true; snapAssist = Self.defaultSnap; defaultDifficulty = .normal
         defaultAspect = .original; showPieceOutlines = true; cardboardPieces = false; table = .plain
         hasSeenOnboarding = false; playerName = ""
@@ -163,7 +217,10 @@ final class AppSettings {
         appearance = Appearance(rawValue: defaults.string(forKey: "appearance") ?? "") ?? .system
         soundEnabled = defaults.object(forKey: "sound") as? Bool ?? true
         musicEnabled = defaults.object(forKey: "music") as? Bool ?? true
-        boardMusic = BoardMusic(rawValue: defaults.string(forKey: "boardMusic") ?? "") ?? .piano
+        boardMusic = Melody(rawValue: defaults.string(forKey: "boardMusic") ?? "") ?? .piano
+        libraryMusic = Melody(rawValue: defaults.string(forKey: "libraryMusic") ?? "") ?? .library
+        musicMix = defaults.bool(forKey: "musicMix")
+        tableNoHints = defaults.bool(forKey: "tableNoHints")
         hapticsEnabled = defaults.object(forKey: "haptics") as? Bool ?? true
         showGhostImage = defaults.object(forKey: "ghost") as? Bool ?? true
         snapAssist = SnapAssist(rawValue: defaults.string(forKey: "snapAssist") ?? "") ?? Self.defaultSnap

@@ -124,6 +124,7 @@ final class AppModel {
     /// is open to everyone: it is the same picture worldwide, for the daily
     /// leaderboard, and a taste of what the points open for good.
     func isLocked(_ item: LibraryItem, _ unlocks: Unlocks) -> Bool {
+        if let opens = LibraryCatalog.opensAt(item) { return Date.now < opens }
         if let index = LibraryCatalog.secretOrder.firstIndex(of: item.id) { return index >= unlocks.gifts }
         guard let need = LibraryCatalog.requiredPoints(for: item.id) else { return false }
         return unlocks.points < need && item.id != LibraryCatalog.dailyItem().id
@@ -148,6 +149,24 @@ final class AppModel {
         // starting a game of their own leaves it.
         if let table, table.isHost, !item.isUserPhoto { table.attach(next) } else { leaveTable() }
         path = [.game]
+        // "Open a Table" in the library: the picture just chosen is the one shared.
+        if hostsNextGame {
+            hostsNextGame = false
+            if canShareTable { openTableNearby() }
+            Task {
+                try? await Task.sleep(for: .milliseconds(600))
+                sheet = .together
+            }
+        }
+    }
+
+    /// The player asked for a table in the library and is choosing its picture.
+    var hostsNextGame = false
+
+    /// The host's "no hints" switch: kept for the next table and applied to this one.
+    func setTableNoHints(_ off: Bool) {
+        settings.tableNoHints = off
+        if let table, table.isHost { table.noHints = off }
     }
 
     func startDaily() {
@@ -198,6 +217,7 @@ final class AppModel {
             lastCompletion = stats.record(finished, sharedPieces: table?.ownPieces(in: finished))
             #if DEBUG
             if let forced = DebugStageDriver.forcedAchievements { lastCompletion?.newAchievements = forced }
+            if let forced = DebugStageDriver.forcedMedals { lastCompletion?.newMedals = forced }
             #endif
             gameCenter.report(finished: lastCompletion?.solved)
         }
@@ -232,6 +252,7 @@ final class AppModel {
         if let table, table.isHost { return table }
         guard let session, canShareTable else { return nil }
         let table = SharedTable(hosting: session, name: settings.displayName, settings: settings)
+        table.noHints = settings.tableNoHints
         self.table = table
         return table
     }

@@ -11,6 +11,15 @@ struct HomeView: View {
     @State private var isImportingFiles = false
     @State private var importError: String?
     @State private var isImporting = false
+    /// For bringing the grid back up when a tab is picked far down the
+    /// list: where the grid starts in the scroll content, and how far down
+    /// the player is. An id to scroll to is no use here: the lazy stack has
+    /// long let go of the title by then.
+    @State private var scroll = ScrollPosition(edge: .top)
+    @State private var gridTop: CGFloat = 0
+    @State private var scrolledTo: CGFloat = 0
+    @State private var barHeight: CGFloat = 0
+    private static let content = "libraryContent"
 
     private let columns = [GridItem(.adaptive(minimum: 200, maximum: 300), spacing: 18)]
     private var gutter: CGFloat { isCompact ? 16 : 26 }
@@ -20,12 +29,17 @@ struct HomeView: View {
         return ScrollView {
             LazyVStack(alignment: .leading, spacing: 26, pinnedViews: [.sectionHeaders]) {
                 header(points: unlocks.points)
+                if model.hostsNextGame { hostBanner }
                 dailyCard
                 if !model.resumable.isEmpty {
                     continueSection
                 }
                 Section {
                     sectionTitle
+                        .onGeometryChange(for: CGFloat.self) { $0.frame(in: .named(Self.content)).minY } action: {
+                            gridTop = $0
+                        }
+                    if category == .holidays, let opens = holidayOpening { holidayCountdown(opens) }
                     LazyVGrid(columns: columns, spacing: 18) {
                         ForEach(items) { item in
                             PictureCard(item: item, solved: solvedTime(for: item),
@@ -40,8 +54,14 @@ struct HomeView: View {
                     .padding(.bottom, 30)
                 } header: {
                     categoryBar
+                        .onGeometryChange(for: CGFloat.self) { $0.size.height } action: { barHeight = $0 }
                 }
             }
+            .coordinateSpace(.named(Self.content))
+        }
+        .scrollPosition($scroll)
+        .onScrollGeometryChange(for: CGFloat.self) { $0.contentOffset.y + $0.contentInsets.top } action: {
+            scrolledTo = $1
         }
         .background(Theme.bg.ignoresSafeArea())
         // Solid status bar: pictures scrolling under the clock made it unreadable.
@@ -79,12 +99,20 @@ struct HomeView: View {
     }
 
     private var items: [LibraryItem] {
-        model.library.items(in: category)
+        LibraryCatalog.solvedLast(model.library.items(in: category),
+                                  solved: Set(model.stats.records.filter { !$0.isShared }.map(\.itemID)))
     }
 
     private func lock(for item: LibraryItem, _ unlocks: AppModel.Unlocks) -> PictureLock? {
         guard model.isLocked(item, unlocks) else { return nil }
+        if let opens = LibraryCatalog.opensAt(item) { return .opens(opens) }
         return item.category == .secret ? .secret : .points(LibraryCatalog.requiredPoints(for: item.id) ?? 0)
+    }
+
+    /// When the holiday pictures open, while they are still waiting.
+    private var holidayOpening: Date? {
+        let opens = LibraryCatalog.christmasOpens
+        return Date.now < opens ? opens : nil
     }
 
     private func solvedTime(for item: LibraryItem) -> TimeInterval? {
@@ -164,18 +192,32 @@ struct HomeView: View {
 
     private var headerButtons: some View {
         let chip: CGFloat = isCompact ? 40 : 44
+        let photoIcon = Image(systemName: "photo.badge.plus")
+            .font(.system(size: chip * 0.42, weight: .bold))
+            .foregroundStyle(Theme.muted)
+            .frame(width: chip, height: chip)
+            .background(Theme.chip, in: Circle())
         return HStack(spacing: isCompact ? 6 : 8) {
-            PhotosPicker(selection: $photoSelection, maxSelectionCount: 20, matching: .images) {
-                Image(systemName: "photo.badge.plus")
-                    .font(.system(size: chip * 0.42, weight: .bold))
-                    .foregroundStyle(Theme.muted)
-                    .frame(width: chip, height: chip)
-                    .background(Theme.chip, in: Circle())
+            // A phone's row has room for one import button: photos and files share a menu.
+            if isCompact {
+                Menu {
+                    PhotosPicker(selection: $photoSelection, maxSelectionCount: 20, matching: .images) {
+                        Label("Add Photo", systemImage: "photo")
+                    }
+                    Button { isImportingFiles = true } label: { Label("Import from Files", systemImage: "folder") }
+                } label: { photoIcon }
+                .menuStyle(.button)
+                .buttonStyle(PressableStyle())
+                .menuIndicator(.hidden)
+                .accessibilityLabel(Text("Add Photo"))
+            } else {
+                PhotosPicker(selection: $photoSelection, maxSelectionCount: 20, matching: .images) { photoIcon }
+                    .buttonStyle(PressableStyle())
+                    .accessibilityLabel(Text("Add Photo"))
+                RoundIconButton(symbol: "folder.badge.plus", size: chip) { isImportingFiles = true }
+                    .accessibilityLabel(Text("Import from Files"))
             }
-            .buttonStyle(PressableStyle())
-            .accessibilityLabel(Text("Add Photo"))
-            RoundIconButton(symbol: "folder.badge.plus", size: chip) { isImportingFiles = true }
-                .accessibilityLabel(Text("Import from Files"))
+            musicMenu(size: chip)
             RoundIconButton(symbol: "person.2.fill", size: chip) { model.sheet = .together }
                 .accessibilityLabel(Text("Play Together"))
             RoundIconButton(symbol: "person.fill", size: chip) { model.showProfile = true }
@@ -193,6 +235,71 @@ struct HomeView: View {
             RoundIconButton(symbol: "gearshape", size: chip) { model.showSettings = true }
                 .accessibilityLabel(Text("Settings"))
         }
+    }
+
+    /// The library's tune, picked right where it plays.
+    private func musicMenu(size: CGFloat) -> some View {
+        @Bindable var settings = model.settings
+        return Menu {
+            Toggle(isOn: $settings.musicEnabled) { Label("Background music", systemImage: "music.note") }
+            if settings.musicEnabled {
+                MelodyPicker(selection: $settings.libraryMusic)
+                    .pickerStyle(.inline)
+                Toggle(isOn: $settings.musicMix) { Label("Mix", systemImage: "shuffle") }
+            }
+        } label: {
+            Image(systemName: settings.musicEnabled ? "music.note" : "speaker.slash.fill")
+                .font(.system(size: size * 0.4, weight: .bold))
+                .foregroundStyle(Theme.muted)
+                .frame(width: size, height: size)
+                .background(Theme.chip, in: Circle())
+        }
+        .menuStyle(.button)
+        .buttonStyle(PressableStyle())
+        .menuIndicator(.hidden)
+        .accessibilityLabel(Text("Music"))
+    }
+
+    /// Up while the player picks the picture for a table they are opening.
+    private var hostBanner: some View {
+        HStack(spacing: 14) {
+            Image(systemName: "person.2.fill")
+                .font(.system(size: 17, weight: .bold))
+                .foregroundStyle(Theme.onAccent)
+                .frame(width: 40, height: 40)
+                .background(Theme.accent, in: Circle())
+            Text("Choose a picture, and the table opens as soon as the puzzle starts.")
+                .font(Theme.body(15, .semibold))
+                .fixedSize(horizontal: false, vertical: true)
+            Spacer(minLength: 8)
+            PillButton(title: "Cancel", style: .secondary, size: 14) { model.hostsNextGame = false }
+        }
+        .padding(16)
+        .background(Theme.card, in: RoundedRectangle(cornerRadius: Theme.radiusCard, style: .continuous))
+        .padding(.horizontal, gutter)
+    }
+
+    /// The holiday tab before its day: when, and how long to wait.
+    private func holidayCountdown(_ opens: Date) -> some View {
+        HStack(spacing: 16) {
+            Image(systemName: "snowflake")
+                .font(.system(size: 26, weight: .bold))
+                .foregroundStyle(Theme.onAccent)
+                .frame(width: 56, height: 56)
+                .background(Theme.accent, in: Circle())
+            VStack(alignment: .leading, spacing: 4) {
+                Text("The Christmas pictures open on \(opens.formatted(.dateTime.day().month(.wide))) and stay for good.")
+                    .font(Theme.body(15, .semibold))
+                    .fixedSize(horizontal: false, vertical: true)
+                Countdown(to: opens)
+                    .font(Theme.display(24).monospacedDigit())
+                    .foregroundStyle(Theme.accentDeep)
+            }
+        }
+        .padding(18)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(Theme.surface, in: RoundedRectangle(cornerRadius: Theme.radiusPanel, style: .continuous))
+        .padding(.horizontal, gutter)
     }
 
     private var dailyCard: some View {
@@ -319,7 +426,9 @@ struct HomeView: View {
                 chip(title: "\(String(localized: "All")) \(model.library.items(in: nil).count)",
                      symbol: "square.grid.2x2.fill", value: nil)
                 ForEach(ArtCategory.allCases) { candidate in
-                    chip(title: candidate.title, symbol: candidate == .secret ? "gift.fill" : nil, value: candidate)
+                    chip(title: candidate.title,
+                         symbol: candidate == .secret ? "gift.fill" : candidate == .holidays ? "snowflake" : nil,
+                         value: candidate)
                 }
             }
             .padding(.horizontal, gutter)
@@ -333,7 +442,19 @@ struct HomeView: View {
     private func chip(title: String, symbol: String?, value: ArtCategory?) -> some View {
         let selected = category == value
         return Button {
-            withAnimation(.easeOut(duration: 0.15)) { category = value }
+            // Far down the list a shorter category would leave the screen
+            // empty: first the grid goes back up to just under the pinned
+            // tabs, while the long list is still there to scroll, then the
+            // category changes.
+            let top = gridTop - barHeight
+            guard scrolledTo > top + 1 else {
+                withAnimation(.easeOut(duration: 0.15)) { category = value }
+                return
+            }
+            scroll.scrollTo(y: top)
+            Task { @MainActor in
+                withAnimation(.easeOut(duration: 0.15)) { category = value }
+            }
         } label: {
             HStack(spacing: 7) {
                 if let symbol { Image(systemName: symbol).font(.system(size: 14, weight: .bold)) }
@@ -406,6 +527,21 @@ enum PictureLock: Equatable {
     case points(Int)
     /// A secret picture: opens with a week of daily puzzles in a row.
     case secret
+    /// A holiday picture: opens on its day.
+    case opens(Date)
+}
+
+/// Days, hours, minutes and seconds to `date`, ticking every second.
+struct Countdown: View {
+    let to: Date
+
+    var body: some View {
+        TimelineView(.periodic(from: .now, by: 1)) { context in
+            let seconds = max(0, Int(to.timeIntervalSince(context.date)))
+            Text(Duration.seconds(seconds).formatted(
+                .units(allowed: [.days, .hours, .minutes, .seconds], width: .narrow, maximumUnitCount: 4)))
+        }
+    }
 }
 
 private struct PictureCard: View {
@@ -436,6 +572,13 @@ private struct PictureCard: View {
                         case .secret:
                             GiftPiece(reached: true, size: 64, still: true)
                                 .shadow(color: .black.opacity(0.2), radius: 6, y: 3)
+                        case .opens:
+                            Image(systemName: "snowflake")
+                                .font(.system(size: 24, weight: .bold))
+                                .foregroundStyle(Theme.onAccent)
+                                .frame(width: 54, height: 54)
+                                .background(Theme.accent, in: Circle())
+                                .shadow(color: .black.opacity(0.2), radius: 6, y: 3)
                         case .points:
                             Image(systemName: "lock.fill")
                                 .font(.system(size: 22, weight: .bold))
@@ -459,6 +602,8 @@ private struct PictureCard: View {
                         }
                         if lock == .secret {
                             Text("A gift for 7 daily puzzles in a row")
+                        } else if case let .opens(date) = lock {
+                            Countdown(to: date).monospacedDigit()
                         } else if case let .points(need) = lock {
                             Text("Unlocks at \(need) points").monospacedDigit()
                         } else if let solved {
@@ -486,6 +631,7 @@ private struct PictureCard: View {
         switch lock {
         case .secret: Text("A gift for 7 daily puzzles in a row")
         case let .points(need): Text("Unlocks at \(need) points")
+        case let .opens(date): Text("Opens on \(date.formatted(date: .long, time: .omitted))")
         case nil: Text("Opens puzzle options")
         }
     }

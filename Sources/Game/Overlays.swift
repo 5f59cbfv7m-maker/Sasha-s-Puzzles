@@ -224,10 +224,18 @@ struct CompletionOverlay: View {
                             .padding(.top, compact ? 12 : 18)
                     }
 
+                    if let medals = model.lastCompletion?.newMedals, !medals.isEmpty {
+                        // After the achievements, which take about 1.7 s each.
+                        MedalAwards(awards: medals, compact: compact,
+                                    delay: 1.2 + 1.7 * Double(model.lastCompletion?.newAchievements.count ?? 0))
+                            .padding(.top, compact ? 12 : 18)
+                    }
+
                     if let opened = model.lastCompletion?.unlockedPictures, !opened.isEmpty {
                         // After the medals, which take about 1.7 s each.
                         UnlockedPictures(ids: opened, compact: compact,
-                                         delay: 1.2 + 1.7 * Double(model.lastCompletion?.newAchievements.count ?? 0))
+                                         delay: 1.2 + 1.7 * Double(model.lastCompletion?.newAchievements.count ?? 0)
+                                             + (model.lastCompletion?.newMedals.isEmpty == false ? 0.8 : 0))
                             .padding(.top, compact ? 12 : 18)
                     }
 
@@ -311,6 +319,42 @@ struct CompletionOverlay: View {
 }
 
 /// Reward pictures this game opened, after the medals have had their turn.
+/// Medal levels the game just reached, in their metals.
+private struct MedalAwards: View {
+    let awards: [MedalAward]
+    let compact: Bool
+    let delay: Double
+    @Environment(AppSettings.self) private var settings
+    @State private var visible = false
+
+    var body: some View {
+        HStack(spacing: 14) {
+            HStack(spacing: -10) {
+                ForEach(awards, id: \.self) { award in
+                    MedalBadge(medal: award.medal, tier: award.tier, size: compact ? 36 : 48)
+                }
+            }
+            VStack(alignment: .leading, spacing: 2) {
+                Kicker(text: awards.count == 1 ? "new medal" : "new medals").foregroundStyle(Theme.accentDeep)
+                Text(awards.map { "\($0.medal.title) — \($0.tier.title)" }.joined(separator: ", "))
+                    .font(Theme.body(compact ? 15 : 17, .bold)).lineLimit(3)
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
+        }
+        .padding(compact ? EdgeInsets(top: 8, leading: 12, bottom: 8, trailing: 12)
+                         : EdgeInsets(top: 14, leading: 16, bottom: 14, trailing: 16))
+        .background(Theme.surface, in: RoundedRectangle(cornerRadius: 20, style: .continuous))
+        .opacity(visible ? 1 : 0)
+        .scaleEffect(visible ? 1 : 0.92)
+        .accessibilityElement(children: .combine)
+        .task {
+            try? await Task.sleep(for: .seconds(delay))
+            withAnimation(.spring(response: 0.45, dampingFraction: 0.65)) { visible = true }
+            Feedback.shared.play(.achievement, settings: settings)
+        }
+    }
+}
+
 private struct UnlockedPictures: View {
     let ids: [String]
     let compact: Bool

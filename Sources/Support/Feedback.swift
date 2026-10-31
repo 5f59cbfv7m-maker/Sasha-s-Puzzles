@@ -23,7 +23,21 @@ final class Feedback {
     static let shared = Feedback()
 
     enum Tone: String, CaseIterable { case snap, merge, complete, achievement, streak, victory }
-    enum Music: String, CaseIterable { case library = "music-library", boardPiano = "music-piano", board = "music" }
+    enum Music: String, CaseIterable {
+        case library = "music-library", boardPiano = "music-piano", board = "music"
+        case calm1 = "music-calm-1", calm2 = "music-calm-2", calm3 = "music-calm-3"
+        case tune1 = "music-tune-1", tune2 = "music-tune-2", tune3 = "music-tune-3"
+
+        /// The next tune of the same style, for a mix.
+        var next: Music {
+            let style = AppSettings.Melody.allCases.first { $0.track == self }?.style ?? .classic
+            let all = style.melodies.map(\.track)
+            return all[((all.firstIndex(of: self) ?? 0) + 1) % all.count]
+        }
+    }
+
+    /// In a mix a tune plays through twice, then hands over to the next.
+    static let mixPasses: Double = 2
 
     /// Music relative to the effects; the file's own level does the rest.
     static let musicVolume: Float = 0.35
@@ -42,7 +56,11 @@ final class Feedback {
     private var buffers: [Tone: AVAudioPCMBuffer] = [:]
     private var filePlayers: [Tone: AVAudioPlayer] = [:]
     private var tracks: [Music: AVAudioPlayer] = [:]
+    /// What the screen asked for; in a mix `currentMusic` moves on from it.
+    private var requested: Music?
     private var currentMusic: Music?
+    private var mixing = false
+    private var mixTask: Task<Void, Never>?
     private var ducked = false
     private var audioReady = false
 
@@ -140,14 +158,23 @@ final class Feedback {
     /// a quick cut, so the fanfare that follows starts in silence.
     func setMusic(_ track: Music?, ducked: Bool = false, settings: AppSettings) {
         let target = settings.musicEnabled ? track : nil
-        let level = ducked ? Self.musicVolume * 0.2 : Self.musicVolume
-        guard target != currentMusic else {
-            if ducked != self.ducked, let target, let player = tracks[target] {
-                player.setVolume(level, fadeDuration: 1)
+        let mix = settings.musicMix
+        guard target != requested || mix != mixing else {
+            if ducked != self.ducked, let current = currentMusic, let player = tracks[current] {
+                player.setVolume(ducked ? Self.musicVolume * 0.2 : Self.musicVolume, fadeDuration: 1)
             }
             self.ducked = ducked
             return
         }
+        requested = target
+        mixing = mix
+        // Turning the mix on keeps the tune that plays; it moves on later.
+        if target != currentMusic || !mix { crossfade(to: target, ducked: ducked) }
+        scheduleMix()
+    }
+
+    private func crossfade(to target: Music?, ducked: Bool) {
+        let level = ducked ? Self.musicVolume * 0.2 : Self.musicVolume
         let fadeOut = self.ducked ? 0.25 : Self.fadeOut
         self.ducked = ducked
         currentMusic = target
@@ -174,6 +201,22 @@ final class Feedback {
             guard currentMusic == target else { return }
             if !player.isPlaying { player.play() }
             player.setVolume(level, fadeDuration: Self.fadeIn)
+        }
+    }
+
+    /// In a mix, the next tune of the style takes over after a couple of
+    /// passes. Not under the finale: the card's fanfare owns that moment.
+    private func scheduleMix() {
+        mixTask?.cancel()
+        guard mixing, let current = currentMusic else { return }
+        let length = tracks[current]?.duration ?? 60
+        mixTask = Task { [weak self] in
+            try? await Task.sleep(for: .seconds(max(20, length * Self.mixPasses - Self.fadeOut)))
+            guard !Task.isCancelled, let self, mixing, currentMusic == current else { return }
+            if !ducked {
+                crossfade(to: current.next, ducked: false)
+            }
+            scheduleMix()
         }
     }
 

@@ -114,7 +114,9 @@ struct GameView: View {
     private var board: some View {
         BoardView(session: session, settings: settings, controller: controller)
             .overlay(alignment: .top) {
-                if let table = model.table, table.session === session { TableRoster(table: table).padding(.top, 10) }
+                if let table = model.table, table.session === session {
+                    TableRoster(table: table) { model.sheet = .together }.padding(.top, 10)
+                }
             }
     }
 
@@ -254,13 +256,14 @@ struct GameView: View {
             #endif
             statusChip
             HStack(spacing: 6) {
-                RoundIconButton(symbol: "lightbulb", style: .sage, size: 42) { session.requestHint() }
-                    .disabled(session.phase != .playing)
+                RoundIconButton(symbol: session.hintsOff ? "lightbulb.slash" : "lightbulb", style: .sage, size: 42) {
+                    session.requestHint()
+                }
+                    .disabled(session.phase != .playing || session.hintsOff)
                     .accessibilityLabel(Text("Hint"))
                 if isTightHeader {
                     Menu {
                         Button { showOriginal = true } label: { Label("Show Original", systemImage: "photo") }
-                        Button { model.sheet = .together } label: { Label("Play Together", systemImage: "person.2") }
                         Divider()
                         undoRedoButtons
                     } label: {
@@ -274,8 +277,6 @@ struct GameView: View {
                     .buttonStyle(PressableStyle())
                     .accessibilityLabel(Text("Actions"))
                 } else {
-                    RoundIconButton(symbol: "person.2.fill", size: 42) { model.sheet = .together }
-                        .accessibilityLabel(Text("Play Together"))
                     RoundIconButton(symbol: "photo", size: 42) { showOriginal = true }
                         .accessibilityLabel(Text("Show Original"))
                     RoundIconButton(symbol: "arrow.uturn.backward", size: 42) { session.undo() }

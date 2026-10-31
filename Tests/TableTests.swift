@@ -168,6 +168,23 @@ struct TableTests {
         #expect(hostGame.state.isLocked(4) == false)
     }
 
+    @Test("The host's \"no hints\" reaches every player, and a game of one's own gets hints back")
+    func noHints() throws {
+        let (host, guest, links) = table()
+        let hostGame = try #require(host.session), guestGame = try #require(guest.session)
+        host.noHints = true
+        pump(links)
+        #expect(hostGame.hintsOff && guestGame.hintsOff)
+        guestGame.requestHint()
+        #expect(guestGame.hint == nil && guestGame.hintsUsed == 0)
+        host.close()
+        pump(links)
+        #expect(!guestGame.hintsOff)
+        guestGame.requestHint()
+        #expect(guestGame.hintsUsed == 1)
+        #expect(guestGame.snapshot().hints == 1)
+    }
+
     @Test("The host's next game takes everyone at the table along")
     func playAgain() throws {
         let (host, guest, links) = table()

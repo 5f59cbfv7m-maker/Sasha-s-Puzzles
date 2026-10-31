@@ -76,6 +76,29 @@ nonisolated enum LibraryCatalog {
     ]
     static let addedIn1_2 = Set(rewardOrder)
 
+    /// Holiday pictures wait for their day, counted down on their cards,
+    /// and stay open for good once it has come. Local midnight: Christmas
+    /// Eve comes to each family in its own time zone.
+    static let christmasOpens = DateComponents(calendar: gregorian, year: 2026, month: 12, day: 24).date!
+
+    /// When a picture opens, for one that waits for a date.
+    static func opensAt(_ item: LibraryItem) -> Date? {
+        item.category == .holidays ? christmasOpens : nil
+    }
+
+    /// Solved pictures sink to the bottom of their category, so what is
+    /// still to do comes first; otherwise the list's own order holds.
+    static func solvedLast(_ items: [LibraryItem], solved: Set<String>) -> [LibraryItem] {
+        var groupStart: [ArtCategory: Int] = [:]
+        for (index, item) in items.enumerated() where groupStart[item.category] == nil {
+            groupStart[item.category] = index
+        }
+        func key(_ entry: (offset: Int, element: LibraryItem)) -> (Int, Int, Int) {
+            (groupStart[entry.element.category] ?? 0, solved.contains(entry.element.id) ? 1 : 0, entry.offset)
+        }
+        return items.enumerated().sorted { key($0) < key($1) }.map(\.element)
+    }
+
     /// Points a picture needs, or nil for one that is always open.
     static func requiredPoints(for id: String) -> Int? {
         rewardOrder.firstIndex(of: id).map { rewardThresholds[$0 / 4] }
@@ -94,7 +117,9 @@ nonisolated enum LibraryCatalog {
 
     /// Built once: the list is pure, and the profile asks for it on every layout pass.
     private static let items: [LibraryItem] = bundled()
-    static let dailyPool = items.filter { $0.category != .secret }
+    /// Neither the secrets nor the holiday pictures: one may not be open yet,
+    /// and the rotation from `newPicturesFrom` must stay the one 1.2 has.
+    static let dailyPool = items.filter { $0.category != .secret && $0.category != .holidays }
     static let legacyItems = dailyPool.filter { !addedIn1_2.contains($0.id) }
 
     /// Photographs dropped into `Resources/Pictures/`. The file name carries

@@ -26,12 +26,14 @@ nonisolated struct LibraryItem: Identifiable, Sendable, Hashable, Codable {
 
 /// Coarse grouping used by the library's category filter.
 nonisolated enum ArtCategory: String, CaseIterable, Codable, Sendable, Identifiable {
-    case space, nature, mountains, sea, city, animals, abstract, secret, mine
+    /// Seasons and holidays first: what is on now leads the tabs.
+    case holidays, space, nature, mountains, sea, city, animals, abstract, secret, mine
 
     var id: String { rawValue }
 
     var title: String {
         switch self {
+        case .holidays: String(localized: "Holidays")
         case .space: String(localized: "Space")
         case .nature: String(localized: "Nature")
         case .mountains: String(localized: "Mountains")
@@ -46,6 +48,7 @@ nonisolated enum ArtCategory: String, CaseIterable, Codable, Sendable, Identifia
 
     var symbol: String {
         switch self {
+        case .holidays: "snowflake"
         case .space: "sparkles"
         case .nature: "tree"
         case .mountains: "mountain.2"
