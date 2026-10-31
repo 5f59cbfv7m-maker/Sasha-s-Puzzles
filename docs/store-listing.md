@@ -25,6 +25,8 @@
 
 **Promotional text:** A new puzzle every day. Solve seven in a row and a secret picture opens up. 170 photos, your own pictures, 12 to 800 pieces and no ads.
 
+**Promotional text (1.4):** New: play together! Solve the same puzzle with family and friends on iPhone, iPad and Mac. Plus medals, Christmas pictures and six new tunes.
+
 **Keywords:** `jigsaw,daily,relax,offline,family,kids,brain,mindful,zen,nature,animals,landscape,art,picture,calm`
 
 **Description:**
@@ -55,6 +57,8 @@
 **Subtitle:** Уютные пазлы на каждый день
 
 **Promotional text:** Новый пазл каждый день. Соберите семь подряд — и откроется секретная картинка. 170 фотографий, ваши снимки, от 12 до 800 деталей и никакой рекламы.
+
+**Promotional text (1.4):** Новое: играйте вместе! Собирайте один пазл с семьёй и друзьями на iPhone, iPad и Mac. А ещё медали, рождественские картинки и шесть новых мелодий.
 
 **Keywords:** `пазл,головоломка,мозаика,фото,картинки,антистресс,релакс,офлайн,семья,дети,природа,животные,пейзаж`
 
@@ -87,6 +91,8 @@
 
 **Promotional text:** Jeden Tag ein neues Puzzle. Sieben in Folge öffnen ein Geheimbild. 170 Fotos, deine eigenen Bilder, 12 bis 800 Teile und keine Werbung.
 
+**Promotional text (1.4):** Neu: gemeinsam spielen! Lege dasselbe Puzzle mit Familie und Freunden auf iPhone, iPad und Mac. Dazu Medaillen, Weihnachtsbilder und sechs neue Melodien.
+
 **Keywords:** `legespiel,täglich,entspannen,offline,familie,kinder,bilder,gehirnjogging,natur,tiere,landschaft`
 
 **Description:**
@@ -117,6 +123,8 @@
 **Subtitle:** Des puzzles doux chaque jour
 
 **Promotional text:** Un nouveau puzzle chaque jour. Sept d’affilée, et une image secrète s’ouvre. 170 photos, vos propres clichés, de 12 à 800 pièces et aucune publicité.
+
+**Promotional text (1.4):** Nouveau : jouez ensemble ! Assemblez le même puzzle en famille ou entre amis sur iPhone, iPad et Mac. Plus des médailles, des images de Noël et six nouvelles musiques.
 
 **Keywords:** `casse-tête,jeu,détente,quotidien,hors,ligne,famille,enfants,pièces,image,zen,nature,animaux,paysage`
 
@@ -149,6 +157,8 @@
 
 **Promotional text:** Un puzle nuevo cada día. Resuelve siete seguidos y se abrirá una imagen secreta. 170 fotos, tus propias fotos, de 12 a 800 piezas y sin anuncios.
 
+**Promotional text (1.4):** Novedad: ¡jugar juntos! Arma el mismo puzle con tu familia y tus amigos en iPhone, iPad y Mac. Además, medallas, imágenes navideñas y seis melodías nuevas.
+
 **Keywords:** `puzle,juego,relax,diario,offline,familia,niños,piezas,calma,imagen,mente,naturaleza,animales,paisaje`
 
 **Description:**
@@ -179,6 +189,8 @@
 **Subtitle:** Puzzle accoglienti ogni giorno
 
 **Promotional text:** Un nuovo puzzle ogni giorno. Completane sette di fila e si apre un’immagine segreta. 170 foto, i tuoi scatti, da 12 a 800 pezzi e nessuna pubblicità.
+
+**Promotional text (1.4):** Novità: gioca insieme! Componi lo stesso puzzle con famiglia e amici su iPhone, iPad e Mac. E poi medaglie, immagini di Natale e sei nuove melodie.
 
 **Keywords:** `rompicapo,gioco,relax,giornaliero,offline,famiglia,bambini,pezzi,immagini,natura,animali,paesaggi`
 
@@ -211,6 +223,8 @@
 
 **Promotional text:** Um quebra-cabeça novo todo dia. Monte sete seguidos e uma imagem secreta se abre. 170 fotos, suas próprias fotos, de 12 a 800 peças e sem anúncios.
 
+**Promotional text (1.4):** Novidade: jogue junto! Monte o mesmo quebra-cabeça com a família e os amigos no iPhone, iPad e Mac. E ainda medalhas, imagens de Natal e seis músicas novas.
+
 **Keywords:** `quebra-cabeça,jogo,relaxar,diário,offline,família,crianças,peças,imagem,natureza,animais,paisagem`
 
 **Description:**
@@ -241,6 +255,8 @@
 **Subtitle:** 毎日楽しめる癒しのパズル
 
 **Promotional text:** 毎日新しいパズル。7日連続で完成させるとシークレット写真が開きます。170枚の写真とあなたの写真、12〜800ピース、広告なし。
+
+**Promotional text (1.4):** 新機能：みんなで遊べる！家族や友だちと、iPhone・iPad・Macでひとつのパズルを一緒に。メダル、クリスマスの写真、新しい6曲も登場。
 
 **Keywords:** `パズル,脳トレ,暇つぶし,癒し,リラックス,毎日,オフライン,家族,子ども,知育,ピース,絵合わせ,風景,動物,自然,大人`
 
@@ -273,6 +289,8 @@
 
 **Promotional text:** 매일 새로운 퍼즐. 7일 연속 완성하면 비밀 사진이 열려요. 170장의 사진과 내 사진, 12~800조각, 광고 없음.
 
+**Promotional text (1.4):** 새로운 기능: 함께 하기! 가족, 친구와 iPhone, iPad, Mac에서 같은 퍼즐을 함께 맞춰 보세요. 메달, 크리스마스 사진, 새 음악 6곡도 추가됐어요.
+
 **Keywords:** `직소퍼즐,퍼즐게임,사진퍼즐,두뇌,힐링,휴식,매일,오프라인,가족,아이,조각,그림맞추기,풍경,동물,자연`
 
 **Description:**
@@ -304,6 +322,8 @@
 
 **Promotional text:** 每天一幅新拼图。连续完成 7 天，解锁一张秘密图片。170 张照片和你自己的照片，12 到 800 块，没有广告。
 
+**Promotional text (1.4):** 新功能：一起拼！与家人朋友在 iPhone、iPad 和 Mac 上拼同一幅拼图。还有奖牌、圣诞图片和六首新曲。
+
 **Keywords:** `拼图游戏,益智,休闲,解压,放松,每日,离线,家庭,儿童,碎片,图片,风景,动物,自然,智力`
 
 **Description:**
@@ -334,6 +354,8 @@
 **Subtitle:** จิ๊กซอว์แสนอบอุ่นสำหรับทุกวัน
 
 **Promotional text:** จิ๊กซอว์ใหม่ทุกวัน ต่อครบเจ็ดวันติดกันแล้วภาพลับจะเปิดออก ภาพถ่าย 170 ภาพ รูปของคุณเอง ตั้งแต่ 12 ถึง 800 ชิ้น และไม่มีโฆษณา
+
+**Promotional text (1.4):** ใหม่: เล่นด้วยกัน! ต่อจิ๊กซอว์ภาพเดียวกันกับครอบครัวและเพื่อนบน iPhone, iPad และ Mac พร้อมเหรียญรางวัล ภาพคริสต์มาส และเพลงใหม่หกเพลง
 
 **Keywords:** `จิ๊กซอว์,ปริศนา,ต่อภาพ,รูปภาพ,ผ่อนคลาย,คลายเครียด,ออฟไลน์,ครอบครัว,เด็ก,ธรรมชาติ,สัตว์,วิว,ฝึกสมอง`
 
