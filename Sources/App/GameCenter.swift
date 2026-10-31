@@ -179,20 +179,32 @@ final class GameCenter {
             guard percent > 0, percent == 100 || !achievement.isHidden else { return nil }
             return (achievement.gameCenterID, percent)
         }
+        let medals: [(id: String, percent: Double)] = Medal.allCases.flatMap { medal in
+            let value = Double(medal.value(in: stats))
+            return Medal.Tier.allCases.compactMap { tier -> (id: String, percent: Double)? in
+                let percent = (min(1, value / Double(medal.goals[tier.rawValue - 1])) * 100).rounded(.down)
+                return percent > 0 ? (medal.gameCenterID(tier), percent) : nil
+            }
+        }
 
         Task {
             for (board, score) in scores where score > 0 {
                 try? await GKLeaderboard.submitScore(score, context: 0, player: GKLocalPlayer.local,
                                                      leaderboardIDs: [board.rawValue])
             }
-            let achievements = progress.map { item in
-                let achievement = GKAchievement(identifier: item.id)
-                achievement.percentComplete = item.percent
-                // The completion card already celebrates it.
-                achievement.showsCompletionBanner = false
-                return achievement
+            // Medals go in a batch of their own: until their levels exist in
+            // App Store Connect, an unknown identifier must not cost the
+            // achievements their report.
+            for batch in [progress, medals] where !batch.isEmpty {
+                let achievements = batch.map { item in
+                    let achievement = GKAchievement(identifier: item.id)
+                    achievement.percentComplete = item.percent
+                    // The completion card already celebrates it.
+                    achievement.showsCompletionBanner = false
+                    return achievement
+                }
+                try? await GKAchievement.report(achievements)
             }
-            if !achievements.isEmpty { try? await GKAchievement.report(achievements) }
         }
     }
 
@@ -300,4 +312,12 @@ typealias PlatformViewController = NSViewController
 extension Achievement {
     /// Identifier of the matching Game Center achievement.
     nonisolated var gameCenterID: String { "achievement.\(rawValue)" }
+}
+
+extension Medal {
+    /// One Game Center achievement a level, `medal.<medal>.<level>`; worth
+    /// 0 points, since the first 24 achievements spent all but 10 of the 1,000.
+    nonisolated func gameCenterID(_ tier: Tier) -> String {
+        "medal.\(rawValue).\(["bronze", "silver", "gold", "platinum", "diamond"][tier.rawValue - 1])"
+    }
 }

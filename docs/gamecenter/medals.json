@@ -1,0 +1,2602 @@
+[
+  {
+    "vendorIdentifier": "medal.puzzles.bronze",
+    "referenceName": "Medal puzzles bronze",
+    "points": 0,
+    "showBeforeEarned": true,
+    "repeatable": false,
+    "image": "docs/gamecenter/medals/medal.puzzles.bronze.png",
+    "localizations": {
+      "en-US": {
+        "name": "Puzzles solved · Bronze",
+        "beforeEarnedDescription": "Solve 25 puzzles.",
+        "afterEarnedDescription": "Solve 25 puzzles."
+      },
+      "ru": {
+        "name": "Пазлов собрано · Бронза",
+        "beforeEarnedDescription": "Соберите 25 пазлов.",
+        "afterEarnedDescription": "Соберите 25 пазлов."
+      },
+      "de-DE": {
+        "name": "Gelöste Puzzles · Bronze",
+        "beforeEarnedDescription": "Löse 25 Puzzles.",
+        "afterEarnedDescription": "Löse 25 Puzzles."
+      },
+      "fr-FR": {
+        "name": "Puzzles terminés · Bronze",
+        "beforeEarnedDescription": "Terminez 25 puzzles.",
+        "afterEarnedDescription": "Terminez 25 puzzles."
+      },
+      "es-ES": {
+        "name": "Puzles resueltos · Bronce",
+        "beforeEarnedDescription": "Resuelve 25 puzles.",
+        "afterEarnedDescription": "Resuelve 25 puzles."
+      },
+      "it": {
+        "name": "Puzzle completati · Bronzo",
+        "beforeEarnedDescription": "Completa 25 puzzle.",
+        "afterEarnedDescription": "Completa 25 puzzle."
+      },
+      "pt-BR": {
+        "name": "Quebra-cabeças montados · Bronze",
+        "beforeEarnedDescription": "Monte 25 quebra-cabeças.",
+        "afterEarnedDescription": "Monte 25 quebra-cabeças."
+      },
+      "ja": {
+        "name": "完成したパズル · ブロンズ",
+        "beforeEarnedDescription": "パズルを25個完成させる。",
+        "afterEarnedDescription": "パズルを25個完成させる。"
+      },
+      "ko": {
+        "name": "완성한 퍼즐 · 브론즈",
+        "beforeEarnedDescription": "퍼즐 25개 완성하기.",
+        "afterEarnedDescription": "퍼즐 25개 완성하기."
+      },
+      "zh-Hans": {
+        "name": "已完成拼图 · 铜",
+        "beforeEarnedDescription": "完成 25 幅拼图。",
+        "afterEarnedDescription": "完成 25 幅拼图。"
+      },
+      "th": {
+        "name": "จิ๊กซอว์ที่ต่อเสร็จ · ทองแดง",
+        "beforeEarnedDescription": "ต่อจิ๊กซอว์ให้เสร็จ 25 ภาพ",
+        "afterEarnedDescription": "ต่อจิ๊กซอว์ให้เสร็จ 25 ภาพ"
+      }
+    }
+  },
+  {
+    "vendorIdentifier": "medal.puzzles.silver",
+    "referenceName": "Medal puzzles silver",
+    "points": 0,
+    "showBeforeEarned": true,
+    "repeatable": false,
+    "image": "docs/gamecenter/medals/medal.puzzles.silver.png",
+    "localizations": {
+      "en-US": {
+        "name": "Puzzles solved · Silver",
+        "beforeEarnedDescription": "Solve 75 puzzles.",
+        "afterEarnedDescription": "Solve 75 puzzles."
+      },
+      "ru": {
+        "name": "Пазлов собрано · Серебро",
+        "beforeEarnedDescription": "Соберите 75 пазлов.",
+        "afterEarnedDescription": "Соберите 75 пазлов."
+      },
+      "de-DE": {
+        "name": "Gelöste Puzzles · Silber",
+        "beforeEarnedDescription": "Löse 75 Puzzles.",
+        "afterEarnedDescription": "Löse 75 Puzzles."
+      },
+      "fr-FR": {
+        "name": "Puzzles terminés · Argent",
+        "beforeEarnedDescription": "Terminez 75 puzzles.",
+        "afterEarnedDescription": "Terminez 75 puzzles."
+      },
+      "es-ES": {
+        "name": "Puzles resueltos · Plata",
+        "beforeEarnedDescription": "Resuelve 75 puzles.",
+        "afterEarnedDescription": "Resuelve 75 puzles."
+      },
+      "it": {
+        "name": "Puzzle completati · Argento",
+        "beforeEarnedDescription": "Completa 75 puzzle.",
+        "afterEarnedDescription": "Completa 75 puzzle."
+      },
+      "pt-BR": {
+        "name": "Quebra-cabeças montados · Prata",
+        "beforeEarnedDescription": "Monte 75 quebra-cabeças.",
+        "afterEarnedDescription": "Monte 75 quebra-cabeças."
+      },
+      "ja": {
+        "name": "完成したパズル · シルバー",
+        "beforeEarnedDescription": "パズルを75個完成させる。",
+        "afterEarnedDescription": "パズルを75個完成させる。"
+      },
+      "ko": {
+        "name": "완성한 퍼즐 · 실버",
+        "beforeEarnedDescription": "퍼즐 75개 완성하기.",
+        "afterEarnedDescription": "퍼즐 75개 완성하기."
+      },
+      "zh-Hans": {
+        "name": "已完成拼图 · 银",
+        "beforeEarnedDescription": "完成 75 幅拼图。",
+        "afterEarnedDescription": "完成 75 幅拼图。"
+      },
+      "th": {
+        "name": "จิ๊กซอว์ที่ต่อเสร็จ · เงิน",
+        "beforeEarnedDescription": "ต่อจิ๊กซอว์ให้เสร็จ 75 ภาพ",
+        "afterEarnedDescription": "ต่อจิ๊กซอว์ให้เสร็จ 75 ภาพ"
+      }
+    }
+  },
+  {
+    "vendorIdentifier": "medal.puzzles.gold",
+    "referenceName": "Medal puzzles gold",
+    "points": 0,
+    "showBeforeEarned": true,
+    "repeatable": false,
+    "image": "docs/gamecenter/medals/medal.puzzles.gold.png",
+    "localizations": {
+      "en-US": {
+        "name": "Puzzles solved · Gold",
+        "beforeEarnedDescription": "Solve 150 puzzles.",
+        "afterEarnedDescription": "Solve 150 puzzles."
+      },
+      "ru": {
+        "name": "Пазлов собрано · Золото",
+        "beforeEarnedDescription": "Соберите 150 пазлов.",
+        "afterEarnedDescription": "Соберите 150 пазлов."
+      },
+      "de-DE": {
+        "name": "Gelöste Puzzles · Gold",
+        "beforeEarnedDescription": "Löse 150 Puzzles.",
+        "afterEarnedDescription": "Löse 150 Puzzles."
+      },
+      "fr-FR": {
+        "name": "Puzzles terminés · Or",
+        "beforeEarnedDescription": "Terminez 150 puzzles.",
+        "afterEarnedDescription": "Terminez 150 puzzles."
+      },
+      "es-ES": {
+        "name": "Puzles resueltos · Oro",
+        "beforeEarnedDescription": "Resuelve 150 puzles.",
+        "afterEarnedDescription": "Resuelve 150 puzles."
+      },
+      "it": {
+        "name": "Puzzle completati · Oro",
+        "beforeEarnedDescription": "Completa 150 puzzle.",
+        "afterEarnedDescription": "Completa 150 puzzle."
+      },
+      "pt-BR": {
+        "name": "Quebra-cabeças montados · Ouro",
+        "beforeEarnedDescription": "Monte 150 quebra-cabeças.",
+        "afterEarnedDescription": "Monte 150 quebra-cabeças."
+      },
+      "ja": {
+        "name": "完成したパズル · ゴールド",
+        "beforeEarnedDescription": "パズルを150個完成させる。",
+        "afterEarnedDescription": "パズルを150個完成させる。"
+      },
+      "ko": {
+        "name": "완성한 퍼즐 · 골드",
+        "beforeEarnedDescription": "퍼즐 150개 완성하기.",
+        "afterEarnedDescription": "퍼즐 150개 완성하기."
+      },
+      "zh-Hans": {
+        "name": "已完成拼图 · 金",
+        "beforeEarnedDescription": "完成 150 幅拼图。",
+        "afterEarnedDescription": "完成 150 幅拼图。"
+      },
+      "th": {
+        "name": "จิ๊กซอว์ที่ต่อเสร็จ · ทอง",
+        "beforeEarnedDescription": "ต่อจิ๊กซอว์ให้เสร็จ 150 ภาพ",
+        "afterEarnedDescription": "ต่อจิ๊กซอว์ให้เสร็จ 150 ภาพ"
+      }
+    }
+  },
+  {
+    "vendorIdentifier": "medal.puzzles.platinum",
+    "referenceName": "Medal puzzles platinum",
+    "points": 0,
+    "showBeforeEarned": true,
+    "repeatable": false,
+    "image": "docs/gamecenter/medals/medal.puzzles.platinum.png",
+    "localizations": {
+      "en-US": {
+        "name": "Puzzles solved · Platinum",
+        "beforeEarnedDescription": "Solve 300 puzzles.",
+        "afterEarnedDescription": "Solve 300 puzzles."
+      },
+      "ru": {
+        "name": "Пазлов собрано · Платина",
+        "beforeEarnedDescription": "Соберите 300 пазлов.",
+        "afterEarnedDescription": "Соберите 300 пазлов."
+      },
+      "de-DE": {
+        "name": "Gelöste Puzzles · Platin",
+        "beforeEarnedDescription": "Löse 300 Puzzles.",
+        "afterEarnedDescription": "Löse 300 Puzzles."
+      },
+      "fr-FR": {
+        "name": "Puzzles terminés · Platine",
+        "beforeEarnedDescription": "Terminez 300 puzzles.",
+        "afterEarnedDescription": "Terminez 300 puzzles."
+      },
+      "es-ES": {
+        "name": "Puzles resueltos · Platino",
+        "beforeEarnedDescription": "Resuelve 300 puzles.",
+        "afterEarnedDescription": "Resuelve 300 puzles."
+      },
+      "it": {
+        "name": "Puzzle completati · Platino",
+        "beforeEarnedDescription": "Completa 300 puzzle.",
+        "afterEarnedDescription": "Completa 300 puzzle."
+      },
+      "pt-BR": {
+        "name": "Quebra-cabeças montados · Platina",
+        "beforeEarnedDescription": "Monte 300 quebra-cabeças.",
+        "afterEarnedDescription": "Monte 300 quebra-cabeças."
+      },
+      "ja": {
+        "name": "完成したパズル · プラチナ",
+        "beforeEarnedDescription": "パズルを300個完成させる。",
+        "afterEarnedDescription": "パズルを300個完成させる。"
+      },
+      "ko": {
+        "name": "완성한 퍼즐 · 플래티넘",
+        "beforeEarnedDescription": "퍼즐 300개 완성하기.",
+        "afterEarnedDescription": "퍼즐 300개 완성하기."
+      },
+      "zh-Hans": {
+        "name": "已完成拼图 · 铂金",
+        "beforeEarnedDescription": "完成 300 幅拼图。",
+        "afterEarnedDescription": "完成 300 幅拼图。"
+      },
+      "th": {
+        "name": "จิ๊กซอว์ที่ต่อเสร็จ · แพลทินัม",
+        "beforeEarnedDescription": "ต่อจิ๊กซอว์ให้เสร็จ 300 ภาพ",
+        "afterEarnedDescription": "ต่อจิ๊กซอว์ให้เสร็จ 300 ภาพ"
+      }
+    }
+  },
+  {
+    "vendorIdentifier": "medal.puzzles.diamond",
+    "referenceName": "Medal puzzles diamond",
+    "points": 0,
+    "showBeforeEarned": true,
+    "repeatable": false,
+    "image": "docs/gamecenter/medals/medal.puzzles.diamond.png",
+    "localizations": {
+      "en-US": {
+        "name": "Puzzles solved · Diamond",
+        "beforeEarnedDescription": "Solve 600 puzzles.",
+        "afterEarnedDescription": "Solve 600 puzzles."
+      },
+      "ru": {
+        "name": "Пазлов собрано · Бриллиант",
+        "beforeEarnedDescription": "Соберите 600 пазлов.",
+        "afterEarnedDescription": "Соберите 600 пазлов."
+      },
+      "de-DE": {
+        "name": "Gelöste Puzzles · Diamant",
+        "beforeEarnedDescription": "Löse 600 Puzzles.",
+        "afterEarnedDescription": "Löse 600 Puzzles."
+      },
+      "fr-FR": {
+        "name": "Puzzles terminés · Diamant",
+        "beforeEarnedDescription": "Terminez 600 puzzles.",
+        "afterEarnedDescription": "Terminez 600 puzzles."
+      },
+      "es-ES": {
+        "name": "Puzles resueltos · Diamante",
+        "beforeEarnedDescription": "Resuelve 600 puzles.",
+        "afterEarnedDescription": "Resuelve 600 puzles."
+      },
+      "it": {
+        "name": "Puzzle completati · Diamante",
+        "beforeEarnedDescription": "Completa 600 puzzle.",
+        "afterEarnedDescription": "Completa 600 puzzle."
+      },
+      "pt-BR": {
+        "name": "Quebra-cabeças montados · Diamante",
+        "beforeEarnedDescription": "Monte 600 quebra-cabeças.",
+        "afterEarnedDescription": "Monte 600 quebra-cabeças."
+      },
+      "ja": {
+        "name": "完成したパズル · ダイヤモンド",
+        "beforeEarnedDescription": "パズルを600個完成させる。",
+        "afterEarnedDescription": "パズルを600個完成させる。"
+      },
+      "ko": {
+        "name": "완성한 퍼즐 · 다이아몬드",
+        "beforeEarnedDescription": "퍼즐 600개 완성하기.",
+        "afterEarnedDescription": "퍼즐 600개 완성하기."
+      },
+      "zh-Hans": {
+        "name": "已完成拼图 · 钻石",
+        "beforeEarnedDescription": "完成 600 幅拼图。",
+        "afterEarnedDescription": "完成 600 幅拼图。"
+      },
+      "th": {
+        "name": "จิ๊กซอว์ที่ต่อเสร็จ · เพชร",
+        "beforeEarnedDescription": "ต่อจิ๊กซอว์ให้เสร็จ 600 ภาพ",
+        "afterEarnedDescription": "ต่อจิ๊กซอว์ให้เสร็จ 600 ภาพ"
+      }
+    }
+  },
+  {
+    "vendorIdentifier": "medal.pieces.bronze",
+    "referenceName": "Medal pieces bronze",
+    "points": 0,
+    "showBeforeEarned": true,
+    "repeatable": false,
+    "image": "docs/gamecenter/medals/medal.pieces.bronze.png",
+    "localizations": {
+      "en-US": {
+        "name": "Pieces placed · Bronze",
+        "beforeEarnedDescription": "Put 2,000 pieces in place.",
+        "afterEarnedDescription": "Put 2,000 pieces in place."
+      },
+      "ru": {
+        "name": "Деталей на месте · Бронза",
+        "beforeEarnedDescription": "Поставьте на место 2 000 деталей.",
+        "afterEarnedDescription": "Поставьте на место 2 000 деталей."
+      },
+      "de-DE": {
+        "name": "Platzierte Teile · Bronze",
+        "beforeEarnedDescription": "Setze 2.000 Teile an ihren Platz.",
+        "afterEarnedDescription": "Setze 2.000 Teile an ihren Platz."
+      },
+      "fr-FR": {
+        "name": "Pièces placées · Bronze",
+        "beforeEarnedDescription": "Posez 2 000 pièces à leur place.",
+        "afterEarnedDescription": "Posez 2 000 pièces à leur place."
+      },
+      "es-ES": {
+        "name": "Piezas colocadas · Bronce",
+        "beforeEarnedDescription": "Coloca 2.000 piezas en su sitio.",
+        "afterEarnedDescription": "Coloca 2.000 piezas en su sitio."
+      },
+      "it": {
+        "name": "Pezzi posizionati · Bronzo",
+        "beforeEarnedDescription": "Metti al loro posto 2.000 pezzi.",
+        "afterEarnedDescription": "Metti al loro posto 2.000 pezzi."
+      },
+      "pt-BR": {
+        "name": "Peças encaixadas · Bronze",
+        "beforeEarnedDescription": "Encaixe 2.000 peças no lugar.",
+        "afterEarnedDescription": "Encaixe 2.000 peças no lugar."
+      },
+      "ja": {
+        "name": "配置したピース · ブロンズ",
+        "beforeEarnedDescription": "ピースを2,000個はめる。",
+        "afterEarnedDescription": "ピースを2,000個はめる。"
+      },
+      "ko": {
+        "name": "맞춘 조각 · 브론즈",
+        "beforeEarnedDescription": "조각 2,000개 맞추기.",
+        "afterEarnedDescription": "조각 2,000개 맞추기."
+      },
+      "zh-Hans": {
+        "name": "已拼块数 · 铜",
+        "beforeEarnedDescription": "放好 2,000 块拼块。",
+        "afterEarnedDescription": "放好 2,000 块拼块。"
+      },
+      "th": {
+        "name": "ชิ้นที่วางแล้ว · ทองแดง",
+        "beforeEarnedDescription": "วางชิ้นส่วนให้เข้าที่ 2,000 ชิ้น",
+        "afterEarnedDescription": "วางชิ้นส่วนให้เข้าที่ 2,000 ชิ้น"
+      }
+    }
+  },
+  {
+    "vendorIdentifier": "medal.pieces.silver",
+    "referenceName": "Medal pieces silver",
+    "points": 0,
+    "showBeforeEarned": true,
+    "repeatable": false,
+    "image": "docs/gamecenter/medals/medal.pieces.silver.png",
+    "localizations": {
+      "en-US": {
+        "name": "Pieces placed · Silver",
+        "beforeEarnedDescription": "Put 10,000 pieces in place.",
+        "afterEarnedDescription": "Put 10,000 pieces in place."
+      },
+      "ru": {
+        "name": "Деталей на месте · Серебро",
+        "beforeEarnedDescription": "Поставьте на место 10 000 деталей.",
+        "afterEarnedDescription": "Поставьте на место 10 000 деталей."
+      },
+      "de-DE": {
+        "name": "Platzierte Teile · Silber",
+        "beforeEarnedDescription": "Setze 10.000 Teile an ihren Platz.",
+        "afterEarnedDescription": "Setze 10.000 Teile an ihren Platz."
+      },
+      "fr-FR": {
+        "name": "Pièces placées · Argent",
+        "beforeEarnedDescription": "Posez 10 000 pièces à leur place.",
+        "afterEarnedDescription": "Posez 10 000 pièces à leur place."
+      },
+      "es-ES": {
+        "name": "Piezas colocadas · Plata",
+        "beforeEarnedDescription": "Coloca 10.000 piezas en su sitio.",
+        "afterEarnedDescription": "Coloca 10.000 piezas en su sitio."
+      },
+      "it": {
+        "name": "Pezzi posizionati · Argento",
+        "beforeEarnedDescription": "Metti al loro posto 10.000 pezzi.",
+        "afterEarnedDescription": "Metti al loro posto 10.000 pezzi."
+      },
+      "pt-BR": {
+        "name": "Peças encaixadas · Prata",
+        "beforeEarnedDescription": "Encaixe 10.000 peças no lugar.",
+        "afterEarnedDescription": "Encaixe 10.000 peças no lugar."
+      },
+      "ja": {
+        "name": "配置したピース · シルバー",
+        "beforeEarnedDescription": "ピースを10,000個はめる。",
+        "afterEarnedDescription": "ピースを10,000個はめる。"
+      },
+      "ko": {
+        "name": "맞춘 조각 · 실버",
+        "beforeEarnedDescription": "조각 10,000개 맞추기.",
+        "afterEarnedDescription": "조각 10,000개 맞추기."
+      },
+      "zh-Hans": {
+        "name": "已拼块数 · 银",
+        "beforeEarnedDescription": "放好 10,000 块拼块。",
+        "afterEarnedDescription": "放好 10,000 块拼块。"
+      },
+      "th": {
+        "name": "ชิ้นที่วางแล้ว · เงิน",
+        "beforeEarnedDescription": "วางชิ้นส่วนให้เข้าที่ 10,000 ชิ้น",
+        "afterEarnedDescription": "วางชิ้นส่วนให้เข้าที่ 10,000 ชิ้น"
+      }
+    }
+  },
+  {
+    "vendorIdentifier": "medal.pieces.gold",
+    "referenceName": "Medal pieces gold",
+    "points": 0,
+    "showBeforeEarned": true,
+    "repeatable": false,
+    "image": "docs/gamecenter/medals/medal.pieces.gold.png",
+    "localizations": {
+      "en-US": {
+        "name": "Pieces placed · Gold",
+        "beforeEarnedDescription": "Put 30,000 pieces in place.",
+        "afterEarnedDescription": "Put 30,000 pieces in place."
+      },
+      "ru": {
+        "name": "Деталей на месте · Золото",
+        "beforeEarnedDescription": "Поставьте на место 30 000 деталей.",
+        "afterEarnedDescription": "Поставьте на место 30 000 деталей."
+      },
+      "de-DE": {
+        "name": "Platzierte Teile · Gold",
+        "beforeEarnedDescription": "Setze 30.000 Teile an ihren Platz.",
+        "afterEarnedDescription": "Setze 30.000 Teile an ihren Platz."
+      },
+      "fr-FR": {
+        "name": "Pièces placées · Or",
+        "beforeEarnedDescription": "Posez 30 000 pièces à leur place.",
+        "afterEarnedDescription": "Posez 30 000 pièces à leur place."
+      },
+      "es-ES": {
+        "name": "Piezas colocadas · Oro",
+        "beforeEarnedDescription": "Coloca 30.000 piezas en su sitio.",
+        "afterEarnedDescription": "Coloca 30.000 piezas en su sitio."
+      },
+      "it": {
+        "name": "Pezzi posizionati · Oro",
+        "beforeEarnedDescription": "Metti al loro posto 30.000 pezzi.",
+        "afterEarnedDescription": "Metti al loro posto 30.000 pezzi."
+      },
+      "pt-BR": {
+        "name": "Peças encaixadas · Ouro",
+        "beforeEarnedDescription": "Encaixe 30.000 peças no lugar.",
+        "afterEarnedDescription": "Encaixe 30.000 peças no lugar."
+      },
+      "ja": {
+        "name": "配置したピース · ゴールド",
+        "beforeEarnedDescription": "ピースを30,000個はめる。",
+        "afterEarnedDescription": "ピースを30,000個はめる。"
+      },
+      "ko": {
+        "name": "맞춘 조각 · 골드",
+        "beforeEarnedDescription": "조각 30,000개 맞추기.",
+        "afterEarnedDescription": "조각 30,000개 맞추기."
+      },
+      "zh-Hans": {
+        "name": "已拼块数 · 金",
+        "beforeEarnedDescription": "放好 30,000 块拼块。",
+        "afterEarnedDescription": "放好 30,000 块拼块。"
+      },
+      "th": {
+        "name": "ชิ้นที่วางแล้ว · ทอง",
+        "beforeEarnedDescription": "วางชิ้นส่วนให้เข้าที่ 30,000 ชิ้น",
+        "afterEarnedDescription": "วางชิ้นส่วนให้เข้าที่ 30,000 ชิ้น"
+      }
+    }
+  },
+  {
+    "vendorIdentifier": "medal.pieces.platinum",
+    "referenceName": "Medal pieces platinum",
+    "points": 0,
+    "showBeforeEarned": true,
+    "repeatable": false,
+    "image": "docs/gamecenter/medals/medal.pieces.platinum.png",
+    "localizations": {
+      "en-US": {
+        "name": "Pieces placed · Platinum",
+        "beforeEarnedDescription": "Put 75,000 pieces in place.",
+        "afterEarnedDescription": "Put 75,000 pieces in place."
+      },
+      "ru": {
+        "name": "Деталей на месте · Платина",
+        "beforeEarnedDescription": "Поставьте на место 75 000 деталей.",
+        "afterEarnedDescription": "Поставьте на место 75 000 деталей."
+      },
+      "de-DE": {
+        "name": "Platzierte Teile · Platin",
+        "beforeEarnedDescription": "Setze 75.000 Teile an ihren Platz.",
+        "afterEarnedDescription": "Setze 75.000 Teile an ihren Platz."
+      },
+      "fr-FR": {
+        "name": "Pièces placées · Platine",
+        "beforeEarnedDescription": "Posez 75 000 pièces à leur place.",
+        "afterEarnedDescription": "Posez 75 000 pièces à leur place."
+      },
+      "es-ES": {
+        "name": "Piezas colocadas · Platino",
+        "beforeEarnedDescription": "Coloca 75.000 piezas en su sitio.",
+        "afterEarnedDescription": "Coloca 75.000 piezas en su sitio."
+      },
+      "it": {
+        "name": "Pezzi posizionati · Platino",
+        "beforeEarnedDescription": "Metti al loro posto 75.000 pezzi.",
+        "afterEarnedDescription": "Metti al loro posto 75.000 pezzi."
+      },
+      "pt-BR": {
+        "name": "Peças encaixadas · Platina",
+        "beforeEarnedDescription": "Encaixe 75.000 peças no lugar.",
+        "afterEarnedDescription": "Encaixe 75.000 peças no lugar."
+      },
+      "ja": {
+        "name": "配置したピース · プラチナ",
+        "beforeEarnedDescription": "ピースを75,000個はめる。",
+        "afterEarnedDescription": "ピースを75,000個はめる。"
+      },
+      "ko": {
+        "name": "맞춘 조각 · 플래티넘",
+        "beforeEarnedDescription": "조각 75,000개 맞추기.",
+        "afterEarnedDescription": "조각 75,000개 맞추기."
+      },
+      "zh-Hans": {
+        "name": "已拼块数 · 铂金",
+        "beforeEarnedDescription": "放好 75,000 块拼块。",
+        "afterEarnedDescription": "放好 75,000 块拼块。"
+      },
+      "th": {
+        "name": "ชิ้นที่วางแล้ว · แพลทินัม",
+        "beforeEarnedDescription": "วางชิ้นส่วนให้เข้าที่ 75,000 ชิ้น",
+        "afterEarnedDescription": "วางชิ้นส่วนให้เข้าที่ 75,000 ชิ้น"
+      }
+    }
+  },
+  {
+    "vendorIdentifier": "medal.pieces.diamond",
+    "referenceName": "Medal pieces diamond",
+    "points": 0,
+    "showBeforeEarned": true,
+    "repeatable": false,
+    "image": "docs/gamecenter/medals/medal.pieces.diamond.png",
+    "localizations": {
+      "en-US": {
+        "name": "Pieces placed · Diamond",
+        "beforeEarnedDescription": "Put 150,000 pieces in place.",
+        "afterEarnedDescription": "Put 150,000 pieces in place."
+      },
+      "ru": {
+        "name": "Деталей на месте · Бриллиант",
+        "beforeEarnedDescription": "Поставьте на место 150 000 деталей.",
+        "afterEarnedDescription": "Поставьте на место 150 000 деталей."
+      },
+      "de-DE": {
+        "name": "Platzierte Teile · Diamant",
+        "beforeEarnedDescription": "Setze 150.000 Teile an ihren Platz.",
+        "afterEarnedDescription": "Setze 150.000 Teile an ihren Platz."
+      },
+      "fr-FR": {
+        "name": "Pièces placées · Diamant",
+        "beforeEarnedDescription": "Posez 150 000 pièces à leur place.",
+        "afterEarnedDescription": "Posez 150 000 pièces à leur place."
+      },
+      "es-ES": {
+        "name": "Piezas colocadas · Diamante",
+        "beforeEarnedDescription": "Coloca 150.000 piezas en su sitio.",
+        "afterEarnedDescription": "Coloca 150.000 piezas en su sitio."
+      },
+      "it": {
+        "name": "Pezzi posizionati · Diamante",
+        "beforeEarnedDescription": "Metti al loro posto 150.000 pezzi.",
+        "afterEarnedDescription": "Metti al loro posto 150.000 pezzi."
+      },
+      "pt-BR": {
+        "name": "Peças encaixadas · Diamante",
+        "beforeEarnedDescription": "Encaixe 150.000 peças no lugar.",
+        "afterEarnedDescription": "Encaixe 150.000 peças no lugar."
+      },
+      "ja": {
+        "name": "配置したピース · ダイヤモンド",
+        "beforeEarnedDescription": "ピースを150,000個はめる。",
+        "afterEarnedDescription": "ピースを150,000個はめる。"
+      },
+      "ko": {
+        "name": "맞춘 조각 · 다이아몬드",
+        "beforeEarnedDescription": "조각 150,000개 맞추기.",
+        "afterEarnedDescription": "조각 150,000개 맞추기."
+      },
+      "zh-Hans": {
+        "name": "已拼块数 · 钻石",
+        "beforeEarnedDescription": "放好 150,000 块拼块。",
+        "afterEarnedDescription": "放好 150,000 块拼块。"
+      },
+      "th": {
+        "name": "ชิ้นที่วางแล้ว · เพชร",
+        "beforeEarnedDescription": "วางชิ้นส่วนให้เข้าที่ 150,000 ชิ้น",
+        "afterEarnedDescription": "วางชิ้นส่วนให้เข้าที่ 150,000 ชิ้น"
+      }
+    }
+  },
+  {
+    "vendorIdentifier": "medal.points.bronze",
+    "referenceName": "Medal points bronze",
+    "points": 0,
+    "showBeforeEarned": true,
+    "repeatable": false,
+    "image": "docs/gamecenter/medals/medal.points.bronze.png",
+    "localizations": {
+      "en-US": {
+        "name": "Points · Bronze",
+        "beforeEarnedDescription": "Earn 3,000 points.",
+        "afterEarnedDescription": "Earn 3,000 points."
+      },
+      "ru": {
+        "name": "Баллы · Бронза",
+        "beforeEarnedDescription": "Заработайте 3 000 баллов.",
+        "afterEarnedDescription": "Заработайте 3 000 баллов."
+      },
+      "de-DE": {
+        "name": "Punkte · Bronze",
+        "beforeEarnedDescription": "Sammle 3.000 Punkte.",
+        "afterEarnedDescription": "Sammle 3.000 Punkte."
+      },
+      "fr-FR": {
+        "name": "Points · Bronze",
+        "beforeEarnedDescription": "Gagnez 3 000 points.",
+        "afterEarnedDescription": "Gagnez 3 000 points."
+      },
+      "es-ES": {
+        "name": "Puntos · Bronce",
+        "beforeEarnedDescription": "Gana 3.000 puntos.",
+        "afterEarnedDescription": "Gana 3.000 puntos."
+      },
+      "it": {
+        "name": "Punti · Bronzo",
+        "beforeEarnedDescription": "Guadagna 3.000 punti.",
+        "afterEarnedDescription": "Guadagna 3.000 punti."
+      },
+      "pt-BR": {
+        "name": "Pontos · Bronze",
+        "beforeEarnedDescription": "Ganhe 3.000 pontos.",
+        "afterEarnedDescription": "Ganhe 3.000 pontos."
+      },
+      "ja": {
+        "name": "ポイント · ブロンズ",
+        "beforeEarnedDescription": "3,000ポイント獲得する。",
+        "afterEarnedDescription": "3,000ポイント獲得する。"
+      },
+      "ko": {
+        "name": "포인트 · 브론즈",
+        "beforeEarnedDescription": "3,000포인트 얻기.",
+        "afterEarnedDescription": "3,000포인트 얻기."
+      },
+      "zh-Hans": {
+        "name": "积分 · 铜",
+        "beforeEarnedDescription": "获得 3,000 积分。",
+        "afterEarnedDescription": "获得 3,000 积分。"
+      },
+      "th": {
+        "name": "คะแนน · ทองแดง",
+        "beforeEarnedDescription": "สะสม 3,000 คะแนน",
+        "afterEarnedDescription": "สะสม 3,000 คะแนน"
+      }
+    }
+  },
+  {
+    "vendorIdentifier": "medal.points.silver",
+    "referenceName": "Medal points silver",
+    "points": 0,
+    "showBeforeEarned": true,
+    "repeatable": false,
+    "image": "docs/gamecenter/medals/medal.points.silver.png",
+    "localizations": {
+      "en-US": {
+        "name": "Points · Silver",
+        "beforeEarnedDescription": "Earn 10,000 points.",
+        "afterEarnedDescription": "Earn 10,000 points."
+      },
+      "ru": {
+        "name": "Баллы · Серебро",
+        "beforeEarnedDescription": "Заработайте 10 000 баллов.",
+        "afterEarnedDescription": "Заработайте 10 000 баллов."
+      },
+      "de-DE": {
+        "name": "Punkte · Silber",
+        "beforeEarnedDescription": "Sammle 10.000 Punkte.",
+        "afterEarnedDescription": "Sammle 10.000 Punkte."
+      },
+      "fr-FR": {
+        "name": "Points · Argent",
+        "beforeEarnedDescription": "Gagnez 10 000 points.",
+        "afterEarnedDescription": "Gagnez 10 000 points."
+      },
+      "es-ES": {
+        "name": "Puntos · Plata",
+        "beforeEarnedDescription": "Gana 10.000 puntos.",
+        "afterEarnedDescription": "Gana 10.000 puntos."
+      },
+      "it": {
+        "name": "Punti · Argento",
+        "beforeEarnedDescription": "Guadagna 10.000 punti.",
+        "afterEarnedDescription": "Guadagna 10.000 punti."
+      },
+      "pt-BR": {
+        "name": "Pontos · Prata",
+        "beforeEarnedDescription": "Ganhe 10.000 pontos.",
+        "afterEarnedDescription": "Ganhe 10.000 pontos."
+      },
+      "ja": {
+        "name": "ポイント · シルバー",
+        "beforeEarnedDescription": "10,000ポイント獲得する。",
+        "afterEarnedDescription": "10,000ポイント獲得する。"
+      },
+      "ko": {
+        "name": "포인트 · 실버",
+        "beforeEarnedDescription": "10,000포인트 얻기.",
+        "afterEarnedDescription": "10,000포인트 얻기."
+      },
+      "zh-Hans": {
+        "name": "积分 · 银",
+        "beforeEarnedDescription": "获得 10,000 积分。",
+        "afterEarnedDescription": "获得 10,000 积分。"
+      },
+      "th": {
+        "name": "คะแนน · เงิน",
+        "beforeEarnedDescription": "สะสม 10,000 คะแนน",
+        "afterEarnedDescription": "สะสม 10,000 คะแนน"
+      }
+    }
+  },
+  {
+    "vendorIdentifier": "medal.points.gold",
+    "referenceName": "Medal points gold",
+    "points": 0,
+    "showBeforeEarned": true,
+    "repeatable": false,
+    "image": "docs/gamecenter/medals/medal.points.gold.png",
+    "localizations": {
+      "en-US": {
+        "name": "Points · Gold",
+        "beforeEarnedDescription": "Earn 30,000 points.",
+        "afterEarnedDescription": "Earn 30,000 points."
+      },
+      "ru": {
+        "name": "Баллы · Золото",
+        "beforeEarnedDescription": "Заработайте 30 000 баллов.",
+        "afterEarnedDescription": "Заработайте 30 000 баллов."
+      },
+      "de-DE": {
+        "name": "Punkte · Gold",
+        "beforeEarnedDescription": "Sammle 30.000 Punkte.",
+        "afterEarnedDescription": "Sammle 30.000 Punkte."
+      },
+      "fr-FR": {
+        "name": "Points · Or",
+        "beforeEarnedDescription": "Gagnez 30 000 points.",
+        "afterEarnedDescription": "Gagnez 30 000 points."
+      },
+      "es-ES": {
+        "name": "Puntos · Oro",
+        "beforeEarnedDescription": "Gana 30.000 puntos.",
+        "afterEarnedDescription": "Gana 30.000 puntos."
+      },
+      "it": {
+        "name": "Punti · Oro",
+        "beforeEarnedDescription": "Guadagna 30.000 punti.",
+        "afterEarnedDescription": "Guadagna 30.000 punti."
+      },
+      "pt-BR": {
+        "name": "Pontos · Ouro",
+        "beforeEarnedDescription": "Ganhe 30.000 pontos.",
+        "afterEarnedDescription": "Ganhe 30.000 pontos."
+      },
+      "ja": {
+        "name": "ポイント · ゴールド",
+        "beforeEarnedDescription": "30,000ポイント獲得する。",
+        "afterEarnedDescription": "30,000ポイント獲得する。"
+      },
+      "ko": {
+        "name": "포인트 · 골드",
+        "beforeEarnedDescription": "30,000포인트 얻기.",
+        "afterEarnedDescription": "30,000포인트 얻기."
+      },
+      "zh-Hans": {
+        "name": "积分 · 金",
+        "beforeEarnedDescription": "获得 30,000 积分。",
+        "afterEarnedDescription": "获得 30,000 积分。"
+      },
+      "th": {
+        "name": "คะแนน · ทอง",
+        "beforeEarnedDescription": "สะสม 30,000 คะแนน",
+        "afterEarnedDescription": "สะสม 30,000 คะแนน"
+      }
+    }
+  },
+  {
+    "vendorIdentifier": "medal.points.platinum",
+    "referenceName": "Medal points platinum",
+    "points": 0,
+    "showBeforeEarned": true,
+    "repeatable": false,
+    "image": "docs/gamecenter/medals/medal.points.platinum.png",
+    "localizations": {
+      "en-US": {
+        "name": "Points · Platinum",
+        "beforeEarnedDescription": "Earn 75,000 points.",
+        "afterEarnedDescription": "Earn 75,000 points."
+      },
+      "ru": {
+        "name": "Баллы · Платина",
+        "beforeEarnedDescription": "Заработайте 75 000 баллов.",
+        "afterEarnedDescription": "Заработайте 75 000 баллов."
+      },
+      "de-DE": {
+        "name": "Punkte · Platin",
+        "beforeEarnedDescription": "Sammle 75.000 Punkte.",
+        "afterEarnedDescription": "Sammle 75.000 Punkte."
+      },
+      "fr-FR": {
+        "name": "Points · Platine",
+        "beforeEarnedDescription": "Gagnez 75 000 points.",
+        "afterEarnedDescription": "Gagnez 75 000 points."
+      },
+      "es-ES": {
+        "name": "Puntos · Platino",
+        "beforeEarnedDescription": "Gana 75.000 puntos.",
+        "afterEarnedDescription": "Gana 75.000 puntos."
+      },
+      "it": {
+        "name": "Punti · Platino",
+        "beforeEarnedDescription": "Guadagna 75.000 punti.",
+        "afterEarnedDescription": "Guadagna 75.000 punti."
+      },
+      "pt-BR": {
+        "name": "Pontos · Platina",
+        "beforeEarnedDescription": "Ganhe 75.000 pontos.",
+        "afterEarnedDescription": "Ganhe 75.000 pontos."
+      },
+      "ja": {
+        "name": "ポイント · プラチナ",
+        "beforeEarnedDescription": "75,000ポイント獲得する。",
+        "afterEarnedDescription": "75,000ポイント獲得する。"
+      },
+      "ko": {
+        "name": "포인트 · 플래티넘",
+        "beforeEarnedDescription": "75,000포인트 얻기.",
+        "afterEarnedDescription": "75,000포인트 얻기."
+      },
+      "zh-Hans": {
+        "name": "积分 · 铂金",
+        "beforeEarnedDescription": "获得 75,000 积分。",
+        "afterEarnedDescription": "获得 75,000 积分。"
+      },
+      "th": {
+        "name": "คะแนน · แพลทินัม",
+        "beforeEarnedDescription": "สะสม 75,000 คะแนน",
+        "afterEarnedDescription": "สะสม 75,000 คะแนน"
+      }
+    }
+  },
+  {
+    "vendorIdentifier": "medal.points.diamond",
+    "referenceName": "Medal points diamond",
+    "points": 0,
+    "showBeforeEarned": true,
+    "repeatable": false,
+    "image": "docs/gamecenter/medals/medal.points.diamond.png",
+    "localizations": {
+      "en-US": {
+        "name": "Points · Diamond",
+        "beforeEarnedDescription": "Earn 150,000 points.",
+        "afterEarnedDescription": "Earn 150,000 points."
+      },
+      "ru": {
+        "name": "Баллы · Бриллиант",
+        "beforeEarnedDescription": "Заработайте 150 000 баллов.",
+        "afterEarnedDescription": "Заработайте 150 000 баллов."
+      },
+      "de-DE": {
+        "name": "Punkte · Diamant",
+        "beforeEarnedDescription": "Sammle 150.000 Punkte.",
+        "afterEarnedDescription": "Sammle 150.000 Punkte."
+      },
+      "fr-FR": {
+        "name": "Points · Diamant",
+        "beforeEarnedDescription": "Gagnez 150 000 points.",
+        "afterEarnedDescription": "Gagnez 150 000 points."
+      },
+      "es-ES": {
+        "name": "Puntos · Diamante",
+        "beforeEarnedDescription": "Gana 150.000 puntos.",
+        "afterEarnedDescription": "Gana 150.000 puntos."
+      },
+      "it": {
+        "name": "Punti · Diamante",
+        "beforeEarnedDescription": "Guadagna 150.000 punti.",
+        "afterEarnedDescription": "Guadagna 150.000 punti."
+      },
+      "pt-BR": {
+        "name": "Pontos · Diamante",
+        "beforeEarnedDescription": "Ganhe 150.000 pontos.",
+        "afterEarnedDescription": "Ganhe 150.000 pontos."
+      },
+      "ja": {
+        "name": "ポイント · ダイヤモンド",
+        "beforeEarnedDescription": "150,000ポイント獲得する。",
+        "afterEarnedDescription": "150,000ポイント獲得する。"
+      },
+      "ko": {
+        "name": "포인트 · 다이아몬드",
+        "beforeEarnedDescription": "150,000포인트 얻기.",
+        "afterEarnedDescription": "150,000포인트 얻기."
+      },
+      "zh-Hans": {
+        "name": "积分 · 钻石",
+        "beforeEarnedDescription": "获得 150,000 积分。",
+        "afterEarnedDescription": "获得 150,000 积分。"
+      },
+      "th": {
+        "name": "คะแนน · เพชร",
+        "beforeEarnedDescription": "สะสม 150,000 คะแนน",
+        "afterEarnedDescription": "สะสม 150,000 คะแนน"
+      }
+    }
+  },
+  {
+    "vendorIdentifier": "medal.dailies.bronze",
+    "referenceName": "Medal dailies bronze",
+    "points": 0,
+    "showBeforeEarned": true,
+    "repeatable": false,
+    "image": "docs/gamecenter/medals/medal.dailies.bronze.png",
+    "localizations": {
+      "en-US": {
+        "name": "Daily puzzles · Bronze",
+        "beforeEarnedDescription": "Solve 10 daily puzzles, in a row or not.",
+        "afterEarnedDescription": "Solve 10 daily puzzles, in a row or not."
+      },
+      "ru": {
+        "name": "Пазлы дня · Бронза",
+        "beforeEarnedDescription": "Соберите 10 пазлов дня — подряд или нет.",
+        "afterEarnedDescription": "Соберите 10 пазлов дня — подряд или нет."
+      },
+      "de-DE": {
+        "name": "Tagespuzzles · Bronze",
+        "beforeEarnedDescription": "Löse 10 Tagespuzzles, ob am Stück oder nicht.",
+        "afterEarnedDescription": "Löse 10 Tagespuzzles, ob am Stück oder nicht."
+      },
+      "fr-FR": {
+        "name": "Puzzles du jour · Bronze",
+        "beforeEarnedDescription": "Terminez 10 puzzles du jour, d’affilée ou non.",
+        "afterEarnedDescription": "Terminez 10 puzzles du jour, d’affilée ou non."
+      },
+      "es-ES": {
+        "name": "Puzles del día · Bronce",
+        "beforeEarnedDescription": "Resuelve 10 puzles del día, seguidos o no.",
+        "afterEarnedDescription": "Resuelve 10 puzles del día, seguidos o no."
+      },
+      "it": {
+        "name": "Puzzle del giorno · Bronzo",
+        "beforeEarnedDescription": "Completa 10 puzzle del giorno, di fila o no.",
+        "afterEarnedDescription": "Completa 10 puzzle del giorno, di fila o no."
+      },
+      "pt-BR": {
+        "name": "Quebra-cabeças do dia · Bronze",
+        "beforeEarnedDescription": "Monte 10 quebra-cabeças do dia, seguidos ou não.",
+        "afterEarnedDescription": "Monte 10 quebra-cabeças do dia, seguidos ou não."
+      },
+      "ja": {
+        "name": "今日のパズル · ブロンズ",
+        "beforeEarnedDescription": "今日のパズルを10回完成させる（連続でなくてもOK）。",
+        "afterEarnedDescription": "今日のパズルを10回完成させる（連続でなくてもOK）。"
+      },
+      "ko": {
+        "name": "오늘의 퍼즐 · 브론즈",
+        "beforeEarnedDescription": "오늘의 퍼즐 10개 완성하기 (연속이 아니어도 돼요).",
+        "afterEarnedDescription": "오늘의 퍼즐 10개 완성하기 (연속이 아니어도 돼요)."
+      },
+      "zh-Hans": {
+        "name": "每日拼图 · 铜",
+        "beforeEarnedDescription": "完成 10 次每日拼图，连续与否都算。",
+        "afterEarnedDescription": "完成 10 次每日拼图，连续与否都算。"
+      },
+      "th": {
+        "name": "จิ๊กซอว์ประจำวัน · ทองแดง",
+        "beforeEarnedDescription": "ต่อจิ๊กซอว์ประจำวัน 10 ครั้ง จะติดกันหรือไม่ก็ได้",
+        "afterEarnedDescription": "ต่อจิ๊กซอว์ประจำวัน 10 ครั้ง จะติดกันหรือไม่ก็ได้"
+      }
+    }
+  },
+  {
+    "vendorIdentifier": "medal.dailies.silver",
+    "referenceName": "Medal dailies silver",
+    "points": 0,
+    "showBeforeEarned": true,
+    "repeatable": false,
+    "image": "docs/gamecenter/medals/medal.dailies.silver.png",
+    "localizations": {
+      "en-US": {
+        "name": "Daily puzzles · Silver",
+        "beforeEarnedDescription": "Solve 30 daily puzzles, in a row or not.",
+        "afterEarnedDescription": "Solve 30 daily puzzles, in a row or not."
+      },
+      "ru": {
+        "name": "Пазлы дня · Серебро",
+        "beforeEarnedDescription": "Соберите 30 пазлов дня — подряд или нет.",
+        "afterEarnedDescription": "Соберите 30 пазлов дня — подряд или нет."
+      },
+      "de-DE": {
+        "name": "Tagespuzzles · Silber",
+        "beforeEarnedDescription": "Löse 30 Tagespuzzles, ob am Stück oder nicht.",
+        "afterEarnedDescription": "Löse 30 Tagespuzzles, ob am Stück oder nicht."
+      },
+      "fr-FR": {
+        "name": "Puzzles du jour · Argent",
+        "beforeEarnedDescription": "Terminez 30 puzzles du jour, d’affilée ou non.",
+        "afterEarnedDescription": "Terminez 30 puzzles du jour, d’affilée ou non."
+      },
+      "es-ES": {
+        "name": "Puzles del día · Plata",
+        "beforeEarnedDescription": "Resuelve 30 puzles del día, seguidos o no.",
+        "afterEarnedDescription": "Resuelve 30 puzles del día, seguidos o no."
+      },
+      "it": {
+        "name": "Puzzle del giorno · Argento",
+        "beforeEarnedDescription": "Completa 30 puzzle del giorno, di fila o no.",
+        "afterEarnedDescription": "Completa 30 puzzle del giorno, di fila o no."
+      },
+      "pt-BR": {
+        "name": "Quebra-cabeças do dia · Prata",
+        "beforeEarnedDescription": "Monte 30 quebra-cabeças do dia, seguidos ou não.",
+        "afterEarnedDescription": "Monte 30 quebra-cabeças do dia, seguidos ou não."
+      },
+      "ja": {
+        "name": "今日のパズル · シルバー",
+        "beforeEarnedDescription": "今日のパズルを30回完成させる（連続でなくてもOK）。",
+        "afterEarnedDescription": "今日のパズルを30回完成させる（連続でなくてもOK）。"
+      },
+      "ko": {
+        "name": "오늘의 퍼즐 · 실버",
+        "beforeEarnedDescription": "오늘의 퍼즐 30개 완성하기 (연속이 아니어도 돼요).",
+        "afterEarnedDescription": "오늘의 퍼즐 30개 완성하기 (연속이 아니어도 돼요)."
+      },
+      "zh-Hans": {
+        "name": "每日拼图 · 银",
+        "beforeEarnedDescription": "完成 30 次每日拼图，连续与否都算。",
+        "afterEarnedDescription": "完成 30 次每日拼图，连续与否都算。"
+      },
+      "th": {
+        "name": "จิ๊กซอว์ประจำวัน · เงิน",
+        "beforeEarnedDescription": "ต่อจิ๊กซอว์ประจำวัน 30 ครั้ง จะติดกันหรือไม่ก็ได้",
+        "afterEarnedDescription": "ต่อจิ๊กซอว์ประจำวัน 30 ครั้ง จะติดกันหรือไม่ก็ได้"
+      }
+    }
+  },
+  {
+    "vendorIdentifier": "medal.dailies.gold",
+    "referenceName": "Medal dailies gold",
+    "points": 0,
+    "showBeforeEarned": true,
+    "repeatable": false,
+    "image": "docs/gamecenter/medals/medal.dailies.gold.png",
+    "localizations": {
+      "en-US": {
+        "name": "Daily puzzles · Gold",
+        "beforeEarnedDescription": "Solve 75 daily puzzles, in a row or not.",
+        "afterEarnedDescription": "Solve 75 daily puzzles, in a row or not."
+      },
+      "ru": {
+        "name": "Пазлы дня · Золото",
+        "beforeEarnedDescription": "Соберите 75 пазлов дня — подряд или нет.",
+        "afterEarnedDescription": "Соберите 75 пазлов дня — подряд или нет."
+      },
+      "de-DE": {
+        "name": "Tagespuzzles · Gold",
+        "beforeEarnedDescription": "Löse 75 Tagespuzzles, ob am Stück oder nicht.",
+        "afterEarnedDescription": "Löse 75 Tagespuzzles, ob am Stück oder nicht."
+      },
+      "fr-FR": {
+        "name": "Puzzles du jour · Or",
+        "beforeEarnedDescription": "Terminez 75 puzzles du jour, d’affilée ou non.",
+        "afterEarnedDescription": "Terminez 75 puzzles du jour, d’affilée ou non."
+      },
+      "es-ES": {
+        "name": "Puzles del día · Oro",
+        "beforeEarnedDescription": "Resuelve 75 puzles del día, seguidos o no.",
+        "afterEarnedDescription": "Resuelve 75 puzles del día, seguidos o no."
+      },
+      "it": {
+        "name": "Puzzle del giorno · Oro",
+        "beforeEarnedDescription": "Completa 75 puzzle del giorno, di fila o no.",
+        "afterEarnedDescription": "Completa 75 puzzle del giorno, di fila o no."
+      },
+      "pt-BR": {
+        "name": "Quebra-cabeças do dia · Ouro",
+        "beforeEarnedDescription": "Monte 75 quebra-cabeças do dia, seguidos ou não.",
+        "afterEarnedDescription": "Monte 75 quebra-cabeças do dia, seguidos ou não."
+      },
+      "ja": {
+        "name": "今日のパズル · ゴールド",
+        "beforeEarnedDescription": "今日のパズルを75回完成させる（連続でなくてもOK）。",
+        "afterEarnedDescription": "今日のパズルを75回完成させる（連続でなくてもOK）。"
+      },
+      "ko": {
+        "name": "오늘의 퍼즐 · 골드",
+        "beforeEarnedDescription": "오늘의 퍼즐 75개 완성하기 (연속이 아니어도 돼요).",
+        "afterEarnedDescription": "오늘의 퍼즐 75개 완성하기 (연속이 아니어도 돼요)."
+      },
+      "zh-Hans": {
+        "name": "每日拼图 · 金",
+        "beforeEarnedDescription": "完成 75 次每日拼图，连续与否都算。",
+        "afterEarnedDescription": "完成 75 次每日拼图，连续与否都算。"
+      },
+      "th": {
+        "name": "จิ๊กซอว์ประจำวัน · ทอง",
+        "beforeEarnedDescription": "ต่อจิ๊กซอว์ประจำวัน 75 ครั้ง จะติดกันหรือไม่ก็ได้",
+        "afterEarnedDescription": "ต่อจิ๊กซอว์ประจำวัน 75 ครั้ง จะติดกันหรือไม่ก็ได้"
+      }
+    }
+  },
+  {
+    "vendorIdentifier": "medal.dailies.platinum",
+    "referenceName": "Medal dailies platinum",
+    "points": 0,
+    "showBeforeEarned": true,
+    "repeatable": false,
+    "image": "docs/gamecenter/medals/medal.dailies.platinum.png",
+    "localizations": {
+      "en-US": {
+        "name": "Daily puzzles · Platinum",
+        "beforeEarnedDescription": "Solve 150 daily puzzles, in a row or not.",
+        "afterEarnedDescription": "Solve 150 daily puzzles, in a row or not."
+      },
+      "ru": {
+        "name": "Пазлы дня · Платина",
+        "beforeEarnedDescription": "Соберите 150 пазлов дня — подряд или нет.",
+        "afterEarnedDescription": "Соберите 150 пазлов дня — подряд или нет."
+      },
+      "de-DE": {
+        "name": "Tagespuzzles · Platin",
+        "beforeEarnedDescription": "Löse 150 Tagespuzzles, ob am Stück oder nicht.",
+        "afterEarnedDescription": "Löse 150 Tagespuzzles, ob am Stück oder nicht."
+      },
+      "fr-FR": {
+        "name": "Puzzles du jour · Platine",
+        "beforeEarnedDescription": "Terminez 150 puzzles du jour, d’affilée ou non.",
+        "afterEarnedDescription": "Terminez 150 puzzles du jour, d’affilée ou non."
+      },
+      "es-ES": {
+        "name": "Puzles del día · Platino",
+        "beforeEarnedDescription": "Resuelve 150 puzles del día, seguidos o no.",
+        "afterEarnedDescription": "Resuelve 150 puzles del día, seguidos o no."
+      },
+      "it": {
+        "name": "Puzzle del giorno · Platino",
+        "beforeEarnedDescription": "Completa 150 puzzle del giorno, di fila o no.",
+        "afterEarnedDescription": "Completa 150 puzzle del giorno, di fila o no."
+      },
+      "pt-BR": {
+        "name": "Quebra-cabeças do dia · Platina",
+        "beforeEarnedDescription": "Monte 150 quebra-cabeças do dia, seguidos ou não.",
+        "afterEarnedDescription": "Monte 150 quebra-cabeças do dia, seguidos ou não."
+      },
+      "ja": {
+        "name": "今日のパズル · プラチナ",
+        "beforeEarnedDescription": "今日のパズルを150回完成させる（連続でなくてもOK）。",
+        "afterEarnedDescription": "今日のパズルを150回完成させる（連続でなくてもOK）。"
+      },
+      "ko": {
+        "name": "오늘의 퍼즐 · 플래티넘",
+        "beforeEarnedDescription": "오늘의 퍼즐 150개 완성하기 (연속이 아니어도 돼요).",
+        "afterEarnedDescription": "오늘의 퍼즐 150개 완성하기 (연속이 아니어도 돼요)."
+      },
+      "zh-Hans": {
+        "name": "每日拼图 · 铂金",
+        "beforeEarnedDescription": "完成 150 次每日拼图，连续与否都算。",
+        "afterEarnedDescription": "完成 150 次每日拼图，连续与否都算。"
+      },
+      "th": {
+        "name": "จิ๊กซอว์ประจำวัน · แพลทินัม",
+        "beforeEarnedDescription": "ต่อจิ๊กซอว์ประจำวัน 150 ครั้ง จะติดกันหรือไม่ก็ได้",
+        "afterEarnedDescription": "ต่อจิ๊กซอว์ประจำวัน 150 ครั้ง จะติดกันหรือไม่ก็ได้"
+      }
+    }
+  },
+  {
+    "vendorIdentifier": "medal.dailies.diamond",
+    "referenceName": "Medal dailies diamond",
+    "points": 0,
+    "showBeforeEarned": true,
+    "repeatable": false,
+    "image": "docs/gamecenter/medals/medal.dailies.diamond.png",
+    "localizations": {
+      "en-US": {
+        "name": "Daily puzzles · Diamond",
+        "beforeEarnedDescription": "Solve 365 daily puzzles, in a row or not.",
+        "afterEarnedDescription": "Solve 365 daily puzzles, in a row or not."
+      },
+      "ru": {
+        "name": "Пазлы дня · Бриллиант",
+        "beforeEarnedDescription": "Соберите 365 пазлов дня — подряд или нет.",
+        "afterEarnedDescription": "Соберите 365 пазлов дня — подряд или нет."
+      },
+      "de-DE": {
+        "name": "Tagespuzzles · Diamant",
+        "beforeEarnedDescription": "Löse 365 Tagespuzzles, ob am Stück oder nicht.",
+        "afterEarnedDescription": "Löse 365 Tagespuzzles, ob am Stück oder nicht."
+      },
+      "fr-FR": {
+        "name": "Puzzles du jour · Diamant",
+        "beforeEarnedDescription": "Terminez 365 puzzles du jour, d’affilée ou non.",
+        "afterEarnedDescription": "Terminez 365 puzzles du jour, d’affilée ou non."
+      },
+      "es-ES": {
+        "name": "Puzles del día · Diamante",
+        "beforeEarnedDescription": "Resuelve 365 puzles del día, seguidos o no.",
+        "afterEarnedDescription": "Resuelve 365 puzles del día, seguidos o no."
+      },
+      "it": {
+        "name": "Puzzle del giorno · Diamante",
+        "beforeEarnedDescription": "Completa 365 puzzle del giorno, di fila o no.",
+        "afterEarnedDescription": "Completa 365 puzzle del giorno, di fila o no."
+      },
+      "pt-BR": {
+        "name": "Quebra-cabeças do dia · Diamante",
+        "beforeEarnedDescription": "Monte 365 quebra-cabeças do dia, seguidos ou não.",
+        "afterEarnedDescription": "Monte 365 quebra-cabeças do dia, seguidos ou não."
+      },
+      "ja": {
+        "name": "今日のパズル · ダイヤモンド",
+        "beforeEarnedDescription": "今日のパズルを365回完成させる（連続でなくてもOK）。",
+        "afterEarnedDescription": "今日のパズルを365回完成させる（連続でなくてもOK）。"
+      },
+      "ko": {
+        "name": "오늘의 퍼즐 · 다이아몬드",
+        "beforeEarnedDescription": "오늘의 퍼즐 365개 완성하기 (연속이 아니어도 돼요).",
+        "afterEarnedDescription": "오늘의 퍼즐 365개 완성하기 (연속이 아니어도 돼요)."
+      },
+      "zh-Hans": {
+        "name": "每日拼图 · 钻石",
+        "beforeEarnedDescription": "完成 365 次每日拼图，连续与否都算。",
+        "afterEarnedDescription": "完成 365 次每日拼图，连续与否都算。"
+      },
+      "th": {
+        "name": "จิ๊กซอว์ประจำวัน · เพชร",
+        "beforeEarnedDescription": "ต่อจิ๊กซอว์ประจำวัน 365 ครั้ง จะติดกันหรือไม่ก็ได้",
+        "afterEarnedDescription": "ต่อจิ๊กซอว์ประจำวัน 365 ครั้ง จะติดกันหรือไม่ก็ได้"
+      }
+    }
+  },
+  {
+    "vendorIdentifier": "medal.bigPuzzles.bronze",
+    "referenceName": "Medal bigPuzzles bronze",
+    "points": 0,
+    "showBeforeEarned": true,
+    "repeatable": false,
+    "image": "docs/gamecenter/medals/medal.bigPuzzles.bronze.png",
+    "localizations": {
+      "en-US": {
+        "name": "Big puzzles · Bronze",
+        "beforeEarnedDescription": "Solve a puzzle of 500 pieces or more.",
+        "afterEarnedDescription": "Solve a puzzle of 500 pieces or more."
+      },
+      "ru": {
+        "name": "Большие пазлы · Бронза",
+        "beforeEarnedDescription": "Соберите пазл от 500 деталей.",
+        "afterEarnedDescription": "Соберите пазл от 500 деталей."
+      },
+      "de-DE": {
+        "name": "Große Puzzles · Bronze",
+        "beforeEarnedDescription": "Löse ein Puzzle mit 500 Teilen oder mehr.",
+        "afterEarnedDescription": "Löse ein Puzzle mit 500 Teilen oder mehr."
+      },
+      "fr-FR": {
+        "name": "Grands puzzles · Bronze",
+        "beforeEarnedDescription": "Terminez un puzzle de 500 pièces ou plus.",
+        "afterEarnedDescription": "Terminez un puzzle de 500 pièces ou plus."
+      },
+      "es-ES": {
+        "name": "Puzles grandes · Bronce",
+        "beforeEarnedDescription": "Resuelve un puzle de 500 piezas o más.",
+        "afterEarnedDescription": "Resuelve un puzle de 500 piezas o más."
+      },
+      "it": {
+        "name": "Puzzle grandi · Bronzo",
+        "beforeEarnedDescription": "Completa un puzzle da 500 pezzi o più.",
+        "afterEarnedDescription": "Completa un puzzle da 500 pezzi o più."
+      },
+      "pt-BR": {
+        "name": "Quebra-cabeças grandes · Bronze",
+        "beforeEarnedDescription": "Monte um quebra-cabeça de 500 peças ou mais.",
+        "afterEarnedDescription": "Monte um quebra-cabeça de 500 peças ou mais."
+      },
+      "ja": {
+        "name": "大きなパズル · ブロンズ",
+        "beforeEarnedDescription": "500ピース以上のパズルを完成させる。",
+        "afterEarnedDescription": "500ピース以上のパズルを完成させる。"
+      },
+      "ko": {
+        "name": "큰 퍼즐 · 브론즈",
+        "beforeEarnedDescription": "500조각 이상 퍼즐 완성하기.",
+        "afterEarnedDescription": "500조각 이상 퍼즐 완성하기."
+      },
+      "zh-Hans": {
+        "name": "大型拼图 · 铜",
+        "beforeEarnedDescription": "完成一幅 500 块及以上的拼图。",
+        "afterEarnedDescription": "完成一幅 500 块及以上的拼图。"
+      },
+      "th": {
+        "name": "จิ๊กซอว์ใหญ่ · ทองแดง",
+        "beforeEarnedDescription": "ต่อจิ๊กซอว์ 500 ชิ้นขึ้นไปให้เสร็จ 1 ภาพ",
+        "afterEarnedDescription": "ต่อจิ๊กซอว์ 500 ชิ้นขึ้นไปให้เสร็จ 1 ภาพ"
+      }
+    }
+  },
+  {
+    "vendorIdentifier": "medal.bigPuzzles.silver",
+    "referenceName": "Medal bigPuzzles silver",
+    "points": 0,
+    "showBeforeEarned": true,
+    "repeatable": false,
+    "image": "docs/gamecenter/medals/medal.bigPuzzles.silver.png",
+    "localizations": {
+      "en-US": {
+        "name": "Big puzzles · Silver",
+        "beforeEarnedDescription": "Solve 5 puzzles of 500 pieces or more.",
+        "afterEarnedDescription": "Solve 5 puzzles of 500 pieces or more."
+      },
+      "ru": {
+        "name": "Большие пазлы · Серебро",
+        "beforeEarnedDescription": "Соберите 5 пазлов от 500 деталей.",
+        "afterEarnedDescription": "Соберите 5 пазлов от 500 деталей."
+      },
+      "de-DE": {
+        "name": "Große Puzzles · Silber",
+        "beforeEarnedDescription": "Löse 5 Puzzles mit 500 Teilen oder mehr.",
+        "afterEarnedDescription": "Löse 5 Puzzles mit 500 Teilen oder mehr."
+      },
+      "fr-FR": {
+        "name": "Grands puzzles · Argent",
+        "beforeEarnedDescription": "Terminez 5 puzzles de 500 pièces ou plus.",
+        "afterEarnedDescription": "Terminez 5 puzzles de 500 pièces ou plus."
+      },
+      "es-ES": {
+        "name": "Puzles grandes · Plata",
+        "beforeEarnedDescription": "Resuelve 5 puzles de 500 piezas o más.",
+        "afterEarnedDescription": "Resuelve 5 puzles de 500 piezas o más."
+      },
+      "it": {
+        "name": "Puzzle grandi · Argento",
+        "beforeEarnedDescription": "Completa 5 puzzle da 500 pezzi o più.",
+        "afterEarnedDescription": "Completa 5 puzzle da 500 pezzi o più."
+      },
+      "pt-BR": {
+        "name": "Quebra-cabeças grandes · Prata",
+        "beforeEarnedDescription": "Monte 5 quebra-cabeças de 500 peças ou mais.",
+        "afterEarnedDescription": "Monte 5 quebra-cabeças de 500 peças ou mais."
+      },
+      "ja": {
+        "name": "大きなパズル · シルバー",
+        "beforeEarnedDescription": "500ピース以上のパズルを5個完成させる。",
+        "afterEarnedDescription": "500ピース以上のパズルを5個完成させる。"
+      },
+      "ko": {
+        "name": "큰 퍼즐 · 실버",
+        "beforeEarnedDescription": "500조각 이상 퍼즐 5개 완성하기.",
+        "afterEarnedDescription": "500조각 이상 퍼즐 5개 완성하기."
+      },
+      "zh-Hans": {
+        "name": "大型拼图 · 银",
+        "beforeEarnedDescription": "完成 5 幅 500 块及以上的拼图。",
+        "afterEarnedDescription": "完成 5 幅 500 块及以上的拼图。"
+      },
+      "th": {
+        "name": "จิ๊กซอว์ใหญ่ · เงิน",
+        "beforeEarnedDescription": "ต่อจิ๊กซอว์ 500 ชิ้นขึ้นไปให้เสร็จ 5 ภาพ",
+        "afterEarnedDescription": "ต่อจิ๊กซอว์ 500 ชิ้นขึ้นไปให้เสร็จ 5 ภาพ"
+      }
+    }
+  },
+  {
+    "vendorIdentifier": "medal.bigPuzzles.gold",
+    "referenceName": "Medal bigPuzzles gold",
+    "points": 0,
+    "showBeforeEarned": true,
+    "repeatable": false,
+    "image": "docs/gamecenter/medals/medal.bigPuzzles.gold.png",
+    "localizations": {
+      "en-US": {
+        "name": "Big puzzles · Gold",
+        "beforeEarnedDescription": "Solve 15 puzzles of 500 pieces or more.",
+        "afterEarnedDescription": "Solve 15 puzzles of 500 pieces or more."
+      },
+      "ru": {
+        "name": "Большие пазлы · Золото",
+        "beforeEarnedDescription": "Соберите 15 пазлов от 500 деталей.",
+        "afterEarnedDescription": "Соберите 15 пазлов от 500 деталей."
+      },
+      "de-DE": {
+        "name": "Große Puzzles · Gold",
+        "beforeEarnedDescription": "Löse 15 Puzzles mit 500 Teilen oder mehr.",
+        "afterEarnedDescription": "Löse 15 Puzzles mit 500 Teilen oder mehr."
+      },
+      "fr-FR": {
+        "name": "Grands puzzles · Or",
+        "beforeEarnedDescription": "Terminez 15 puzzles de 500 pièces ou plus.",
+        "afterEarnedDescription": "Terminez 15 puzzles de 500 pièces ou plus."
+      },
+      "es-ES": {
+        "name": "Puzles grandes · Oro",
+        "beforeEarnedDescription": "Resuelve 15 puzles de 500 piezas o más.",
+        "afterEarnedDescription": "Resuelve 15 puzles de 500 piezas o más."
+      },
+      "it": {
+        "name": "Puzzle grandi · Oro",
+        "beforeEarnedDescription": "Completa 15 puzzle da 500 pezzi o più.",
+        "afterEarnedDescription": "Completa 15 puzzle da 500 pezzi o più."
+      },
+      "pt-BR": {
+        "name": "Quebra-cabeças grandes · Ouro",
+        "beforeEarnedDescription": "Monte 15 quebra-cabeças de 500 peças ou mais.",
+        "afterEarnedDescription": "Monte 15 quebra-cabeças de 500 peças ou mais."
+      },
+      "ja": {
+        "name": "大きなパズル · ゴールド",
+        "beforeEarnedDescription": "500ピース以上のパズルを15個完成させる。",
+        "afterEarnedDescription": "500ピース以上のパズルを15個完成させる。"
+      },
+      "ko": {
+        "name": "큰 퍼즐 · 골드",
+        "beforeEarnedDescription": "500조각 이상 퍼즐 15개 완성하기.",
+        "afterEarnedDescription": "500조각 이상 퍼즐 15개 완성하기."
+      },
+      "zh-Hans": {
+        "name": "大型拼图 · 金",
+        "beforeEarnedDescription": "完成 15 幅 500 块及以上的拼图。",
+        "afterEarnedDescription": "完成 15 幅 500 块及以上的拼图。"
+      },
+      "th": {
+        "name": "จิ๊กซอว์ใหญ่ · ทอง",
+        "beforeEarnedDescription": "ต่อจิ๊กซอว์ 500 ชิ้นขึ้นไปให้เสร็จ 15 ภาพ",
+        "afterEarnedDescription": "ต่อจิ๊กซอว์ 500 ชิ้นขึ้นไปให้เสร็จ 15 ภาพ"
+      }
+    }
+  },
+  {
+    "vendorIdentifier": "medal.bigPuzzles.platinum",
+    "referenceName": "Medal bigPuzzles platinum",
+    "points": 0,
+    "showBeforeEarned": true,
+    "repeatable": false,
+    "image": "docs/gamecenter/medals/medal.bigPuzzles.platinum.png",
+    "localizations": {
+      "en-US": {
+        "name": "Big puzzles · Platinum",
+        "beforeEarnedDescription": "Solve 40 puzzles of 500 pieces or more.",
+        "afterEarnedDescription": "Solve 40 puzzles of 500 pieces or more."
+      },
+      "ru": {
+        "name": "Большие пазлы · Платина",
+        "beforeEarnedDescription": "Соберите 40 пазлов от 500 деталей.",
+        "afterEarnedDescription": "Соберите 40 пазлов от 500 деталей."
+      },
+      "de-DE": {
+        "name": "Große Puzzles · Platin",
+        "beforeEarnedDescription": "Löse 40 Puzzles mit 500 Teilen oder mehr.",
+        "afterEarnedDescription": "Löse 40 Puzzles mit 500 Teilen oder mehr."
+      },
+      "fr-FR": {
+        "name": "Grands puzzles · Platine",
+        "beforeEarnedDescription": "Terminez 40 puzzles de 500 pièces ou plus.",
+        "afterEarnedDescription": "Terminez 40 puzzles de 500 pièces ou plus."
+      },
+      "es-ES": {
+        "name": "Puzles grandes · Platino",
+        "beforeEarnedDescription": "Resuelve 40 puzles de 500 piezas o más.",
+        "afterEarnedDescription": "Resuelve 40 puzles de 500 piezas o más."
+      },
+      "it": {
+        "name": "Puzzle grandi · Platino",
+        "beforeEarnedDescription": "Completa 40 puzzle da 500 pezzi o più.",
+        "afterEarnedDescription": "Completa 40 puzzle da 500 pezzi o più."
+      },
+      "pt-BR": {
+        "name": "Quebra-cabeças grandes · Platina",
+        "beforeEarnedDescription": "Monte 40 quebra-cabeças de 500 peças ou mais.",
+        "afterEarnedDescription": "Monte 40 quebra-cabeças de 500 peças ou mais."
+      },
+      "ja": {
+        "name": "大きなパズル · プラチナ",
+        "beforeEarnedDescription": "500ピース以上のパズルを40個完成させる。",
+        "afterEarnedDescription": "500ピース以上のパズルを40個完成させる。"
+      },
+      "ko": {
+        "name": "큰 퍼즐 · 플래티넘",
+        "beforeEarnedDescription": "500조각 이상 퍼즐 40개 완성하기.",
+        "afterEarnedDescription": "500조각 이상 퍼즐 40개 완성하기."
+      },
+      "zh-Hans": {
+        "name": "大型拼图 · 铂金",
+        "beforeEarnedDescription": "完成 40 幅 500 块及以上的拼图。",
+        "afterEarnedDescription": "完成 40 幅 500 块及以上的拼图。"
+      },
+      "th": {
+        "name": "จิ๊กซอว์ใหญ่ · แพลทินัม",
+        "beforeEarnedDescription": "ต่อจิ๊กซอว์ 500 ชิ้นขึ้นไปให้เสร็จ 40 ภาพ",
+        "afterEarnedDescription": "ต่อจิ๊กซอว์ 500 ชิ้นขึ้นไปให้เสร็จ 40 ภาพ"
+      }
+    }
+  },
+  {
+    "vendorIdentifier": "medal.bigPuzzles.diamond",
+    "referenceName": "Medal bigPuzzles diamond",
+    "points": 0,
+    "showBeforeEarned": true,
+    "repeatable": false,
+    "image": "docs/gamecenter/medals/medal.bigPuzzles.diamond.png",
+    "localizations": {
+      "en-US": {
+        "name": "Big puzzles · Diamond",
+        "beforeEarnedDescription": "Solve 100 puzzles of 500 pieces or more.",
+        "afterEarnedDescription": "Solve 100 puzzles of 500 pieces or more."
+      },
+      "ru": {
+        "name": "Большие пазлы · Бриллиант",
+        "beforeEarnedDescription": "Соберите 100 пазлов от 500 деталей.",
+        "afterEarnedDescription": "Соберите 100 пазлов от 500 деталей."
+      },
+      "de-DE": {
+        "name": "Große Puzzles · Diamant",
+        "beforeEarnedDescription": "Löse 100 Puzzles mit 500 Teilen oder mehr.",
+        "afterEarnedDescription": "Löse 100 Puzzles mit 500 Teilen oder mehr."
+      },
+      "fr-FR": {
+        "name": "Grands puzzles · Diamant",
+        "beforeEarnedDescription": "Terminez 100 puzzles de 500 pièces ou plus.",
+        "afterEarnedDescription": "Terminez 100 puzzles de 500 pièces ou plus."
+      },
+      "es-ES": {
+        "name": "Puzles grandes · Diamante",
+        "beforeEarnedDescription": "Resuelve 100 puzles de 500 piezas o más.",
+        "afterEarnedDescription": "Resuelve 100 puzles de 500 piezas o más."
+      },
+      "it": {
+        "name": "Puzzle grandi · Diamante",
+        "beforeEarnedDescription": "Completa 100 puzzle da 500 pezzi o più.",
+        "afterEarnedDescription": "Completa 100 puzzle da 500 pezzi o più."
+      },
+      "pt-BR": {
+        "name": "Quebra-cabeças grandes · Diamante",
+        "beforeEarnedDescription": "Monte 100 quebra-cabeças de 500 peças ou mais.",
+        "afterEarnedDescription": "Monte 100 quebra-cabeças de 500 peças ou mais."
+      },
+      "ja": {
+        "name": "大きなパズル · ダイヤモンド",
+        "beforeEarnedDescription": "500ピース以上のパズルを100個完成させる。",
+        "afterEarnedDescription": "500ピース以上のパズルを100個完成させる。"
+      },
+      "ko": {
+        "name": "큰 퍼즐 · 다이아몬드",
+        "beforeEarnedDescription": "500조각 이상 퍼즐 100개 완성하기.",
+        "afterEarnedDescription": "500조각 이상 퍼즐 100개 완성하기."
+      },
+      "zh-Hans": {
+        "name": "大型拼图 · 钻石",
+        "beforeEarnedDescription": "完成 100 幅 500 块及以上的拼图。",
+        "afterEarnedDescription": "完成 100 幅 500 块及以上的拼图。"
+      },
+      "th": {
+        "name": "จิ๊กซอว์ใหญ่ · เพชร",
+        "beforeEarnedDescription": "ต่อจิ๊กซอว์ 500 ชิ้นขึ้นไปให้เสร็จ 100 ภาพ",
+        "afterEarnedDescription": "ต่อจิ๊กซอว์ 500 ชิ้นขึ้นไปให้เสร็จ 100 ภาพ"
+      }
+    }
+  },
+  {
+    "vendorIdentifier": "medal.quick.bronze",
+    "referenceName": "Medal quick bronze",
+    "points": 0,
+    "showBeforeEarned": true,
+    "repeatable": false,
+    "image": "docs/gamecenter/medals/medal.quick.bronze.png",
+    "localizations": {
+      "en-US": {
+        "name": "Quick hands · Bronze",
+        "beforeEarnedDescription": "Finish 48 pieces or more in under 5 minutes, 3 times.",
+        "afterEarnedDescription": "Finish 48 pieces or more in under 5 minutes, 3 times."
+      },
+      "ru": {
+        "name": "Быстрые руки · Бронза",
+        "beforeEarnedDescription": "Соберите 48 деталей или больше быстрее чем за 5 минут — 3 раза.",
+        "afterEarnedDescription": "Соберите 48 деталей или больше быстрее чем за 5 минут — 3 раза."
+      },
+      "de-DE": {
+        "name": "Flinke Hände · Bronze",
+        "beforeEarnedDescription": "Lege 48 Teile oder mehr in unter 5 Minuten – 3-mal.",
+        "afterEarnedDescription": "Lege 48 Teile oder mehr in unter 5 Minuten – 3-mal."
+      },
+      "fr-FR": {
+        "name": "Mains agiles · Bronze",
+        "beforeEarnedDescription": "Terminez 48 pièces ou plus en moins de 5 minutes, 3 fois.",
+        "afterEarnedDescription": "Terminez 48 pièces ou plus en moins de 5 minutes, 3 fois."
+      },
+      "es-ES": {
+        "name": "Manos rápidas · Bronce",
+        "beforeEarnedDescription": "Completa 48 piezas o más en menos de 5 minutos, 3 veces.",
+        "afterEarnedDescription": "Completa 48 piezas o más en menos de 5 minutos, 3 veces."
+      },
+      "it": {
+        "name": "Mani veloci · Bronzo",
+        "beforeEarnedDescription": "Completa 48 pezzi o più in meno di 5 minuti, 3 volte.",
+        "afterEarnedDescription": "Completa 48 pezzi o più in meno di 5 minuti, 3 volte."
+      },
+      "pt-BR": {
+        "name": "Mãos rápidas · Bronze",
+        "beforeEarnedDescription": "Complete 48 peças ou mais em menos de 5 minutos, 3 vezes.",
+        "afterEarnedDescription": "Complete 48 peças ou mais em menos de 5 minutos, 3 vezes."
+      },
+      "ja": {
+        "name": "早業 · ブロンズ",
+        "beforeEarnedDescription": "48ピース以上を5分以内に3回完成させる。",
+        "afterEarnedDescription": "48ピース以上を5分以内に3回完成させる。"
+      },
+      "ko": {
+        "name": "빠른 손 · 브론즈",
+        "beforeEarnedDescription": "48조각 이상을 5분 안에 3번 완성하기.",
+        "afterEarnedDescription": "48조각 이상을 5분 안에 3번 완성하기."
+      },
+      "zh-Hans": {
+        "name": "快手 · 铜",
+        "beforeEarnedDescription": "在 5 分钟内完成 48 块及以上，共 3 次。",
+        "afterEarnedDescription": "在 5 分钟内完成 48 块及以上，共 3 次。"
+      },
+      "th": {
+        "name": "มือไว · ทองแดง",
+        "beforeEarnedDescription": "ต่อ 48 ชิ้นขึ้นไปภายใน 5 นาที 3 ครั้ง",
+        "afterEarnedDescription": "ต่อ 48 ชิ้นขึ้นไปภายใน 5 นาที 3 ครั้ง"
+      }
+    }
+  },
+  {
+    "vendorIdentifier": "medal.quick.silver",
+    "referenceName": "Medal quick silver",
+    "points": 0,
+    "showBeforeEarned": true,
+    "repeatable": false,
+    "image": "docs/gamecenter/medals/medal.quick.silver.png",
+    "localizations": {
+      "en-US": {
+        "name": "Quick hands · Silver",
+        "beforeEarnedDescription": "Finish 48 pieces or more in under 5 minutes, 10 times.",
+        "afterEarnedDescription": "Finish 48 pieces or more in under 5 minutes, 10 times."
+      },
+      "ru": {
+        "name": "Быстрые руки · Серебро",
+        "beforeEarnedDescription": "Соберите 48 деталей или больше быстрее чем за 5 минут — 10 раз.",
+        "afterEarnedDescription": "Соберите 48 деталей или больше быстрее чем за 5 минут — 10 раз."
+      },
+      "de-DE": {
+        "name": "Flinke Hände · Silber",
+        "beforeEarnedDescription": "Lege 48 Teile oder mehr in unter 5 Minuten – 10-mal.",
+        "afterEarnedDescription": "Lege 48 Teile oder mehr in unter 5 Minuten – 10-mal."
+      },
+      "fr-FR": {
+        "name": "Mains agiles · Argent",
+        "beforeEarnedDescription": "Terminez 48 pièces ou plus en moins de 5 minutes, 10 fois.",
+        "afterEarnedDescription": "Terminez 48 pièces ou plus en moins de 5 minutes, 10 fois."
+      },
+      "es-ES": {
+        "name": "Manos rápidas · Plata",
+        "beforeEarnedDescription": "Completa 48 piezas o más en menos de 5 minutos, 10 veces.",
+        "afterEarnedDescription": "Completa 48 piezas o más en menos de 5 minutos, 10 veces."
+      },
+      "it": {
+        "name": "Mani veloci · Argento",
+        "beforeEarnedDescription": "Completa 48 pezzi o più in meno di 5 minuti, 10 volte.",
+        "afterEarnedDescription": "Completa 48 pezzi o più in meno di 5 minuti, 10 volte."
+      },
+      "pt-BR": {
+        "name": "Mãos rápidas · Prata",
+        "beforeEarnedDescription": "Complete 48 peças ou mais em menos de 5 minutos, 10 vezes.",
+        "afterEarnedDescription": "Complete 48 peças ou mais em menos de 5 minutos, 10 vezes."
+      },
+      "ja": {
+        "name": "早業 · シルバー",
+        "beforeEarnedDescription": "48ピース以上を5分以内に10回完成させる。",
+        "afterEarnedDescription": "48ピース以上を5分以内に10回完成させる。"
+      },
+      "ko": {
+        "name": "빠른 손 · 실버",
+        "beforeEarnedDescription": "48조각 이상을 5분 안에 10번 완성하기.",
+        "afterEarnedDescription": "48조각 이상을 5분 안에 10번 완성하기."
+      },
+      "zh-Hans": {
+        "name": "快手 · 银",
+        "beforeEarnedDescription": "在 5 分钟内完成 48 块及以上，共 10 次。",
+        "afterEarnedDescription": "在 5 分钟内完成 48 块及以上，共 10 次。"
+      },
+      "th": {
+        "name": "มือไว · เงิน",
+        "beforeEarnedDescription": "ต่อ 48 ชิ้นขึ้นไปภายใน 5 นาที 10 ครั้ง",
+        "afterEarnedDescription": "ต่อ 48 ชิ้นขึ้นไปภายใน 5 นาที 10 ครั้ง"
+      }
+    }
+  },
+  {
+    "vendorIdentifier": "medal.quick.gold",
+    "referenceName": "Medal quick gold",
+    "points": 0,
+    "showBeforeEarned": true,
+    "repeatable": false,
+    "image": "docs/gamecenter/medals/medal.quick.gold.png",
+    "localizations": {
+      "en-US": {
+        "name": "Quick hands · Gold",
+        "beforeEarnedDescription": "Finish 48 pieces or more in under 5 minutes, 30 times.",
+        "afterEarnedDescription": "Finish 48 pieces or more in under 5 minutes, 30 times."
+      },
+      "ru": {
+        "name": "Быстрые руки · Золото",
+        "beforeEarnedDescription": "Соберите 48 деталей или больше быстрее чем за 5 минут — 30 раз.",
+        "afterEarnedDescription": "Соберите 48 деталей или больше быстрее чем за 5 минут — 30 раз."
+      },
+      "de-DE": {
+        "name": "Flinke Hände · Gold",
+        "beforeEarnedDescription": "Lege 48 Teile oder mehr in unter 5 Minuten – 30-mal.",
+        "afterEarnedDescription": "Lege 48 Teile oder mehr in unter 5 Minuten – 30-mal."
+      },
+      "fr-FR": {
+        "name": "Mains agiles · Or",
+        "beforeEarnedDescription": "Terminez 48 pièces ou plus en moins de 5 minutes, 30 fois.",
+        "afterEarnedDescription": "Terminez 48 pièces ou plus en moins de 5 minutes, 30 fois."
+      },
+      "es-ES": {
+        "name": "Manos rápidas · Oro",
+        "beforeEarnedDescription": "Completa 48 piezas o más en menos de 5 minutos, 30 veces.",
+        "afterEarnedDescription": "Completa 48 piezas o más en menos de 5 minutos, 30 veces."
+      },
+      "it": {
+        "name": "Mani veloci · Oro",
+        "beforeEarnedDescription": "Completa 48 pezzi o più in meno di 5 minuti, 30 volte.",
+        "afterEarnedDescription": "Completa 48 pezzi o più in meno di 5 minuti, 30 volte."
+      },
+      "pt-BR": {
+        "name": "Mãos rápidas · Ouro",
+        "beforeEarnedDescription": "Complete 48 peças ou mais em menos de 5 minutos, 30 vezes.",
+        "afterEarnedDescription": "Complete 48 peças ou mais em menos de 5 minutos, 30 vezes."
+      },
+      "ja": {
+        "name": "早業 · ゴールド",
+        "beforeEarnedDescription": "48ピース以上を5分以内に30回完成させる。",
+        "afterEarnedDescription": "48ピース以上を5分以内に30回完成させる。"
+      },
+      "ko": {
+        "name": "빠른 손 · 골드",
+        "beforeEarnedDescription": "48조각 이상을 5분 안에 30번 완성하기.",
+        "afterEarnedDescription": "48조각 이상을 5분 안에 30번 완성하기."
+      },
+      "zh-Hans": {
+        "name": "快手 · 金",
+        "beforeEarnedDescription": "在 5 分钟内完成 48 块及以上，共 30 次。",
+        "afterEarnedDescription": "在 5 分钟内完成 48 块及以上，共 30 次。"
+      },
+      "th": {
+        "name": "มือไว · ทอง",
+        "beforeEarnedDescription": "ต่อ 48 ชิ้นขึ้นไปภายใน 5 นาที 30 ครั้ง",
+        "afterEarnedDescription": "ต่อ 48 ชิ้นขึ้นไปภายใน 5 นาที 30 ครั้ง"
+      }
+    }
+  },
+  {
+    "vendorIdentifier": "medal.quick.platinum",
+    "referenceName": "Medal quick platinum",
+    "points": 0,
+    "showBeforeEarned": true,
+    "repeatable": false,
+    "image": "docs/gamecenter/medals/medal.quick.platinum.png",
+    "localizations": {
+      "en-US": {
+        "name": "Quick hands · Platinum",
+        "beforeEarnedDescription": "Finish 48 pieces or more in under 5 minutes, 75 times.",
+        "afterEarnedDescription": "Finish 48 pieces or more in under 5 minutes, 75 times."
+      },
+      "ru": {
+        "name": "Быстрые руки · Платина",
+        "beforeEarnedDescription": "Соберите 48 деталей или больше быстрее чем за 5 минут — 75 раз.",
+        "afterEarnedDescription": "Соберите 48 деталей или больше быстрее чем за 5 минут — 75 раз."
+      },
+      "de-DE": {
+        "name": "Flinke Hände · Platin",
+        "beforeEarnedDescription": "Lege 48 Teile oder mehr in unter 5 Minuten – 75-mal.",
+        "afterEarnedDescription": "Lege 48 Teile oder mehr in unter 5 Minuten – 75-mal."
+      },
+      "fr-FR": {
+        "name": "Mains agiles · Platine",
+        "beforeEarnedDescription": "Terminez 48 pièces ou plus en moins de 5 minutes, 75 fois.",
+        "afterEarnedDescription": "Terminez 48 pièces ou plus en moins de 5 minutes, 75 fois."
+      },
+      "es-ES": {
+        "name": "Manos rápidas · Platino",
+        "beforeEarnedDescription": "Completa 48 piezas o más en menos de 5 minutos, 75 veces.",
+        "afterEarnedDescription": "Completa 48 piezas o más en menos de 5 minutos, 75 veces."
+      },
+      "it": {
+        "name": "Mani veloci · Platino",
+        "beforeEarnedDescription": "Completa 48 pezzi o più in meno di 5 minuti, 75 volte.",
+        "afterEarnedDescription": "Completa 48 pezzi o più in meno di 5 minuti, 75 volte."
+      },
+      "pt-BR": {
+        "name": "Mãos rápidas · Platina",
+        "beforeEarnedDescription": "Complete 48 peças ou mais em menos de 5 minutos, 75 vezes.",
+        "afterEarnedDescription": "Complete 48 peças ou mais em menos de 5 minutos, 75 vezes."
+      },
+      "ja": {
+        "name": "早業 · プラチナ",
+        "beforeEarnedDescription": "48ピース以上を5分以内に75回完成させる。",
+        "afterEarnedDescription": "48ピース以上を5分以内に75回完成させる。"
+      },
+      "ko": {
+        "name": "빠른 손 · 플래티넘",
+        "beforeEarnedDescription": "48조각 이상을 5분 안에 75번 완성하기.",
+        "afterEarnedDescription": "48조각 이상을 5분 안에 75번 완성하기."
+      },
+      "zh-Hans": {
+        "name": "快手 · 铂金",
+        "beforeEarnedDescription": "在 5 分钟内完成 48 块及以上，共 75 次。",
+        "afterEarnedDescription": "在 5 分钟内完成 48 块及以上，共 75 次。"
+      },
+      "th": {
+        "name": "มือไว · แพลทินัม",
+        "beforeEarnedDescription": "ต่อ 48 ชิ้นขึ้นไปภายใน 5 นาที 75 ครั้ง",
+        "afterEarnedDescription": "ต่อ 48 ชิ้นขึ้นไปภายใน 5 นาที 75 ครั้ง"
+      }
+    }
+  },
+  {
+    "vendorIdentifier": "medal.quick.diamond",
+    "referenceName": "Medal quick diamond",
+    "points": 0,
+    "showBeforeEarned": true,
+    "repeatable": false,
+    "image": "docs/gamecenter/medals/medal.quick.diamond.png",
+    "localizations": {
+      "en-US": {
+        "name": "Quick hands · Diamond",
+        "beforeEarnedDescription": "Finish 48 pieces or more in under 5 minutes, 150 times.",
+        "afterEarnedDescription": "Finish 48 pieces or more in under 5 minutes, 150 times."
+      },
+      "ru": {
+        "name": "Быстрые руки · Бриллиант",
+        "beforeEarnedDescription": "Соберите 48 деталей или больше быстрее чем за 5 минут — 150 раз.",
+        "afterEarnedDescription": "Соберите 48 деталей или больше быстрее чем за 5 минут — 150 раз."
+      },
+      "de-DE": {
+        "name": "Flinke Hände · Diamant",
+        "beforeEarnedDescription": "Lege 48 Teile oder mehr in unter 5 Minuten – 150-mal.",
+        "afterEarnedDescription": "Lege 48 Teile oder mehr in unter 5 Minuten – 150-mal."
+      },
+      "fr-FR": {
+        "name": "Mains agiles · Diamant",
+        "beforeEarnedDescription": "Terminez 48 pièces ou plus en moins de 5 minutes, 150 fois.",
+        "afterEarnedDescription": "Terminez 48 pièces ou plus en moins de 5 minutes, 150 fois."
+      },
+      "es-ES": {
+        "name": "Manos rápidas · Diamante",
+        "beforeEarnedDescription": "Completa 48 piezas o más en menos de 5 minutos, 150 veces.",
+        "afterEarnedDescription": "Completa 48 piezas o más en menos de 5 minutos, 150 veces."
+      },
+      "it": {
+        "name": "Mani veloci · Diamante",
+        "beforeEarnedDescription": "Completa 48 pezzi o più in meno di 5 minuti, 150 volte.",
+        "afterEarnedDescription": "Completa 48 pezzi o più in meno di 5 minuti, 150 volte."
+      },
+      "pt-BR": {
+        "name": "Mãos rápidas · Diamante",
+        "beforeEarnedDescription": "Complete 48 peças ou mais em menos de 5 minutos, 150 vezes.",
+        "afterEarnedDescription": "Complete 48 peças ou mais em menos de 5 minutos, 150 vezes."
+      },
+      "ja": {
+        "name": "早業 · ダイヤモンド",
+        "beforeEarnedDescription": "48ピース以上を5分以内に150回完成させる。",
+        "afterEarnedDescription": "48ピース以上を5分以内に150回完成させる。"
+      },
+      "ko": {
+        "name": "빠른 손 · 다이아몬드",
+        "beforeEarnedDescription": "48조각 이상을 5분 안에 150번 완성하기.",
+        "afterEarnedDescription": "48조각 이상을 5분 안에 150번 완성하기."
+      },
+      "zh-Hans": {
+        "name": "快手 · 钻石",
+        "beforeEarnedDescription": "在 5 分钟内完成 48 块及以上，共 150 次。",
+        "afterEarnedDescription": "在 5 分钟内完成 48 块及以上，共 150 次。"
+      },
+      "th": {
+        "name": "มือไว · เพชร",
+        "beforeEarnedDescription": "ต่อ 48 ชิ้นขึ้นไปภายใน 5 นาที 150 ครั้ง",
+        "afterEarnedDescription": "ต่อ 48 ชิ้นขึ้นไปภายใน 5 นาที 150 ครั้ง"
+      }
+    }
+  },
+  {
+    "vendorIdentifier": "medal.together.bronze",
+    "referenceName": "Medal together bronze",
+    "points": 0,
+    "showBeforeEarned": true,
+    "repeatable": false,
+    "image": "docs/gamecenter/medals/medal.together.bronze.png",
+    "localizations": {
+      "en-US": {
+        "name": "Played together · Bronze",
+        "beforeEarnedDescription": "Finish a puzzle at a shared table.",
+        "afterEarnedDescription": "Finish a puzzle at a shared table."
+      },
+      "ru": {
+        "name": "Собрано вместе · Бронза",
+        "beforeEarnedDescription": "Соберите пазл за общим столом.",
+        "afterEarnedDescription": "Соберите пазл за общим столом."
+      },
+      "de-DE": {
+        "name": "Gemeinsam gepuzzelt · Bronze",
+        "beforeEarnedDescription": "Löse ein Puzzle an einem gemeinsamen Tisch.",
+        "afterEarnedDescription": "Löse ein Puzzle an einem gemeinsamen Tisch."
+      },
+      "fr-FR": {
+        "name": "Faits ensemble · Bronze",
+        "beforeEarnedDescription": "Terminez un puzzle à une table partagée.",
+        "afterEarnedDescription": "Terminez un puzzle à une table partagée."
+      },
+      "es-ES": {
+        "name": "Armados juntos · Bronce",
+        "beforeEarnedDescription": "Resuelve un puzle en una mesa compartida.",
+        "afterEarnedDescription": "Resuelve un puzle en una mesa compartida."
+      },
+      "it": {
+        "name": "Fatti insieme · Bronzo",
+        "beforeEarnedDescription": "Completa un puzzle a un tavolo condiviso.",
+        "afterEarnedDescription": "Completa un puzzle a un tavolo condiviso."
+      },
+      "pt-BR": {
+        "name": "Montados juntos · Bronze",
+        "beforeEarnedDescription": "Monte um quebra-cabeça numa mesa compartilhada.",
+        "afterEarnedDescription": "Monte um quebra-cabeça numa mesa compartilhada."
+      },
+      "ja": {
+        "name": "みんなで完成 · ブロンズ",
+        "beforeEarnedDescription": "共有テーブルでパズルを完成させる。",
+        "afterEarnedDescription": "共有テーブルでパズルを完成させる。"
+      },
+      "ko": {
+        "name": "함께 완성 · 브론즈",
+        "beforeEarnedDescription": "함께 쓰는 테이블에서 퍼즐 완성하기.",
+        "afterEarnedDescription": "함께 쓰는 테이블에서 퍼즐 완성하기."
+      },
+      "zh-Hans": {
+        "name": "一起完成 · 铜",
+        "beforeEarnedDescription": "在共享桌上完成一幅拼图。",
+        "afterEarnedDescription": "在共享桌上完成一幅拼图。"
+      },
+      "th": {
+        "name": "ต่อด้วยกัน · ทองแดง",
+        "beforeEarnedDescription": "ต่อจิ๊กซอว์บนโต๊ะร่วมกันให้เสร็จ 1 ภาพ",
+        "afterEarnedDescription": "ต่อจิ๊กซอว์บนโต๊ะร่วมกันให้เสร็จ 1 ภาพ"
+      }
+    }
+  },
+  {
+    "vendorIdentifier": "medal.together.silver",
+    "referenceName": "Medal together silver",
+    "points": 0,
+    "showBeforeEarned": true,
+    "repeatable": false,
+    "image": "docs/gamecenter/medals/medal.together.silver.png",
+    "localizations": {
+      "en-US": {
+        "name": "Played together · Silver",
+        "beforeEarnedDescription": "Finish 5 puzzles at a shared table.",
+        "afterEarnedDescription": "Finish 5 puzzles at a shared table."
+      },
+      "ru": {
+        "name": "Собрано вместе · Серебро",
+        "beforeEarnedDescription": "Соберите 5 пазлов за общим столом.",
+        "afterEarnedDescription": "Соберите 5 пазлов за общим столом."
+      },
+      "de-DE": {
+        "name": "Gemeinsam gepuzzelt · Silber",
+        "beforeEarnedDescription": "Löse 5 Puzzles an einem gemeinsamen Tisch.",
+        "afterEarnedDescription": "Löse 5 Puzzles an einem gemeinsamen Tisch."
+      },
+      "fr-FR": {
+        "name": "Faits ensemble · Argent",
+        "beforeEarnedDescription": "Terminez 5 puzzles à une table partagée.",
+        "afterEarnedDescription": "Terminez 5 puzzles à une table partagée."
+      },
+      "es-ES": {
+        "name": "Armados juntos · Plata",
+        "beforeEarnedDescription": "Resuelve 5 puzles en una mesa compartida.",
+        "afterEarnedDescription": "Resuelve 5 puzles en una mesa compartida."
+      },
+      "it": {
+        "name": "Fatti insieme · Argento",
+        "beforeEarnedDescription": "Completa 5 puzzle a un tavolo condiviso.",
+        "afterEarnedDescription": "Completa 5 puzzle a un tavolo condiviso."
+      },
+      "pt-BR": {
+        "name": "Montados juntos · Prata",
+        "beforeEarnedDescription": "Monte 5 quebra-cabeças numa mesa compartilhada.",
+        "afterEarnedDescription": "Monte 5 quebra-cabeças numa mesa compartilhada."
+      },
+      "ja": {
+        "name": "みんなで完成 · シルバー",
+        "beforeEarnedDescription": "共有テーブルでパズルを5個完成させる。",
+        "afterEarnedDescription": "共有テーブルでパズルを5個完成させる。"
+      },
+      "ko": {
+        "name": "함께 완성 · 실버",
+        "beforeEarnedDescription": "함께 쓰는 테이블에서 퍼즐 5개 완성하기.",
+        "afterEarnedDescription": "함께 쓰는 테이블에서 퍼즐 5개 완성하기."
+      },
+      "zh-Hans": {
+        "name": "一起完成 · 银",
+        "beforeEarnedDescription": "在共享桌上完成 5 幅拼图。",
+        "afterEarnedDescription": "在共享桌上完成 5 幅拼图。"
+      },
+      "th": {
+        "name": "ต่อด้วยกัน · เงิน",
+        "beforeEarnedDescription": "ต่อจิ๊กซอว์บนโต๊ะร่วมกันให้เสร็จ 5 ภาพ",
+        "afterEarnedDescription": "ต่อจิ๊กซอว์บนโต๊ะร่วมกันให้เสร็จ 5 ภาพ"
+      }
+    }
+  },
+  {
+    "vendorIdentifier": "medal.together.gold",
+    "referenceName": "Medal together gold",
+    "points": 0,
+    "showBeforeEarned": true,
+    "repeatable": false,
+    "image": "docs/gamecenter/medals/medal.together.gold.png",
+    "localizations": {
+      "en-US": {
+        "name": "Played together · Gold",
+        "beforeEarnedDescription": "Finish 15 puzzles at a shared table.",
+        "afterEarnedDescription": "Finish 15 puzzles at a shared table."
+      },
+      "ru": {
+        "name": "Собрано вместе · Золото",
+        "beforeEarnedDescription": "Соберите 15 пазлов за общим столом.",
+        "afterEarnedDescription": "Соберите 15 пазлов за общим столом."
+      },
+      "de-DE": {
+        "name": "Gemeinsam gepuzzelt · Gold",
+        "beforeEarnedDescription": "Löse 15 Puzzles an einem gemeinsamen Tisch.",
+        "afterEarnedDescription": "Löse 15 Puzzles an einem gemeinsamen Tisch."
+      },
+      "fr-FR": {
+        "name": "Faits ensemble · Or",
+        "beforeEarnedDescription": "Terminez 15 puzzles à une table partagée.",
+        "afterEarnedDescription": "Terminez 15 puzzles à une table partagée."
+      },
+      "es-ES": {
+        "name": "Armados juntos · Oro",
+        "beforeEarnedDescription": "Resuelve 15 puzles en una mesa compartida.",
+        "afterEarnedDescription": "Resuelve 15 puzles en una mesa compartida."
+      },
+      "it": {
+        "name": "Fatti insieme · Oro",
+        "beforeEarnedDescription": "Completa 15 puzzle a un tavolo condiviso.",
+        "afterEarnedDescription": "Completa 15 puzzle a un tavolo condiviso."
+      },
+      "pt-BR": {
+        "name": "Montados juntos · Ouro",
+        "beforeEarnedDescription": "Monte 15 quebra-cabeças numa mesa compartilhada.",
+        "afterEarnedDescription": "Monte 15 quebra-cabeças numa mesa compartilhada."
+      },
+      "ja": {
+        "name": "みんなで完成 · ゴールド",
+        "beforeEarnedDescription": "共有テーブルでパズルを15個完成させる。",
+        "afterEarnedDescription": "共有テーブルでパズルを15個完成させる。"
+      },
+      "ko": {
+        "name": "함께 완성 · 골드",
+        "beforeEarnedDescription": "함께 쓰는 테이블에서 퍼즐 15개 완성하기.",
+        "afterEarnedDescription": "함께 쓰는 테이블에서 퍼즐 15개 완성하기."
+      },
+      "zh-Hans": {
+        "name": "一起完成 · 金",
+        "beforeEarnedDescription": "在共享桌上完成 15 幅拼图。",
+        "afterEarnedDescription": "在共享桌上完成 15 幅拼图。"
+      },
+      "th": {
+        "name": "ต่อด้วยกัน · ทอง",
+        "beforeEarnedDescription": "ต่อจิ๊กซอว์บนโต๊ะร่วมกันให้เสร็จ 15 ภาพ",
+        "afterEarnedDescription": "ต่อจิ๊กซอว์บนโต๊ะร่วมกันให้เสร็จ 15 ภาพ"
+      }
+    }
+  },
+  {
+    "vendorIdentifier": "medal.together.platinum",
+    "referenceName": "Medal together platinum",
+    "points": 0,
+    "showBeforeEarned": true,
+    "repeatable": false,
+    "image": "docs/gamecenter/medals/medal.together.platinum.png",
+    "localizations": {
+      "en-US": {
+        "name": "Played together · Platinum",
+        "beforeEarnedDescription": "Finish 40 puzzles at a shared table.",
+        "afterEarnedDescription": "Finish 40 puzzles at a shared table."
+      },
+      "ru": {
+        "name": "Собрано вместе · Платина",
+        "beforeEarnedDescription": "Соберите 40 пазлов за общим столом.",
+        "afterEarnedDescription": "Соберите 40 пазлов за общим столом."
+      },
+      "de-DE": {
+        "name": "Gemeinsam gepuzzelt · Platin",
+        "beforeEarnedDescription": "Löse 40 Puzzles an einem gemeinsamen Tisch.",
+        "afterEarnedDescription": "Löse 40 Puzzles an einem gemeinsamen Tisch."
+      },
+      "fr-FR": {
+        "name": "Faits ensemble · Platine",
+        "beforeEarnedDescription": "Terminez 40 puzzles à une table partagée.",
+        "afterEarnedDescription": "Terminez 40 puzzles à une table partagée."
+      },
+      "es-ES": {
+        "name": "Armados juntos · Platino",
+        "beforeEarnedDescription": "Resuelve 40 puzles en una mesa compartida.",
+        "afterEarnedDescription": "Resuelve 40 puzles en una mesa compartida."
+      },
+      "it": {
+        "name": "Fatti insieme · Platino",
+        "beforeEarnedDescription": "Completa 40 puzzle a un tavolo condiviso.",
+        "afterEarnedDescription": "Completa 40 puzzle a un tavolo condiviso."
+      },
+      "pt-BR": {
+        "name": "Montados juntos · Platina",
+        "beforeEarnedDescription": "Monte 40 quebra-cabeças numa mesa compartilhada.",
+        "afterEarnedDescription": "Monte 40 quebra-cabeças numa mesa compartilhada."
+      },
+      "ja": {
+        "name": "みんなで完成 · プラチナ",
+        "beforeEarnedDescription": "共有テーブルでパズルを40個完成させる。",
+        "afterEarnedDescription": "共有テーブルでパズルを40個完成させる。"
+      },
+      "ko": {
+        "name": "함께 완성 · 플래티넘",
+        "beforeEarnedDescription": "함께 쓰는 테이블에서 퍼즐 40개 완성하기.",
+        "afterEarnedDescription": "함께 쓰는 테이블에서 퍼즐 40개 완성하기."
+      },
+      "zh-Hans": {
+        "name": "一起完成 · 铂金",
+        "beforeEarnedDescription": "在共享桌上完成 40 幅拼图。",
+        "afterEarnedDescription": "在共享桌上完成 40 幅拼图。"
+      },
+      "th": {
+        "name": "ต่อด้วยกัน · แพลทินัม",
+        "beforeEarnedDescription": "ต่อจิ๊กซอว์บนโต๊ะร่วมกันให้เสร็จ 40 ภาพ",
+        "afterEarnedDescription": "ต่อจิ๊กซอว์บนโต๊ะร่วมกันให้เสร็จ 40 ภาพ"
+      }
+    }
+  },
+  {
+    "vendorIdentifier": "medal.together.diamond",
+    "referenceName": "Medal together diamond",
+    "points": 0,
+    "showBeforeEarned": true,
+    "repeatable": false,
+    "image": "docs/gamecenter/medals/medal.together.diamond.png",
+    "localizations": {
+      "en-US": {
+        "name": "Played together · Diamond",
+        "beforeEarnedDescription": "Finish 100 puzzles at a shared table.",
+        "afterEarnedDescription": "Finish 100 puzzles at a shared table."
+      },
+      "ru": {
+        "name": "Собрано вместе · Бриллиант",
+        "beforeEarnedDescription": "Соберите 100 пазлов за общим столом.",
+        "afterEarnedDescription": "Соберите 100 пазлов за общим столом."
+      },
+      "de-DE": {
+        "name": "Gemeinsam gepuzzelt · Diamant",
+        "beforeEarnedDescription": "Löse 100 Puzzles an einem gemeinsamen Tisch.",
+        "afterEarnedDescription": "Löse 100 Puzzles an einem gemeinsamen Tisch."
+      },
+      "fr-FR": {
+        "name": "Faits ensemble · Diamant",
+        "beforeEarnedDescription": "Terminez 100 puzzles à une table partagée.",
+        "afterEarnedDescription": "Terminez 100 puzzles à une table partagée."
+      },
+      "es-ES": {
+        "name": "Armados juntos · Diamante",
+        "beforeEarnedDescription": "Resuelve 100 puzles en una mesa compartida.",
+        "afterEarnedDescription": "Resuelve 100 puzles en una mesa compartida."
+      },
+      "it": {
+        "name": "Fatti insieme · Diamante",
+        "beforeEarnedDescription": "Completa 100 puzzle a un tavolo condiviso.",
+        "afterEarnedDescription": "Completa 100 puzzle a un tavolo condiviso."
+      },
+      "pt-BR": {
+        "name": "Montados juntos · Diamante",
+        "beforeEarnedDescription": "Monte 100 quebra-cabeças numa mesa compartilhada.",
+        "afterEarnedDescription": "Monte 100 quebra-cabeças numa mesa compartilhada."
+      },
+      "ja": {
+        "name": "みんなで完成 · ダイヤモンド",
+        "beforeEarnedDescription": "共有テーブルでパズルを100個完成させる。",
+        "afterEarnedDescription": "共有テーブルでパズルを100個完成させる。"
+      },
+      "ko": {
+        "name": "함께 완성 · 다이아몬드",
+        "beforeEarnedDescription": "함께 쓰는 테이블에서 퍼즐 100개 완성하기.",
+        "afterEarnedDescription": "함께 쓰는 테이블에서 퍼즐 100개 완성하기."
+      },
+      "zh-Hans": {
+        "name": "一起完成 · 钻石",
+        "beforeEarnedDescription": "在共享桌上完成 100 幅拼图。",
+        "afterEarnedDescription": "在共享桌上完成 100 幅拼图。"
+      },
+      "th": {
+        "name": "ต่อด้วยกัน · เพชร",
+        "beforeEarnedDescription": "ต่อจิ๊กซอว์บนโต๊ะร่วมกันให้เสร็จ 100 ภาพ",
+        "afterEarnedDescription": "ต่อจิ๊กซอว์บนโต๊ะร่วมกันให้เสร็จ 100 ภาพ"
+      }
+    }
+  },
+  {
+    "vendorIdentifier": "medal.gallery.bronze",
+    "referenceName": "Medal gallery bronze",
+    "points": 0,
+    "showBeforeEarned": true,
+    "repeatable": false,
+    "image": "docs/gamecenter/medals/medal.gallery.bronze.png",
+    "localizations": {
+      "en-US": {
+        "name": "Gallery · Bronze",
+        "beforeEarnedDescription": "Solve 20 different pictures.",
+        "afterEarnedDescription": "Solve 20 different pictures."
+      },
+      "ru": {
+        "name": "Галерея · Бронза",
+        "beforeEarnedDescription": "Соберите 20 разных картинок.",
+        "afterEarnedDescription": "Соберите 20 разных картинок."
+      },
+      "de-DE": {
+        "name": "Galerie · Bronze",
+        "beforeEarnedDescription": "Löse 20 verschiedene Bilder.",
+        "afterEarnedDescription": "Löse 20 verschiedene Bilder."
+      },
+      "fr-FR": {
+        "name": "Galerie · Bronze",
+        "beforeEarnedDescription": "Terminez 20 images différentes.",
+        "afterEarnedDescription": "Terminez 20 images différentes."
+      },
+      "es-ES": {
+        "name": "Galería · Bronce",
+        "beforeEarnedDescription": "Resuelve 20 imágenes distintas.",
+        "afterEarnedDescription": "Resuelve 20 imágenes distintas."
+      },
+      "it": {
+        "name": "Galleria · Bronzo",
+        "beforeEarnedDescription": "Completa 20 immagini diverse.",
+        "afterEarnedDescription": "Completa 20 immagini diverse."
+      },
+      "pt-BR": {
+        "name": "Galeria · Bronze",
+        "beforeEarnedDescription": "Monte 20 imagens diferentes.",
+        "afterEarnedDescription": "Monte 20 imagens diferentes."
+      },
+      "ja": {
+        "name": "ギャラリー · ブロンズ",
+        "beforeEarnedDescription": "異なる絵を20枚完成させる。",
+        "afterEarnedDescription": "異なる絵を20枚完成させる。"
+      },
+      "ko": {
+        "name": "갤러리 · 브론즈",
+        "beforeEarnedDescription": "서로 다른 그림 20개 완성하기.",
+        "afterEarnedDescription": "서로 다른 그림 20개 완성하기."
+      },
+      "zh-Hans": {
+        "name": "画廊 · 铜",
+        "beforeEarnedDescription": "完成 20 幅不同的图片。",
+        "afterEarnedDescription": "完成 20 幅不同的图片。"
+      },
+      "th": {
+        "name": "แกลเลอรี · ทองแดง",
+        "beforeEarnedDescription": "ต่อภาพที่ไม่ซ้ำกันให้เสร็จ 20 ภาพ",
+        "afterEarnedDescription": "ต่อภาพที่ไม่ซ้ำกันให้เสร็จ 20 ภาพ"
+      }
+    }
+  },
+  {
+    "vendorIdentifier": "medal.gallery.silver",
+    "referenceName": "Medal gallery silver",
+    "points": 0,
+    "showBeforeEarned": true,
+    "repeatable": false,
+    "image": "docs/gamecenter/medals/medal.gallery.silver.png",
+    "localizations": {
+      "en-US": {
+        "name": "Gallery · Silver",
+        "beforeEarnedDescription": "Solve 50 different pictures.",
+        "afterEarnedDescription": "Solve 50 different pictures."
+      },
+      "ru": {
+        "name": "Галерея · Серебро",
+        "beforeEarnedDescription": "Соберите 50 разных картинок.",
+        "afterEarnedDescription": "Соберите 50 разных картинок."
+      },
+      "de-DE": {
+        "name": "Galerie · Silber",
+        "beforeEarnedDescription": "Löse 50 verschiedene Bilder.",
+        "afterEarnedDescription": "Löse 50 verschiedene Bilder."
+      },
+      "fr-FR": {
+        "name": "Galerie · Argent",
+        "beforeEarnedDescription": "Terminez 50 images différentes.",
+        "afterEarnedDescription": "Terminez 50 images différentes."
+      },
+      "es-ES": {
+        "name": "Galería · Plata",
+        "beforeEarnedDescription": "Resuelve 50 imágenes distintas.",
+        "afterEarnedDescription": "Resuelve 50 imágenes distintas."
+      },
+      "it": {
+        "name": "Galleria · Argento",
+        "beforeEarnedDescription": "Completa 50 immagini diverse.",
+        "afterEarnedDescription": "Completa 50 immagini diverse."
+      },
+      "pt-BR": {
+        "name": "Galeria · Prata",
+        "beforeEarnedDescription": "Monte 50 imagens diferentes.",
+        "afterEarnedDescription": "Monte 50 imagens diferentes."
+      },
+      "ja": {
+        "name": "ギャラリー · シルバー",
+        "beforeEarnedDescription": "異なる絵を50枚完成させる。",
+        "afterEarnedDescription": "異なる絵を50枚完成させる。"
+      },
+      "ko": {
+        "name": "갤러리 · 실버",
+        "beforeEarnedDescription": "서로 다른 그림 50개 완성하기.",
+        "afterEarnedDescription": "서로 다른 그림 50개 완성하기."
+      },
+      "zh-Hans": {
+        "name": "画廊 · 银",
+        "beforeEarnedDescription": "完成 50 幅不同的图片。",
+        "afterEarnedDescription": "完成 50 幅不同的图片。"
+      },
+      "th": {
+        "name": "แกลเลอรี · เงิน",
+        "beforeEarnedDescription": "ต่อภาพที่ไม่ซ้ำกันให้เสร็จ 50 ภาพ",
+        "afterEarnedDescription": "ต่อภาพที่ไม่ซ้ำกันให้เสร็จ 50 ภาพ"
+      }
+    }
+  },
+  {
+    "vendorIdentifier": "medal.gallery.gold",
+    "referenceName": "Medal gallery gold",
+    "points": 0,
+    "showBeforeEarned": true,
+    "repeatable": false,
+    "image": "docs/gamecenter/medals/medal.gallery.gold.png",
+    "localizations": {
+      "en-US": {
+        "name": "Gallery · Gold",
+        "beforeEarnedDescription": "Solve 90 different pictures.",
+        "afterEarnedDescription": "Solve 90 different pictures."
+      },
+      "ru": {
+        "name": "Галерея · Золото",
+        "beforeEarnedDescription": "Соберите 90 разных картинок.",
+        "afterEarnedDescription": "Соберите 90 разных картинок."
+      },
+      "de-DE": {
+        "name": "Galerie · Gold",
+        "beforeEarnedDescription": "Löse 90 verschiedene Bilder.",
+        "afterEarnedDescription": "Löse 90 verschiedene Bilder."
+      },
+      "fr-FR": {
+        "name": "Galerie · Or",
+        "beforeEarnedDescription": "Terminez 90 images différentes.",
+        "afterEarnedDescription": "Terminez 90 images différentes."
+      },
+      "es-ES": {
+        "name": "Galería · Oro",
+        "beforeEarnedDescription": "Resuelve 90 imágenes distintas.",
+        "afterEarnedDescription": "Resuelve 90 imágenes distintas."
+      },
+      "it": {
+        "name": "Galleria · Oro",
+        "beforeEarnedDescription": "Completa 90 immagini diverse.",
+        "afterEarnedDescription": "Completa 90 immagini diverse."
+      },
+      "pt-BR": {
+        "name": "Galeria · Ouro",
+        "beforeEarnedDescription": "Monte 90 imagens diferentes.",
+        "afterEarnedDescription": "Monte 90 imagens diferentes."
+      },
+      "ja": {
+        "name": "ギャラリー · ゴールド",
+        "beforeEarnedDescription": "異なる絵を90枚完成させる。",
+        "afterEarnedDescription": "異なる絵を90枚完成させる。"
+      },
+      "ko": {
+        "name": "갤러리 · 골드",
+        "beforeEarnedDescription": "서로 다른 그림 90개 완성하기.",
+        "afterEarnedDescription": "서로 다른 그림 90개 완성하기."
+      },
+      "zh-Hans": {
+        "name": "画廊 · 金",
+        "beforeEarnedDescription": "完成 90 幅不同的图片。",
+        "afterEarnedDescription": "完成 90 幅不同的图片。"
+      },
+      "th": {
+        "name": "แกลเลอรี · ทอง",
+        "beforeEarnedDescription": "ต่อภาพที่ไม่ซ้ำกันให้เสร็จ 90 ภาพ",
+        "afterEarnedDescription": "ต่อภาพที่ไม่ซ้ำกันให้เสร็จ 90 ภาพ"
+      }
+    }
+  },
+  {
+    "vendorIdentifier": "medal.gallery.platinum",
+    "referenceName": "Medal gallery platinum",
+    "points": 0,
+    "showBeforeEarned": true,
+    "repeatable": false,
+    "image": "docs/gamecenter/medals/medal.gallery.platinum.png",
+    "localizations": {
+      "en-US": {
+        "name": "Gallery · Platinum",
+        "beforeEarnedDescription": "Solve 130 different pictures.",
+        "afterEarnedDescription": "Solve 130 different pictures."
+      },
+      "ru": {
+        "name": "Галерея · Платина",
+        "beforeEarnedDescription": "Соберите 130 разных картинок.",
+        "afterEarnedDescription": "Соберите 130 разных картинок."
+      },
+      "de-DE": {
+        "name": "Galerie · Platin",
+        "beforeEarnedDescription": "Löse 130 verschiedene Bilder.",
+        "afterEarnedDescription": "Löse 130 verschiedene Bilder."
+      },
+      "fr-FR": {
+        "name": "Galerie · Platine",
+        "beforeEarnedDescription": "Terminez 130 images différentes.",
+        "afterEarnedDescription": "Terminez 130 images différentes."
+      },
+      "es-ES": {
+        "name": "Galería · Platino",
+        "beforeEarnedDescription": "Resuelve 130 imágenes distintas.",
+        "afterEarnedDescription": "Resuelve 130 imágenes distintas."
+      },
+      "it": {
+        "name": "Galleria · Platino",
+        "beforeEarnedDescription": "Completa 130 immagini diverse.",
+        "afterEarnedDescription": "Completa 130 immagini diverse."
+      },
+      "pt-BR": {
+        "name": "Galeria · Platina",
+        "beforeEarnedDescription": "Monte 130 imagens diferentes.",
+        "afterEarnedDescription": "Monte 130 imagens diferentes."
+      },
+      "ja": {
+        "name": "ギャラリー · プラチナ",
+        "beforeEarnedDescription": "異なる絵を130枚完成させる。",
+        "afterEarnedDescription": "異なる絵を130枚完成させる。"
+      },
+      "ko": {
+        "name": "갤러리 · 플래티넘",
+        "beforeEarnedDescription": "서로 다른 그림 130개 완성하기.",
+        "afterEarnedDescription": "서로 다른 그림 130개 완성하기."
+      },
+      "zh-Hans": {
+        "name": "画廊 · 铂金",
+        "beforeEarnedDescription": "完成 130 幅不同的图片。",
+        "afterEarnedDescription": "完成 130 幅不同的图片。"
+      },
+      "th": {
+        "name": "แกลเลอรี · แพลทินัม",
+        "beforeEarnedDescription": "ต่อภาพที่ไม่ซ้ำกันให้เสร็จ 130 ภาพ",
+        "afterEarnedDescription": "ต่อภาพที่ไม่ซ้ำกันให้เสร็จ 130 ภาพ"
+      }
+    }
+  },
+  {
+    "vendorIdentifier": "medal.gallery.diamond",
+    "referenceName": "Medal gallery diamond",
+    "points": 0,
+    "showBeforeEarned": true,
+    "repeatable": false,
+    "image": "docs/gamecenter/medals/medal.gallery.diamond.png",
+    "localizations": {
+      "en-US": {
+        "name": "Gallery · Diamond",
+        "beforeEarnedDescription": "Solve every picture in the library.",
+        "afterEarnedDescription": "Solve every picture in the library."
+      },
+      "ru": {
+        "name": "Галерея · Бриллиант",
+        "beforeEarnedDescription": "Соберите все картинки библиотеки.",
+        "afterEarnedDescription": "Соберите все картинки библиотеки."
+      },
+      "de-DE": {
+        "name": "Galerie · Diamant",
+        "beforeEarnedDescription": "Löse jedes Bild der Bibliothek.",
+        "afterEarnedDescription": "Löse jedes Bild der Bibliothek."
+      },
+      "fr-FR": {
+        "name": "Galerie · Diamant",
+        "beforeEarnedDescription": "Terminez toutes les images de la bibliothèque.",
+        "afterEarnedDescription": "Terminez toutes les images de la bibliothèque."
+      },
+      "es-ES": {
+        "name": "Galería · Diamante",
+        "beforeEarnedDescription": "Resuelve todas las imágenes de la biblioteca.",
+        "afterEarnedDescription": "Resuelve todas las imágenes de la biblioteca."
+      },
+      "it": {
+        "name": "Galleria · Diamante",
+        "beforeEarnedDescription": "Completa tutte le immagini della libreria.",
+        "afterEarnedDescription": "Completa tutte le immagini della libreria."
+      },
+      "pt-BR": {
+        "name": "Galeria · Diamante",
+        "beforeEarnedDescription": "Monte todas as imagens da biblioteca.",
+        "afterEarnedDescription": "Monte todas as imagens da biblioteca."
+      },
+      "ja": {
+        "name": "ギャラリー · ダイヤモンド",
+        "beforeEarnedDescription": "ライブラリのすべての絵を完成させる。",
+        "afterEarnedDescription": "ライブラリのすべての絵を完成させる。"
+      },
+      "ko": {
+        "name": "갤러리 · 다이아몬드",
+        "beforeEarnedDescription": "보관함의 모든 그림 완성하기.",
+        "afterEarnedDescription": "보관함의 모든 그림 완성하기."
+      },
+      "zh-Hans": {
+        "name": "画廊 · 钻石",
+        "beforeEarnedDescription": "完成图库中的所有图片。",
+        "afterEarnedDescription": "完成图库中的所有图片。"
+      },
+      "th": {
+        "name": "แกลเลอรี · เพชร",
+        "beforeEarnedDescription": "ต่อทุกภาพในคลังภาพให้เสร็จ",
+        "afterEarnedDescription": "ต่อทุกภาพในคลังภาพให้เสร็จ"
+      }
+    }
+  }
+]

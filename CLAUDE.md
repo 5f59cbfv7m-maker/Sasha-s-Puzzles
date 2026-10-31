@@ -12,7 +12,7 @@ xcodebuild -project JigsawPuzzle.xcodeproj -scheme JigsawPuzzle \
 ```
 
 Swap the destination for `platform=iOS Simulator,name=iPhone 17 Pro` or
-`name=iPad Pro 13-inch (M5)`. **100 tests in 9 suites must pass** before any change
+`name=iPad Pro 13-inch (M5)`. **101 tests in 9 suites must pass** before any change
 is called done. Grep the output for `^✔ Test run` — xcodebuild buries it in noise.
 
 **Every fix and feature goes into the release notes as it is made:**
@@ -42,7 +42,7 @@ mismatch — it is deliberate.
 | `Sources/App/GameCenter.swift` | Friends' leaderboards and the achievement wall in Game Center, reported from `PlayerStats`; friend invitations for playing together |
 | `Sources/Game/SharedTable.swift` | Playing together: one board on up to four devices, the host's device keeps it |
 | `Sources/App/TableLinks.swift` | The table's two connections: `NearbyLink` (Multipeer, same room) and `MatchLink` (Game Center match) |
-| `Sources/Persistence/Medals.swift` | Medals: eight tracks of five levels, bronze to diamond, derived from the records; in-game only (Game Center would need each level in App Store Connect) |
+| `Sources/Persistence/Medals.swift` | Medals: eight tracks of five levels, bronze to diamond, derived from the records; each level is also a Game Center achievement, `medal.<medal>.<level>` |
 | `Sources/Settings/CreditsRoll.swift` | Photo credits rolling up like a film's; static under VoiceOver or Reduce Motion |
 | `Scripts/music/compose.py` | The six tunes of 1.4 (`music-calm-*`, `music-tune-*`), written note by note and rendered with FluidSynth |
 | `Sources/Support/Theme.swift` | Design tokens (colours, type), shared controls (`PillButton`, `RoundIconButton`, `PillSegments`), the `PuzzleMark` logo |
@@ -248,6 +248,20 @@ forbids that use); activity and challenge art (3840×2160) is
 24 achievements use the full 1,000 Game Center points but 10; `firstGift` and
 `allSecrets` are hidden, so they never get partial progress (that would
 reveal them).
+
+**Medals are 40 more achievements, worth 0 points** (Apple's forum advice
+once the 1,000 are spent): `Medal.gameCenterID`, reported in a batch of their
+own so an identifier App Store Connect does not know yet cannot cost the
+other achievements their report. Their art is `docs/gamecenter/medals/`
+(the same badge script), their names and descriptions in 11 languages
+`docs/gamecenter/medals.json`, and `Scripts/upload-gamecenter-medals.swift`
+creates them through the App Store Connect API (v2 endpoints: the
+achievement with an inline version, a localization per language, the badge
+on each localization) — rerunnable, it only adds what is missing.
+
+**"New puzzle"** marks a picture earned with points, a gift streak or its
+holiday until it is started (`HomeView.isNew`): no state to store, it goes
+when a record or a save appears.
 
 **Challenges count every score.** The Games app's challenges `daily_race`
 (on `daily_time`) and `weekly_points` (on `points_week`) take each score

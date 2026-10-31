@@ -292,7 +292,7 @@ struct Kicker: View {
 
 /// Tinted capsule tag ("Daily puzzle", a category).
 struct Tag: View {
-    enum Style { case sage, sageTint, card }
+    enum Style { case sage, sageTint, card, accent }
     let text: String
     var symbol: String?
     var style: Style = .sageTint
@@ -303,9 +303,11 @@ struct Tag: View {
             Text(text)
         }
         .font(Theme.body(12, .bold))
-        .foregroundStyle(style == .sage ? Theme.onSage : style == .card ? Theme.accentDeep : Theme.onSageTint)
+        .foregroundStyle(style == .sage ? Theme.onSage : style == .card ? Theme.accentDeep
+                         : style == .accent ? Theme.onAccent : Theme.onSageTint)
         .padding(.horizontal, 11).padding(.vertical, 5)
-        .background(style == .sage ? Theme.sage : style == .card ? Theme.card : Theme.sageTint, in: Capsule())
+        .background(style == .sage ? Theme.sage : style == .card ? Theme.card
+                    : style == .accent ? Theme.accent : Theme.sageTint, in: Capsule())
     }
 }
 

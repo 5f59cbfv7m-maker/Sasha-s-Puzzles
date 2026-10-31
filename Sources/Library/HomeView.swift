@@ -44,7 +44,8 @@ struct HomeView: View {
                         ForEach(items) { item in
                             PictureCard(item: item, solved: solvedTime(for: item),
                                         inProgress: unfinishedGame(for: item),
-                                        lock: lock(for: item, unlocks)) {
+                                        lock: lock(for: item, unlocks),
+                                        isNew: isNew(item, unlocks)) {
                                 model.openSetup(for: item)
                             }
                             .contextMenu { contextMenu(for: item) }
@@ -107,6 +108,15 @@ struct HomeView: View {
         guard model.isLocked(item, unlocks) else { return nil }
         if let opens = LibraryCatalog.opensAt(item) { return .opens(opens) }
         return item.category == .secret ? .secret : .points(LibraryCatalog.requiredPoints(for: item.id) ?? 0)
+    }
+
+    /// A picture earned — with points, a week of daily puzzles or its
+    /// holiday — that the player has not started yet.
+    private func isNew(_ item: LibraryItem, _ unlocks: AppModel.Unlocks) -> Bool {
+        let earned = LibraryCatalog.requiredPoints(for: item.id) != nil
+            || LibraryCatalog.secretOrder.contains(item.id) || LibraryCatalog.opensAt(item) != nil
+        return earned && !model.isLocked(item, unlocks) && !model.stats.isSolved(item.id)
+            && !model.savedGames.contains { $0.itemID == item.id }
     }
 
     /// When the holiday pictures open, while they are still waiting.
@@ -552,6 +562,8 @@ private struct PictureCard: View {
     let inProgress: GameSnapshot?
     /// Why the picture is still closed; nil when it is open.
     var lock: PictureLock?
+    /// Just earned and not started yet.
+    var isNew = false
     let action: () -> Void
 
     var body: some View {
@@ -642,6 +654,8 @@ private struct PictureCard: View {
             Tag(text: String(localized: "Solved"), style: .sage)
         } else if let inProgress {
             Tag(text: String(localized: "\(inProgress.pieceCount) pieces"), style: .card)
+        } else if isNew {
+            Tag(text: String(localized: "New puzzle"), symbol: "sparkles", style: .accent)
         }
     }
 }

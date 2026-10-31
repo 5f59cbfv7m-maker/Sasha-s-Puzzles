@@ -218,6 +218,15 @@ struct StatsTests {
         #expect(stats.record(big).newMedals.contains(MedalAward(medal: .bigPuzzles, tier: .silver)))
     }
 
+    @Test("Every medal level has its own Game Center achievement, and all of them fit Game Center's limit of 100")
+    func medalIdentifiers() {
+        let ids = Medal.allCases.flatMap { medal in Medal.Tier.allCases.map { medal.gameCenterID($0) } }
+        #expect(ids.count == 40 && Set(ids).count == 40)
+        #expect(Medal.puzzles.gameCenterID(.bronze) == "medal.puzzles.bronze")
+        #expect(Medal.bigPuzzles.gameCenterID(.diamond) == "medal.bigPuzzles.diamond")
+        #expect(ids.count + Achievement.allCases.count <= 100)
+    }
+
     @Test("A mix moves through the tunes of one style and comes back round")
     func mix() {
         for style in AppSettings.Melody.Style.allCases {

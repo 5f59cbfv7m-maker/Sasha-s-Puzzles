@@ -155,3 +155,140 @@ render("sea", background: sage, photo: "sea_Cliff Lighthouse")
 render("city", background: sage, photo: "city_Boats of Vernazza")
 render("animals", background: sage, photo: "animals_Bengal Tiger")
 render("abstract", background: sage, photo: "abstract_Balloons over Cappadocia")
+
+// MARK: - Medals (1.4)
+
+// Five levels of eight medals, each the colour of its metal, into
+// `<out>/medals/medal.<medal>.<level>.png`: a hand-drawn motif for the medal
+// over the level's goal. The metals match `Medal.Tier.color`.
+let medalsOut = out.appending(path: "medals")
+try? FileManager.default.createDirectory(at: medalsOut, withIntermediateDirectories: true)
+let metals: [(name: String, color: CGColor)] = [("bronze", color("c27d47")), ("silver", color("9ea8b5")),
+                                                ("gold", color("e3ad33")), ("platinum", color("80b3b3")),
+                                                ("diamond", color("66adf2"))]
+
+func darker(_ c: CGColor, _ k: CGFloat) -> CGColor {
+    let p = c.components!
+    return CGColor(red: p[0] * k, green: p[1] * k, blue: p[2] * k, alpha: 1)
+}
+
+/// A motif around `o`, about 2·`m` across, filled or stroked in the current ink.
+func motif(_ kind: String, _ ctx: CGContext, _ o: CGPoint, _ m: CGFloat) {
+    let p = CGMutablePath()
+    switch kind {
+    case "puzzles": // a tick: the puzzle done
+        ctx.setLineWidth(m * 0.32); ctx.setLineCap(.round); ctx.setLineJoin(.round)
+        p.move(to: CGPoint(x: o.x - m * 0.8, y: o.y + m * 0.05))
+        p.addLine(to: CGPoint(x: o.x - m * 0.2, y: o.y - m * 0.55))
+        p.addLine(to: CGPoint(x: o.x + m * 0.85, y: o.y + m * 0.6))
+        ctx.addPath(p); ctx.strokePath(); return
+    case "pieces": // a 3×3 grid of tiles
+        let t = m * 0.52, g = m * 0.14
+        for row in -1...1 { for col in -1...1 {
+            let r = CGRect(x: o.x + CGFloat(col) * (t + g) - t / 2, y: o.y + CGFloat(row) * (t + g) - t / 2, width: t, height: t)
+            p.addPath(CGPath(roundedRect: r, cornerWidth: t * 0.2, cornerHeight: t * 0.2, transform: nil))
+        } }
+    case "points": // a five-pointed star
+        for i in 0..<10 {
+            let radius = i % 2 == 0 ? m : m * 0.42
+            let angle = CGFloat.pi / 2 + CGFloat(i) * .pi / 5
+            let point = CGPoint(x: o.x + radius * cos(angle), y: o.y + radius * sin(angle))
+            i == 0 ? p.move(to: point) : p.addLine(to: point)
+        }
+        p.closeSubpath()
+    case "dailies": // the sun
+        p.addEllipse(in: CGRect(x: o.x - m * 0.45, y: o.y - m * 0.45, width: m * 0.9, height: m * 0.9))
+        for i in 0..<8 {
+            let a = CGFloat(i) * .pi / 4
+            let ray = CGAffineTransform(translationX: o.x, y: o.y).rotated(by: a)
+            p.addPath(CGPath(roundedRect: CGRect(x: m * 0.62, y: -m * 0.08, width: m * 0.38, height: m * 0.16),
+                             cornerWidth: m * 0.08, cornerHeight: m * 0.08, transform: nil), transform: ray)
+        }
+    case "bigPuzzles": // two peaks
+        p.move(to: CGPoint(x: o.x - m, y: o.y - m * 0.6)); p.addLine(to: CGPoint(x: o.x - m * 0.25, y: o.y + m * 0.7))
+        p.addLine(to: CGPoint(x: o.x + m * 0.2, y: o.y - m * 0.05)); p.addLine(to: CGPoint(x: o.x + m * 0.45, y: o.y + m * 0.35))
+        p.addLine(to: CGPoint(x: o.x + m, y: o.y - m * 0.6)); p.closeSubpath()
+    case "quick": // a lightning bolt
+        let pts: [(CGFloat, CGFloat)] = [(0.15, 1), (-0.55, -0.1), (-0.05, -0.1), (-0.2, -1), (0.55, 0.15), (0.05, 0.15)]
+        for (i, q) in pts.enumerated() {
+            let point = CGPoint(x: o.x + q.0 * m, y: o.y + q.1 * m)
+            i == 0 ? p.move(to: point) : p.addLine(to: point)
+        }
+        p.closeSubpath()
+    case "together": // two people
+        for (dx, k) in [(-0.42, 0.9), (0.42, 1.0)] as [(CGFloat, CGFloat)] {
+            let x = o.x + dx * m, head = m * 0.27 * k
+            p.addEllipse(in: CGRect(x: x - head, y: o.y + m * 0.15, width: head * 2, height: head * 2))
+            let shoulders = CGRect(x: x - m * 0.45 * k, y: o.y - m * 0.75, width: m * 0.9 * k, height: m * 0.8)
+            p.addPath(CGPath(roundedRect: shoulders, cornerWidth: m * 0.4 * k, cornerHeight: m * 0.4 * k, transform: nil))
+        }
+    default: // gallery: a framed picture
+        ctx.setLineWidth(m * 0.16)
+        ctx.addPath(CGPath(roundedRect: CGRect(x: o.x - m, y: o.y - m * 0.75, width: m * 2, height: m * 1.5),
+                           cornerWidth: m * 0.15, cornerHeight: m * 0.15, transform: nil))
+        ctx.strokePath()
+        p.move(to: CGPoint(x: o.x - m * 0.75, y: o.y - m * 0.5)); p.addLine(to: CGPoint(x: o.x - m * 0.15, y: o.y + m * 0.25))
+        p.addLine(to: CGPoint(x: o.x + m * 0.2, y: o.y - m * 0.15)); p.addLine(to: CGPoint(x: o.x + m * 0.4, y: o.y + m * 0.05))
+        p.addLine(to: CGPoint(x: o.x + m * 0.75, y: o.y - m * 0.5)); p.closeSubpath()
+        p.addEllipse(in: CGRect(x: o.x + m * 0.3, y: o.y + m * 0.25, width: m * 0.32, height: m * 0.32))
+    }
+    ctx.addPath(p)
+    ctx.fillPath()
+}
+
+func renderMedal(_ medal: String, level: Int, label: String) {
+    let metal = metals[level]
+    let ctx = CGContext(data: nil, width: Int(size), height: Int(size), bitsPerComponent: 8, bytesPerRow: 0,
+                        space: CGColorSpace(name: CGColorSpace.sRGB)!, bitmapInfo: CGImageAlphaInfo.noneSkipLast.rawValue)!
+    ctx.setFillColor(metal.color)
+    ctx.fill(CGRect(x: 0, y: 0, width: size, height: size))
+    ctx.setStrokeColor(CGColor(gray: 1, alpha: 0.28))
+    ctx.setLineWidth(22)
+    ctx.strokeEllipse(in: CGRect(x: 60, y: 60, width: size - 120, height: size - 120))
+    // The levels count up in small rings along the foot of the badge.
+    for i in 0..<5 {
+        let dot = CGRect(x: size / 2 - 2 * 46 + CGFloat(i) * 46 - 15, y: 118, width: 30, height: 30)
+        ctx.setFillColor(i <= level ? CGColor(gray: 1, alpha: 0.9) : CGColor(gray: 1, alpha: 0.3))
+        ctx.fillEllipse(in: dot)
+    }
+    let piece = piecePath()
+    ctx.saveGState()
+    ctx.setShadow(offset: CGSize(width: 0, height: -14), blur: 30, color: CGColor(gray: 0, alpha: 0.28))
+    ctx.addPath(piece)
+    ctx.setFillColor(cream)
+    ctx.fillPath()
+    ctx.restoreGState()
+    ctx.setFillColor(metal.color)
+    for edge in [2, 3] { let (b, n) = bulb(edge); ctx.fillEllipse(in: b); ctx.fill(n) }
+
+    let ink = darker(metal.color, 0.62)
+    ctx.setFillColor(ink)
+    ctx.setStrokeColor(ink)
+    // Above the bottom blank, which would bite into the number.
+    motif(medal, ctx, CGPoint(x: c.x + 0.06 * s, y: c.y + 0.21 * s), 0.17 * s)
+    let font = CTFontCreateWithName("Caprasimo-Regular" as CFString, label.count > 3 ? 100 : 118, nil)
+    let text = NSAttributedString(string: label, attributes: [.font: font, .foregroundColor: NSColor(cgColor: ink)!])
+    let line = CTLineCreateWithAttributedString(text)
+    let bounds = CTLineGetImageBounds(line, ctx)
+    ctx.textPosition = CGPoint(x: c.x + 0.06 * s - bounds.midX, y: c.y - 0.1 * s - bounds.midY)
+    CTLineDraw(line, ctx)
+
+    let rep = NSBitmapImageRep(cgImage: ctx.makeImage()!)
+    try! rep.representation(using: .png, properties: [:])!
+        .write(to: medalsOut.appending(path: "medal.\(medal).\(metal.name).png"))
+}
+
+// The goals of `Medal.goals`, shortened; the gallery's diamond is every picture.
+let medalLabels: [(String, [String])] = [
+    ("puzzles", ["25", "75", "150", "300", "600"]),
+    ("pieces", ["2K", "10K", "30K", "75K", "150K"]),
+    ("points", ["3K", "10K", "30K", "75K", "150K"]),
+    ("dailies", ["10", "30", "75", "150", "365"]),
+    ("bigPuzzles", ["1", "5", "15", "40", "100"]),
+    ("quick", ["3", "10", "30", "75", "150"]),
+    ("together", ["1", "5", "15", "40", "100"]),
+    ("gallery", ["20", "50", "90", "130", "100%"]),
+]
+for (medal, labels) in medalLabels {
+    for (level, label) in labels.enumerated() { renderMedal(medal, level: level, label: label) }
+}
